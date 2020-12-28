@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "329825017618",
+    "project_id": "brandfarm-53588",
+    "storage_bucket": "brandfarm-53588.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329825017618:android:4502675703c98a79e81dcb",
+        "android_client_info": {
+          "package_name": "com.brandfarm.brandfarmdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "329825017618-1t7e5npqvk2mnskab1qp6pm8r3jgs6p8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brandfarm.brandfarmdemo",
+            "certificate_hash": "d02cf401ff43278fc3ef63f27942f5a31968c652"
+          }
+        },
+        {
+          "client_id": "329825017618-nho97a2ip98cltnud1s1aa0ggtpbcvc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUrV8EWxWP4z7fhRKvMQ0CZx8qi5EnEd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "329825017618-nho97a2ip98cltnud1s1aa0ggtpbcvc3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "329825017618-tgul7m6mchr5kknrst1ctb5a3p8afend.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.brandfarm.brandfarmdemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
