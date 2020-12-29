@@ -13,18 +13,31 @@ class LoginButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 10,
       child: RaisedButton(
-        color: Color(0xFF2F80ED),
-        disabledColor: Color(0x30888888),
+        padding: EdgeInsets.all(0.0),
+        // disabledColor: Color(0x30888888),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(40.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         onPressed: _onPressed,
-        child: Text(
-          '로그인',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.white
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: <Color>[
+                Color(0xff5AC8E0),
+                Color(0xff6FEA98),
+              ]
+            )
+          ),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 10,
+          alignment: Alignment.center,
+          child: Text(
+            '로그인',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.white
+            ),
           ),
         ),
       ),

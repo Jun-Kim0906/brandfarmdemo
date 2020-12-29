@@ -85,12 +85,23 @@ class _LoginFormState extends State<LoginForm> {
                 children: <Widget>[
                   SizedBox(
                     height: height * 0.289,
-                    width: width * 0.294,
                     child: FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: height*0.01),
-                        child: Image.asset('assets/brandfarm.png', height: 30),
+                        padding: EdgeInsets.only(top: height*0.05, bottom: height*0.01),
+                        child: Column(
+                          children: [
+                            Image.asset('assets/brandfarm.png', height: 30),
+                            Text(
+                              'Brand Farm',
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                color: Color(0xff343434),
+                                fontSize: 20.0,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -99,9 +110,8 @@ class _LoginFormState extends State<LoginForm> {
                     decoration: InputDecoration(
 //                      icon: Icon(Icons.email),
 //                        labelText: 'Email',
-                    hintText: 'Email',
+                    hintText: '사원번호',
                       border: OutlineInputBorder(
-//                        borderSide: BorderSide(),
                       ),
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -116,7 +126,7 @@ class _LoginFormState extends State<LoginForm> {
                     controller: _passwordController,
                     decoration: InputDecoration(
 //                      icon: Icon(Icons.lock),
-                      hintText: 'Password',
+                      hintText: '패스워드',
                       border: OutlineInputBorder(
 //                        borderSide: BorderSide(),
                       ),
@@ -162,7 +172,7 @@ class _LoginFormState extends State<LoginForm> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         SizedBox(
-                          height: height * 0.07,
+                          height: height * 0.057,
                           width: width * 0.772,
                           child: FittedBox(
                             fit: BoxFit.fitWidth,
