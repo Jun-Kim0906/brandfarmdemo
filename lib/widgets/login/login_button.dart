@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class LoginButton extends StatelessWidget {
   final VoidCallback _onPressed;
+  final bool _isValid;
 
-  LoginButton({Key key, VoidCallback onPressed})
+  LoginButton({Key key, VoidCallback onPressed, isValid})
       : _onPressed = onPressed,
+        _isValid = isValid,
         super(key: key);
 
   @override
@@ -20,14 +22,15 @@ class LoginButton extends StatelessWidget {
         ),
         onPressed: _onPressed,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: _isValid?BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
             gradient: LinearGradient(
               colors: <Color>[
                 Color(0xff5AC8E0),
                 Color(0xff6FEA98),
               ]
             )
-          ),
+          ) : null,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height / 10,
           alignment: Alignment.center,
