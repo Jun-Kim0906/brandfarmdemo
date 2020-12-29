@@ -7,12 +7,15 @@ import 'package:brandfarmdemo/blocs/blocs.dart';
 import 'package:brandfarmdemo/repository/repositories.dart';
 import 'package:brandfarmdemo/screens/screens.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'testpage.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
+  await Firebase.initializeApp();
+
 
   runApp(
     App(),
@@ -57,14 +60,13 @@ class _AppState extends State<App> {
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           // ignore: missing_return
           builder: (context, state) {
-            TestPage();
             if (state is AuthenticationSuccess) {
               return TestPage();
                 // BlocProvider<HomeBloc>(
                 //   create: (BuildContext context) =>
                 //       HomeBloc(),
                 //   child: HomeScreen(name: state.displayName));
-            } else if(state is AuthenticationFailure){
+            } else{
               return LoginScreen(userRepository: userRepository);
             }
             // else if(state is AuthenticationInitial){
