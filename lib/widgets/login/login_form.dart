@@ -89,8 +89,8 @@ class _LoginFormState extends State<LoginForm> {
                     child: FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: height*0.001),
-                        child: Image.asset('assets/launcher_icon2.png', height: 200),
+                        padding: EdgeInsets.symmetric(vertical: height*0.01),
+                        child: Image.asset('assets/brandfarm.png', height: 30),
                       ),
                     ),
                   ),
