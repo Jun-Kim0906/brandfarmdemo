@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'blocs/blocs.dart';
 
 class TestPage extends StatelessWidget {
   @override
@@ -14,8 +17,10 @@ class TestPage extends StatelessWidget {
             color: Colors.indigoAccent,
           ),
           onPressed: (){
-            Navigator.pop(context);
-          },
+            BlocProvider.of<AuthenticationBloc>(context).add(
+              AuthenticationLoggedOut(),
+            );
+            Navigator.of(context).popUntil((route) => route.isFirst);          },
         ),
       ),
       body: Center(
