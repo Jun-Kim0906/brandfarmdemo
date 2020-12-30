@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:brandfarmdemo/blocs/blocs.dart';
 import 'package:brandfarmdemo/repository/user/user_repository.dart';
@@ -73,24 +74,38 @@ class _LoginFormState extends State<LoginForm> {
             );
         }
         if (state.isSuccess) {
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLoggedIn());
+          BlocProvider.of<AuthenticationBloc>(context)
+              .add(AuthenticationLoggedIn());
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           return Padding(
-            padding: EdgeInsets.fromLTRB(width*0.1,height*0.03,width*0.1,height*0.03),
+            padding: EdgeInsets.fromLTRB(
+                width * 0.1, height * 0.03, width * 0.1, height * 0.03),
             child: Form(
               child: ListView(
                 children: <Widget>[
                   SizedBox(
                     height: height * 0.289,
-                    width: width * 0.294,
                     child: FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: height*0.01),
-                        child: Image.asset('assets/brandfarm.png', height: 30),
+                        padding: EdgeInsets.only(
+                            top: height * 0.05, bottom: height * 0.01),
+                        child: Column(
+                          children: [
+                            Image.asset('assets/brandfarm.png', height: 30),
+                            Text(
+                              'Brand Farm',
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                color: Color(0xff343434),
+                                fontSize: 20.0,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -99,30 +114,31 @@ class _LoginFormState extends State<LoginForm> {
                     decoration: InputDecoration(
 //                      icon: Icon(Icons.email),
 //                        labelText: 'Email',
-                    hintText: 'Email',
-                      border: OutlineInputBorder(
-//                        borderSide: BorderSide(),
-                      ),
+                      hintText: '사원번호',
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xff27D878))),
+                      border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    autovalidateMode: AutovalidateMode.always,
+                    autovalidateMode: AutovalidateMode.disabled,
                     autocorrect: false,
                     validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
+                      return !state.isEmailValid ? '사원번호를 입력하세요' : null;
                     },
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.01,
+                  ),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-//                      icon: Icon(Icons.lock),
-                      hintText: 'Password',
-                      border: OutlineInputBorder(
-//                        borderSide: BorderSide(),
-                      ),
+                      hintText: '패스워드',
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xff27D878))),
+                      border: OutlineInputBorder(),
                     ),
                     obscureText: true,
-                    autovalidateMode: AutovalidateMode.always,
+                    autovalidateMode: AutovalidateMode.disabled,
                     autocorrect: false,
                     validator: (_) {
                       return !state.isPasswordValid ? 'Invalid Password' : null;
@@ -131,38 +147,13 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(
                     height: height * 0.023,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        height: height * 0.036,
-                        width: width * 0.386,
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              FlatButton(
-                                onPressed: (){},
-                                child: Text('아이디 찾기'),
-                              ),
-                              FlatButton(
-                                onPressed: (){},
-                                child: Text('비밀번호 찾기'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         SizedBox(
-                          height: height * 0.07,
+                          height: height * 0.057,
                           width: width * 0.772,
                           child: FittedBox(
                             fit: BoxFit.fitWidth,
@@ -170,6 +161,7 @@ class _LoginFormState extends State<LoginForm> {
                               onPressed: isLoginButtonEnabled(state)
                                   ? _onFormSubmitted
                                   : null,
+                              isValid: isLoginButtonEnabled(state),
                             ),
                           ),
                         ),
@@ -183,8 +175,33 @@ class _LoginFormState extends State<LoginForm> {
                               height: height * 0.036,
                               width: width * 0.386,
                               child: FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: CreateAccountButton(
+                                      userRepository: _userRepository)),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: height * 0.036,
+                              width: width * 0.386,
+                              child: FittedBox(
                                 fit: BoxFit.fitWidth,
-                                  child: CreateAccountButton(userRepository: _userRepository)
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    FlatButton(
+                                      onPressed: () {},
+                                      child: Text('아이디 찾기'),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {},
+                                      child: Text('비밀번호 찾기'),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -199,9 +216,8 @@ class _LoginFormState extends State<LoginForm> {
                               height: height * 0.043,
                               width: width * 0.386,
                               child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                  child: GoogleLoginButton()
-                              ),
+                                  fit: BoxFit.fitWidth,
+                                  child: GoogleLoginButton()),
                             ),
                           ],
                         ),
