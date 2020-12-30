@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:brandfarmdemo/utils/styles/styles_util.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,13 +51,7 @@ class _AppState extends State<App> {
       value: _authenticationBloc,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          backgroundColor: Colors.white,
-          primaryColor: Colors.black,
-          primaryColorLight: Colors.white,
-          accentColor: Colors.blue[600],
-          appBarTheme: AppBarTheme(brightness: Brightness.light),
-        ),
+        theme: buildMaterialTheme(),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           // ignore: missing_return
           builder: (context, state) {
