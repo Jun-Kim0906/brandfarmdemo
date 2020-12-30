@@ -31,3 +31,8 @@ flutter:
   assets:
     - assets/
   uses-material-design: true
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto/Roboto-Bold.ttf

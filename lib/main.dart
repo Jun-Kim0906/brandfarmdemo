@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:brandfarmdemo/utils/styles/styles_util.dart';
+import 'package:brandfarmdemo/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,9 +61,11 @@ class _AppState extends State<App> {
                 // BlocProvider<HomeBloc>(
                 //   create: (BuildContext context) =>
                 //       HomeBloc(),
-                //   child: HomeScreen(name: state.displayName));
-            } else{
+                //   child: HomeScreen(name: st ate.displayName));
+            } else if(state is AuthenticationFailure){
               return LoginScreen(userRepository: userRepository);
+            } else{
+              return SplashScreen(duration: 1);
             }
             // else if(state is AuthenticationInitial){
             //   return SplashScreen(duration: 1,);
