@@ -61,15 +61,12 @@ class _AppState extends State<App> {
                 // BlocProvider<HomeBloc>(
                 //   create: (BuildContext context) =>
                 //       HomeBloc(),
-                //   child: HomeScreen(name: st ate.displayName));
-            } else if(state is AuthenticationFailure){
-              return LoginScreen(userRepository: userRepository);
-            } else{
+                //   child: HomeScreen(name: state.displayName));
+            } else if(state is AuthenticationInitial){
               return SplashScreen(duration: 1);
+            } else{
+              return LoginScreen(userRepository: userRepository);
             }
-            // else if(state is AuthenticationInitial){
-            //   return SplashScreen(duration: 1,);
-            // }
 
           },
         ),

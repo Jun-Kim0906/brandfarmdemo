@@ -44,13 +44,15 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
 //    yield AuthenticationSuccess((await _userRepository.getUser()).email);
     try {
-      UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
-          .collection('User')
-          .doc((await UserRepository().getUser()).uid)
-          .get()));
-      print('Login User Name : ' + UserUtil.getUser().name);
-      yield AuthenticationSuccess(UserUtil.getUser().name);
+      // UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
+      //     .collection('User')
+      //     .doc((await UserRepository().getUser()).uid)
+      //     .get()));
+      // print('Login User Name : ' + UserUtil.getUser().name);
+      // yield AuthenticationSuccess(UserUtil.getUser().name);
+      yield AuthenticationSuccess('Username');
     } catch (e) {
+      print(e);
       yield AuthenticationFailure();
     }
   }
