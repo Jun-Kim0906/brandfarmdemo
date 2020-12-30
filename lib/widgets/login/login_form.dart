@@ -145,7 +145,7 @@ class _LoginFormState extends State<LoginForm> {
                     },
                   ),
                   SizedBox(
-                    height: height * 0.023,
+                    height: 10.0,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
@@ -153,7 +153,6 @@ class _LoginFormState extends State<LoginForm> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         SizedBox(
-                          height: height * 0.057,
                           width: width * 0.772,
                           child: FittedBox(
                             fit: BoxFit.fitWidth,
@@ -168,19 +167,19 @@ class _LoginFormState extends State<LoginForm> {
                         SizedBox(
                           height: height * 0.023,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: height * 0.036,
-                              width: width * 0.386,
-                              child: FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: CreateAccountButton(
-                                      userRepository: _userRepository)),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     SizedBox(
+                        //       height: height * 0.036,
+                        //       width: width * 0.386,
+                        //       child: FittedBox(
+                        //           fit: BoxFit.fitWidth,
+                        //           child: CreateAccountButton(
+                        //               userRepository: _userRepository)),
+                        //     ),
+                        //   ],
+                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -209,18 +208,18 @@ class _LoginFormState extends State<LoginForm> {
                         SizedBox(
                           height: height * 0.089,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: height * 0.043,
-                              width: width * 0.386,
-                              child: FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: GoogleLoginButton()),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     SizedBox(
+                        //       height: height * 0.043,
+                        //       width: width * 0.386,
+                        //       child: FittedBox(
+                        //           fit: BoxFit.fitWidth,
+                        //           child: GoogleLoginButton()),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
