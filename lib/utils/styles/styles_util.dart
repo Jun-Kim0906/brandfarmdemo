@@ -21,14 +21,37 @@ ThemeData buildMaterialTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
     colorScheme: brandFarmColorScheme,
-    bannerTheme: MaterialBannerThemeData(),
-    appBarTheme: AppBarTheme(),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(),
-    cardTheme: CardTheme(),
-    // chipTheme: ChipThemeData(),
-    bottomAppBarTheme: BottomAppBarTheme(),
-    dialogTheme: DialogTheme(),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(),
+      focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xff27D878)) // color of brandfarm logo
+      ),
+      labelStyle: TextStyle(
+        color: Colors.black,
+      ),
+    ),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: Colors.black,
+      selectionColor: Color(0xff27D878), // green-ish color
+      selectionHandleColor: Color(0xff27D878), // green-ish color
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              ;
+            }
+        )
+      ),
+    ),
+    // bannerTheme: MaterialBannerThemeData(),
+    // appBarTheme: AppBarTheme(),
+    // bottomNavigationBarTheme: BottomNavigationBarThemeData(),
+    // floatingActionButtonTheme: FloatingActionButtonThemeData(),
+    // cardTheme: CardTheme(),
+    // // chipTheme: ChipThemeData(),
+    // bottomAppBarTheme: BottomAppBarTheme(),
+    // dialogTheme: DialogTheme(),
     textTheme: TextTheme(
       // headline1: ,
       // headline2: ,
@@ -36,7 +59,7 @@ ThemeData buildMaterialTheme() {
       // headline4: ,
       // headline5: ,
       // headline6: ,
-      // subtitle1: ,
+      subtitle1: TextStyle(color: Colors.black), // for login input text
       // subtitle2: ,
       // bodyText1: ,
       // bodyText2: ,

@@ -80,151 +80,148 @@ class _LoginFormState extends State<LoginForm> {
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(
-                width * 0.1, height * 0.03, width * 0.1, height * 0.03),
-            child: Form(
-              child: ListView(
-                children: <Widget>[
-                  SizedBox(
-                    height: height * 0.289,
-                    child: FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.05, bottom: height * 0.01),
-                        child: Column(
-                          children: [
-                            Image.asset('assets/brandfarm.png', height: 30),
-                            Text(
-                              'Brand Farm',
-                              style: TextStyle(
-                                fontFamily: 'Roboto',
-                                color: Color(0xff343434),
-                                fontSize: 20.0,
-                              ),
-                            )
-                          ],
+          return GestureDetector(
+            onTap: (){
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                  width * 0.1, height * 0.03, width * 0.1, height * 0.03),
+              child: Form(
+                child: ListView(
+                  children: <Widget>[
+                    SizedBox(
+                      height: height * 0.289,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: height * 0.05, bottom: height * 0.01),
+                          child: Column(
+                            children: [
+                              Image.asset('assets/brandfarm.png', height: 30),
+                              Text(
+                                'Brand Farm',
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  color: Color(0xff343434),
+                                  fontSize: 20.0,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-//                      icon: Icon(Icons.email),
-//                        labelText: 'Email',
-                      hintText: '사원번호',
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff27D878))),
-                      border: OutlineInputBorder(),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        hintText: '사원번호',
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      autovalidateMode: AutovalidateMode.disabled,
+                      autocorrect: false,
+                      validator: (_) {
+                        return !state.isEmailValid ? '사원번호를 입력하세요' : null;
+                      },
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidateMode: AutovalidateMode.disabled,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isEmailValid ? '사원번호를 입력하세요' : null;
-                    },
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.01,
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      hintText: '패스워드',
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff27D878))),
-                      border: OutlineInputBorder(),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.01,
                     ),
-                    obscureText: true,
-                    autovalidateMode: AutovalidateMode.disabled,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
-                    },
-                  ),
-                  SizedBox(
-                    height: height * 0.023,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: height * 0.057,
-                          width: width * 0.772,
-                          child: FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: LoginButton(
-                              onPressed: isLoginButtonEnabled(state)
-                                  ? _onFormSubmitted
-                                  : null,
-                              isValid: isLoginButtonEnabled(state),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: height * 0.023,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: height * 0.036,
-                              width: width * 0.386,
-                              child: FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: CreateAccountButton(
-                                      userRepository: _userRepository)),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: height * 0.036,
-                              width: width * 0.386,
-                              child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    FlatButton(
-                                      onPressed: () {},
-                                      child: Text('아이디 찾기'),
-                                    ),
-                                    FlatButton(
-                                      onPressed: () {},
-                                      child: Text('비밀번호 찾기'),
-                                    ),
-                                  ],
-                                ),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        hintText: '패스워드',
+                      ),
+                      obscureText: true,
+                      autovalidateMode: AutovalidateMode.disabled,
+                      autocorrect: false,
+                      validator: (_) {
+                        return !state.isPasswordValid ? 'Invalid Password' : null;
+                      },
+                    ),
+                    SizedBox(
+                      height: height * 0.023,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          SizedBox(
+                            height: height * 0.057,
+                            width: width * 0.772,
+                            child: FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: LoginButton(
+                                onPressed: isLoginButtonEnabled(state)
+                                    ? _onFormSubmitted
+                                    : null,
+                                isValid: isLoginButtonEnabled(state),
                               ),
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: height * 0.089,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: height * 0.043,
-                              width: width * 0.386,
-                              child: FittedBox(
+                          ),
+                          SizedBox(
+                            height: height * 0.023,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: height * 0.036,
+                                width: width * 0.386,
+                                child: FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: CreateAccountButton(
+                                        userRepository: _userRepository)),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: height * 0.036,
+                                width: width * 0.386,
+                                child: FittedBox(
                                   fit: BoxFit.fitWidth,
-                                  child: GoogleLoginButton()),
-                            ),
-                          ],
-                        ),
-                      ],
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      FlatButton(
+                                        onPressed: () {},
+                                        child: Text('아이디 찾기'),
+                                      ),
+                                      FlatButton(
+                                        onPressed: () {},
+                                        child: Text('비밀번호 찾기'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: height * 0.089,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: height * 0.043,
+                                width: width * 0.386,
+                                child: FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: GoogleLoginButton()),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
