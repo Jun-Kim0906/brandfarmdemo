@@ -13,7 +13,7 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 10,
+      height: 75.0,
       child: RaisedButton(
         padding: EdgeInsets.all(0.0),
         disabledColor: Color(0x30888888),
@@ -32,13 +32,12 @@ class LoginButton extends StatelessWidget {
             )
           ) : null,
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height / 10,
           alignment: Alignment.center,
           child: Text(
             '로그인',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 20,
                 color: Colors.white
             ),
           ),
