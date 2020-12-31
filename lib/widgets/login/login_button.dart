@@ -16,13 +16,13 @@ class LoginButton extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 10,
       child: RaisedButton(
         padding: EdgeInsets.all(0.0),
-        // disabledColor: Color(0x30888888),
+        disabledColor: Color(0x30888888),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
         onPressed: _onPressed,
         child: Container(
-          decoration: _isValid?BoxDecoration(
+          decoration: _isValid ? BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             gradient: LinearGradient(
               colors: <Color>[

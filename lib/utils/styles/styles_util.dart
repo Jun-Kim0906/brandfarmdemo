@@ -21,6 +21,7 @@ ThemeData buildMaterialTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
     colorScheme: brandFarmColorScheme,
+    scaffoldBackgroundColor: Colors.transparent,
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(),
       focusedBorder: OutlineInputBorder(
@@ -35,23 +36,6 @@ ThemeData buildMaterialTheme() {
       selectionColor: Color(0xff27D878), // green-ish color
       selectionHandleColor: Color(0xff27D878), // green-ish color
     ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            (Set<MaterialState> states) {
-              ;
-            }
-        )
-      ),
-    ),
-    // bannerTheme: MaterialBannerThemeData(),
-    // appBarTheme: AppBarTheme(),
-    // bottomNavigationBarTheme: BottomNavigationBarThemeData(),
-    // floatingActionButtonTheme: FloatingActionButtonThemeData(),
-    // cardTheme: CardTheme(),
-    // // chipTheme: ChipThemeData(),
-    // bottomAppBarTheme: BottomAppBarTheme(),
-    // dialogTheme: DialogTheme(),
     textTheme: TextTheme(
       // headline1: ,
       // headline2: ,
@@ -70,7 +54,7 @@ ThemeData buildMaterialTheme() {
   );
 }
 
-// style: Theme.of(context).textTheme.appBarTitle
+// use as followed => style: Theme.of(context).textTheme.appBarTitle
 extension CustomStyles on TextTheme {
   TextStyle get appBarTitle => TextStyle(fontSize: 20, color: Colors.lime[800]);
   TextStyle get gridTileText => const TextStyle(fontSize: 10, color: Colors.white);
