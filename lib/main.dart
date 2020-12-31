@@ -36,7 +36,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     _authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 2), () {
       _authenticationBloc.add(AuthenticationStarted());
     });
   }
@@ -68,7 +68,7 @@ class _AppState extends State<App> {
                 //       HomeBloc(),
                 //   child: HomeScreen(name: state.displayName));
             } else if(state is AuthenticationInitial){
-              return SplashScreen(duration: 1);
+              return SplashScreen(duration: 2);
             } else{
               return LoginScreen(userRepository: userRepository);
             }
