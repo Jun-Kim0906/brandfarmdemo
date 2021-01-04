@@ -1,16 +1,18 @@
+import 'package:brandfarmdemo/layout/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:brandfarmdemo/blocs/blocs.dart';
+import 'package:brandfarmdemo/blocs/login/bloc.dart';
+import 'package:brandfarmdemo/blocs/authentication/bloc.dart';
 import 'package:brandfarmdemo/repository/user/user_repository.dart';
-import 'package:brandfarmdemo/widgets/widgets.dart';
+import 'package:brandfarmdemo/widgets/login/login.dart';
 
 class LoginForm extends StatefulWidget {
-  final UserRepository _userRepository;
+  // final UserRepository _userRepository;
 
   LoginForm({Key key, @required UserRepository userRepository})
       : assert(userRepository != null),
-        _userRepository = userRepository,
+        // _userRepository = userRepository,
         super(key: key);
 
   State<LoginForm> createState() => _LoginFormState();
@@ -22,7 +24,7 @@ class _LoginFormState extends State<LoginForm> {
 
   LoginBloc _loginBloc;
 
-  UserRepository get _userRepository => widget._userRepository;
+  // UserRepository get _userRepository => widget._userRepository;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -41,6 +43,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = isDisplayDesktop(context);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return BlocListener<LoginBloc, LoginState>(
@@ -103,6 +106,9 @@ class _LoginFormState extends State<LoginForm> {
                                 color: Color(0xff343434),
                                 fontSize: 20.0,
                               ),
+                            ),
+                            Text(
+                              isDesktop?'Desktop':'mobile',
                             )
                           ],
                         ),
@@ -183,25 +189,13 @@ class _LoginFormState extends State<LoginForm> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              height: height * 0.036,
-                              width: width * 0.386,
-                              child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    FlatButton(
-                                      onPressed: () {},
-                                      child: Text('아이디 찾기'),
-                                    ),
-                                    FlatButton(
-                                      onPressed: () {},
-                                      child: Text('비밀번호 찾기'),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            FlatButton(
+                              onPressed: () {},
+                              child: Text('아이디 찾기'),
+                            ),
+                            FlatButton(
+                              onPressed: () {},
+                              child: Text('비밀번호 찾기'),
                             ),
                           ],
                         ),
