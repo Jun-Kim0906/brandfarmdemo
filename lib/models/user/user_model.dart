@@ -16,10 +16,10 @@ class User {
 
   factory User.fromSnapshot(DocumentSnapshot ds) {
     return User(
-      email: ds['email'],
-      fcmToken: ds['fcmToken'],
-      name: ds['name'],
-      uid: ds['uid'],
+      email: ds['email'].toString(),
+      fcmToken: ds['fcmToken'].toString(),
+      name: ds['name'].toString(),
+      uid: ds['uid'].toString(),
     );
   }
 

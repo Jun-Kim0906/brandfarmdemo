@@ -4,7 +4,7 @@ class LoginButton extends StatelessWidget {
   final VoidCallback _onPressed;
   final bool _isValid;
 
-  LoginButton({Key key, VoidCallback onPressed, isValid})
+  LoginButton({Key key, VoidCallback onPressed, bool isValid})
       : _onPressed = onPressed,
         _isValid = isValid,
         super(key: key);

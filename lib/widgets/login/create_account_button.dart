@@ -4,11 +4,11 @@ import 'package:brandfarmdemo/repository/user/user_repository.dart';
 import 'package:brandfarmdemo/testpage.dart';
 
 class CreateAccountButton extends StatelessWidget {
-  final UserRepository _userRepository;
+  // final UserRepository _userRepository;
 
   CreateAccountButton({Key key, @required UserRepository userRepository})
       : assert(userRepository != null),
-        _userRepository = userRepository,
+        // _userRepository = userRepository,
         super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class CreateAccountButton extends StatelessWidget {
       ),
       onPressed: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) {
+          MaterialPageRoute<void>(builder: (context) {
             return TestPage();
             // return RegisterScreen(userRepository: _userRepository);
           }),

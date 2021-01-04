@@ -21,7 +21,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    var opacity = 1.0;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
