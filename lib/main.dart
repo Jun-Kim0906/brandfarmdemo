@@ -4,9 +4,10 @@ import 'package:brandfarmdemo/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:brandfarmdemo/blocs/blocs.dart';
-import 'package:brandfarmdemo/repository/repositories.dart';
-import 'package:brandfarmdemo/screens/screens.dart';
+import 'package:brandfarmdemo/blocs/authentication/bloc.dart';
+import 'package:brandfarmdemo/blocs/blocObserver.dart';
+import 'package:brandfarmdemo/repository/user/user_repository.dart';
+import 'package:brandfarmdemo/screens/login/login_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 

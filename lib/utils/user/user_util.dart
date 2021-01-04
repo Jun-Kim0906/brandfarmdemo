@@ -1,4 +1,4 @@
-import 'package:brandfarmdemo/models/models.dart';
+import 'package:brandfarmdemo/models/user/user_model.dart';
 
 class UserUtil {
   static User _user;
