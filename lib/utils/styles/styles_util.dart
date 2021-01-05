@@ -1,6 +1,5 @@
+import 'package:brandfarmdemo/utils/colors/colors_util.dart';
 import 'package:flutter/material.dart';
-
-import '../utils.dart';
 
 // NAME         SIZE  WEIGHT  SPACING
 // headline1    96.0  light   -1.5
@@ -20,22 +19,7 @@ import '../utils.dart';
 ThemeData buildMaterialTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    colorScheme: brandFarmColorScheme,
-    scaffoldBackgroundColor: Colors.transparent,
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(),
-      focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff27D878)) // color of brandfarm logo
-      ),
-      labelStyle: TextStyle(
-        color: Colors.black,
-      ),
-    ),
-    textSelectionTheme: TextSelectionThemeData(
-      cursorColor: Colors.black,
-      selectionColor: Color(0xff27D878), // green-ish color
-      selectionHandleColor: Color(0xff27D878), // green-ish color
-    ),
+    // colorScheme: brandFarmColorScheme,
     textTheme: TextTheme(
       // headline1: ,
       // headline2: ,
