@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (context, constraints) => Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.darken),
                   image: AssetImage('assets/login_backgroundimg.jpg'),
                   fit: BoxFit.cover,
                 )
@@ -74,22 +74,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Center(
                       child: Container(
                         width: desktopLoginScreenMainAreaWidth(context: context),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _FarmLogo(),
-                            SizedBox(height: 40),
-                            _UsernameTextField(emailController: _emailController, state: state),
-                            SizedBox(height: 16),
-                            _PasswordTextField(passwordController: _passwordController, state: state),
-                            SizedBox(height: 24),
-                            LoginButton(
-                              onPressed: isLoginButtonEnabled(state)
-                                  ? _onFormSubmitted
-                                  : null,
-                              isValid: isLoginButtonEnabled(state),
-                            ),
-                          ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _FarmLogo(),
+                              SizedBox(height: 40),
+                              _UsernameTextField(emailController: _emailController, state: state),
+                              SizedBox(height: 16),
+                              _PasswordTextField(passwordController: _passwordController, state: state),
+                              SizedBox(height: 24),
+                              LoginButton(
+                                onPressed: isLoginButtonEnabled(state)
+                                    ? _onFormSubmitted
+                                    : null,
+                                isValid: isLoginButtonEnabled(state),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                   ),
@@ -100,10 +102,28 @@ class _LoginScreenState extends State<LoginScreen> {
         }else{
           return Scaffold(
             backgroundColor: Colors.white,
-            body: BlocProvider<LoginBloc>(
-              create: (context) => LoginBloc(userRepository: _userRepository),
-              child: LoginForm(userRepository: _userRepository),
-            ),
+            body: SafeArea(
+              child: ListView(
+                physics: ClampingScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: _horizontalPadding,
+                ),
+                children: [
+                  SizedBox(height: 80),
+                  _FarmLogo(),
+                  SizedBox(height: 24),
+                  _UsernameTextField(emailController: _emailController,state: state),
+                  SizedBox(height: 12),
+                  _PasswordTextField(passwordController: _passwordController,state: state),
+                  SizedBox(height: 16),
+                  LoginButton(
+                    onPressed: isLoginButtonEnabled(state)
+                        ? _onFormSubmitted
+                        : null,
+                    isValid: isLoginButtonEnabled(state),
+                  ),                ],
+              ),
+            )
           );
         }
       }),
@@ -144,6 +164,9 @@ class _FarmLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final isDesktop = isDisplayDesktop(context);
+
     return ExcludeSemantics(
       child: Column(
         children: [
@@ -151,10 +174,15 @@ class _FarmLogo extends StatelessWidget {
           SizedBox(height: 16),
           Text(
             'Brand Farm',
-            style: Theme.of(context)
+            style: isDesktop?
+            Theme.of(context)
+                .textTheme
+                .headline2
+                .apply(fontFamily: 'Roboto', color: Color(0xffffffff))
+                :Theme.of(context)
                 .textTheme
                 .headline4
-                .apply(fontFamily: 'Roboto', color: Color(0xffffffff)),
+                .apply(fontFamily: 'Roboto')
           ),
         ],
       ),
