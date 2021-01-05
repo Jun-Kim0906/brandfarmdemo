@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:brandfarmdemo/blocs/login/bloc.dart';
 import 'package:brandfarmdemo/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
@@ -71,9 +72,12 @@ class _AppState extends State<App> {
             } else if(state is AuthenticationInitial){
               return SplashScreen(duration: 2);
             } else{
-              return LoginScreen(userRepository: userRepository);
+              return BlocProvider<LoginBloc>(
+                  create: (BuildContext context) =>
+                      LoginBloc(userRepository: userRepository),
+                child: LoginScreen(userRepository: userRepository,),
+              );
             }
-
           },
         ),
       ),

@@ -118,8 +118,6 @@ class _LoginFormState extends State<LoginForm> {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-//                      icon: Icon(Icons.email),
-//                        labelText: 'Email',
                       hintText: '사원번호',
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xff27D878))),
@@ -173,19 +171,6 @@ class _LoginFormState extends State<LoginForm> {
                         SizedBox(
                           height: height * 0.023,
                         ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     SizedBox(
-                        //       height: height * 0.036,
-                        //       width: width * 0.386,
-                        //       child: FittedBox(
-                        //           fit: BoxFit.fitWidth,
-                        //           child: CreateAccountButton(
-                        //               userRepository: _userRepository)),
-                        //     ),
-                        //   ],
-                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -199,21 +184,6 @@ class _LoginFormState extends State<LoginForm> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: height * 0.089,
-                        ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     SizedBox(
-                        //       height: height * 0.043,
-                        //       width: width * 0.386,
-                        //       child: FittedBox(
-                        //           fit: BoxFit.fitWidth,
-                        //           child: GoogleLoginButton()),
-                        //     ),
-                        //   ],
-                        // ),
                       ],
                     ),
                   ),
