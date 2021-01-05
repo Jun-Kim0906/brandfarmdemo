@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:brandfarmdemo/repository/repositories.dart';
-import 'package:brandfarmdemo/models/models.dart';
-import 'package:brandfarmdemo/utils/utils.dart';
+import 'package:brandfarmdemo/repository/user/user_repository.dart';
 
 part 'authentication_state.dart';
 part 'authentication_event.dart';

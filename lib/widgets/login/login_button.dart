@@ -4,7 +4,7 @@ class LoginButton extends StatelessWidget {
   final VoidCallback _onPressed;
   final bool _isValid;
 
-  LoginButton({Key key, VoidCallback onPressed, isValid})
+  LoginButton({Key key, VoidCallback onPressed, bool isValid})
       : _onPressed = onPressed,
         _isValid = isValid,
         super(key: key);
@@ -13,17 +13,17 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 75.0,
+      height: 60.0,
       child: RaisedButton(
         padding: EdgeInsets.all(0.0),
-        disabledColor: Color(0x30888888),
+        disabledColor: Color(0xfd888888),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         onPressed: _onPressed,
         child: Container(
-          decoration: _isValid ? BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0),
+          decoration: _isValid?BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
             gradient: LinearGradient(
               colors: <Color>[
                 Color(0xff5AC8E0),
@@ -37,7 +37,6 @@ class LoginButton extends StatelessWidget {
             '로그인',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
                 color: Colors.white
             ),
           ),
