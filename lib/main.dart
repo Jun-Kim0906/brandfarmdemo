@@ -1,17 +1,17 @@
 //screens
-import 'package:brandfarmdemo/screens/home/home_screen.dart';
-import 'package:brandfarmdemo/screens/splash/splash_screen.dart';
-import 'package:brandfarmdemo/screens/login/login_screen.dart';
+import 'package:BrandFarm/screens/home/home_screen.dart';
+import 'package:BrandFarm/screens/splash/splash_screen.dart';
+import 'package:BrandFarm/screens/login/login_screen.dart';
 
 //bloc
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
-import 'package:brandfarmdemo/blocs/login/bloc.dart';
-import 'package:brandfarmdemo/blocs/authentication/bloc.dart';
-import 'package:brandfarmdemo/blocs/blocObserver.dart';
+import 'package:BrandFarm/blocs/login/bloc.dart';
+import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/blocs/blocObserver.dart';
 
 //repository
-import 'package:brandfarmdemo/repository/user/user_repository.dart';
+import 'package:BrandFarm/repository/user/user_repository.dart';
 
 //flutter firebase
 import 'dart:async';
@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 //util
-import 'package:brandfarmdemo/utils/themes/farm_theme_data.dart';
+import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 
 
 void main() async {

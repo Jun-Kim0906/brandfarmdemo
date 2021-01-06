@@ -1,5 +1,5 @@
-import 'package:brandfarmdemo/blocs/weather/bloc.dart';
-import 'package:brandfarmdemo/utils/unicode/unicode_util.dart';
+import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,239 +63,237 @@ class _WeatherDetailState extends State<WeatherDetail> {
           )),
         ],
       ),
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [
-                    0.1032,
-                    0.3218,
-                    0.4822,
-                    0.6571,
-                    0.7919,
-                  ],
-                  colors: [
-                    Color(0xFF82BFED),
-                    Color(0xFF80D0F6),
-                    Color(0xFF6BDCFF),
-                    Color(0xFFADEBFF),
-                    Color(0xFF7BE7FF),
-                  ],
-                ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [
+                  0.1032,
+                  0.3218,
+                  0.4822,
+                  0.6571,
+                  0.7919,
+                ],
+                colors: [
+                  Color(0xFF82BFED),
+                  Color(0xFF80D0F6),
+                  Color(0xFF6BDCFF),
+                  Color(0xFFADEBFF),
+                  Color(0xFF7BE7FF),
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
-                child: ListView(
-                  children: [
-                    Container(
-                      height: 18.64,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.refresh,
-                              color: Colors.white,
-                              size: 25,
-                            ),
-                            onPressed: () {
-                              print('refresh button pressed');
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
+              child: ListView(
+                children: [
+                  Container(
+                    height: 18.64,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          '맑음',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                        Text(
-                          curr_temp,
-                          style: TextStyle(fontSize: 70, color: Colors.white),
-                        ),
-                        Container(
-                          width: 107,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '최고: ' + maxTemp + degrees,
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                              Text(
-                                '최저: ' + minTemp + degrees,
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                            ],
+                        IconButton(
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Colors.white,
+                            size: 25,
                           ),
+                          onPressed: () {
+                            print('refresh button pressed');
+                          },
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 45,
-                    ),
-                    Row(
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        '맑음',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      Text(
+                        curr_temp,
+                        style: TextStyle(fontSize: 70, color: Colors.white),
+                      ),
+                      Container(
+                        width: 107,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '최고: ' + maxTemp + degrees,
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                            Text(
+                              '최저: ' + minTemp + degrees,
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 45,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Text(
+                              '일몰',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                            circle(
+                                info: sunset, type: weather_circle_type.sunset),
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Text(
+                              '강수확률',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                            circle(
+                                info: prob_of_precip,
+                                type: weather_circle_type.prob_of_precip),
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Text(
+                              '강수량',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                            circle(
+                                info: precip, type: weather_circle_type.precip),
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Text(
+                              '습도',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                            circle(
+                                info: humidity,
+                                type: weather_circle_type.humidity),
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Text(
+                              '바람',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white),
+                            ),
+                            circle(
+                                info: wind_speed,
+                                type: weather_circle_type.wind_info),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    thickness: 0.4,
+                  ),
+                  Container(
+                    height: 80,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          child: Column(
-                            children: [
-                              Text(
-                                '일몰',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                              circle(
-                                  info: sunset, type: weather_circle_type.sunset),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          child: Column(
-                            children: [
-                              Text(
-                                '강수확률',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                              circle(
-                                  info: prob_of_precip,
-                                  type: weather_circle_type.prob_of_precip),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          child: Column(
-                            children: [
-                              Text(
-                                '강수량',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                              circle(
-                                  info: precip, type: weather_circle_type.precip),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          child: Column(
-                            children: [
-                              Text(
-                                '습도',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                              circle(
-                                  info: humidity,
-                                  type: weather_circle_type.humidity),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          child: Column(
-                            children: [
-                              Text(
-                                '바람',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-                              circle(
-                                  info: wind_speed,
-                                  type: weather_circle_type.wind_info),
-                            ],
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemCount: 24,
+                            itemBuilder: (context, index) {
+                              if(index == 0) {
+                                return Row(
+                                  children: [
+                                    horizontal_view(time: '지금', icon: 'sunny', temp: '16', now: 1),
+                                    SizedBox(width: 20,),
+                                  ],
+                                );
+                              } else {
+                                return Row(
+                                  children: [
+                                    horizontal_view(time: '오후 9시', icon: 'sunny', temp: '16', now: 0),
+                                    SizedBox(width: 20,),
+                                  ],
+                                );
+                              }
+                            },
                           ),
                         ),
                       ],
                     ),
-                    Divider(
-                      color: Colors.white,
-                      thickness: 0.4,
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    thickness: 0.4,
+                  ),
+                  Container(
+                    height: 235,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: 24,
+                      itemBuilder: (context, index) {
+                        return vertical_view(date: '화요일', icon: '흐림', info: '18', info2: '6',);
+                      },
                     ),
-                    Container(
-                      height: 80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
-                              itemCount: 24,
-                              itemBuilder: (context, index) {
-                                if(index == 0) {
-                                  return Row(
-                                    children: [
-                                      horizontal_view(time: '지금', icon: 'sunny', temp: '16', now: 1),
-                                      SizedBox(width: 20,),
-                                    ],
-                                  );
-                                } else {
-                                  return Row(
-                                    children: [
-                                      horizontal_view(time: '오후 9시', icon: 'sunny', temp: '16', now: 0),
-                                      SizedBox(width: 20,),
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                      thickness: 0.4,
-                    ),
-                    Container(
-                      height: 235,
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
-                        itemCount: 24,
-                        itemBuilder: (context, index) {
-                          return vertical_view(date: '화요일', icon: '흐림', info: '18', info2: '6',);
-                        },
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                      thickness: 0.4,
-                    ),
-                  ],
-                ),
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    thickness: 0.4,
+                  ),
+                ],
               ),
             ),
-            Container(
-              width: 110,
-              height: 110,
-              decoration: BoxDecoration(
-                color: Color(0x49FFFFFF),
-                borderRadius:
-                    BorderRadius.only(bottomRight: Radius.circular(150)),
-              ),
+          ),
+          Container(
+            width: 110,
+            height: 110,
+            decoration: BoxDecoration(
+              color: Color(0x49FFFFFF),
+              borderRadius:
+                  BorderRadius.only(bottomRight: Radius.circular(150)),
             ),
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Color(0x30FFFFFF),
-                borderRadius:
-                    BorderRadius.only(bottomRight: Radius.circular(150)),
-              ),
+          ),
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Color(0x30FFFFFF),
+              borderRadius:
+                  BorderRadius.only(bottomRight: Radius.circular(150)),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

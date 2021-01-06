@@ -43,3 +43,6 @@ flutter:
     - family: Roboto
       fonts:
         - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+    - family: Weather
+      fonts:
+        - asset: assets/fonts/Weather/Weather.ttf
