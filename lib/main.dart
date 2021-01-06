@@ -19,6 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+//util
+import 'package:brandfarmdemo/utils/themes/farm_theme_data.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,13 +62,15 @@ class _AppState extends State<App> {
       value: _authenticationBloc,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          backgroundColor: Colors.white,
-          primaryColor: Colors.black,
-          primaryColorLight: Colors.white,
-          accentColor: Colors.blue[600],
-          appBarTheme: AppBarTheme(brightness: Brightness.light),
-        ),
+        theme: FarmThemeData.lightThemeData,
+        // darkTheme: FarmThemeData.darkThemeData,
+        // ThemeData(
+        //   backgroundColor: Colors.white,
+        //   primaryColor: Colors.black,
+        //   primaryColorLight: Colors.white,
+        //   accentColor: Colors.blue[600],
+        //   appBarTheme: AppBarTheme(brightness: Brightness.light),
+        // ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           // ignore: missing_return
           builder: (context, state) {

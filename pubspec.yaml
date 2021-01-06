@@ -1,4 +1,4 @@
-name: brandfarmdemo
+name: BrandFarm
 description: A new Flutter application.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -23,6 +23,7 @@ dependencies:
   adaptive_breakpoints: ^0.0.4
   google_fonts: ^1.1.1
   http: ^0.12.2
+  flutter_launcher_icons: ^0.8.1
 
 
 

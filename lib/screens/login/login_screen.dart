@@ -208,11 +208,10 @@ class _FarmLogo extends StatelessWidget {
                   ? Theme.of(context)
                       .textTheme
                       .headline2
-                      .apply(fontFamily: 'Roboto', color: Color(0xffffffff))
+                      .apply(color: Color(0xffffffff))
                   : Theme.of(context)
                       .textTheme
-                      .headline4
-                      .apply(fontFamily: 'Roboto')),
+                      .headline3),
         ],
       ),
     );
@@ -234,7 +233,7 @@ class _UsernameTextField extends StatelessWidget {
         fillColor: Color(0xffffffff),
         hintText: '사원번호',
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xff27D878))),
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
         border: OutlineInputBorder(),
       ),
       keyboardType: TextInputType.emailAddress,
@@ -262,7 +261,7 @@ class _PasswordTextField extends StatelessWidget {
         fillColor: Color(0xffffffff),
         hintText: '패스워드',
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xff27D878))),
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
         border: OutlineInputBorder(),
       ),
       obscureText: true,
