@@ -1,12 +1,13 @@
 import 'dart:math';
 
+import 'package:brandfarmdemo/blocs/authentication/bloc.dart';
 import 'package:brandfarmdemo/layout/adaptive.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:brandfarmdemo/repository/user/user_repository.dart';
 import 'package:brandfarmdemo/blocs/login/bloc.dart';
 import 'package:brandfarmdemo/widgets/login/login.dart';
-import 'package:brandfarmdemo/layout/image_placeholder.dart';
 
 const _horizontalPadding = 24.0;
 
@@ -56,74 +57,105 @@ class _LoginScreenState extends State<LoginScreen> {
     final isDesktop = isDisplayDesktop(context);
     return BlocListener(
       cubit: _loginBloc,
-      listener: (BuildContext context, LoginState state) {},
+      listener: (BuildContext context, LoginState state) {
+        if (state.isFailure) {
+          _showMyDialog(context);
+        }
+        if (state.isSuccess) {
+          BlocProvider.of<AuthenticationBloc>(context)
+              .add(AuthenticationLoggedIn());
+        }
+      },
       child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-        if(isDesktop){
+        if (isDesktop) {
           return LayoutBuilder(
             builder: (context, constraints) => Container(
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.darken),
-                  image: AssetImage('assets/login_backgroundimg.jpg'),
-                  fit: BoxFit.cover,
-                )
-              ),
+                  image: DecorationImage(
+                colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.6), BlendMode.darken),
+                image: AssetImage('assets/login_backgroundimg.jpg'),
+                fit: BoxFit.cover,
+              )),
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 body: SafeArea(
                   child: Center(
                       child: Container(
-                        width: desktopLoginScreenMainAreaWidth(context: context),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _FarmLogo(),
-                              SizedBox(height: 40),
-                              _UsernameTextField(emailController: _emailController, state: state),
-                              SizedBox(height: 16),
-                              _PasswordTextField(passwordController: _passwordController, state: state),
-                              SizedBox(height: 24),
-                              LoginButton(
-                                onPressed: isLoginButtonEnabled(state)
-                                    ? _onFormSubmitted
-                                    : null,
-                                isValid: isLoginButtonEnabled(state),
-                              ),
-                            ],
+                    width: desktopLoginScreenMainAreaWidth(context: context),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _FarmLogo(),
+                          SizedBox(height: 40),
+                          _UsernameTextField(
+                              emailController: _emailController, state: state),
+                          SizedBox(height: 16),
+                          _PasswordTextField(
+                              passwordController: _passwordController,
+                              state: state),
+                          SizedBox(height: 24),
+                          LoginButton(
+                            onPressed: isLoginButtonEnabled(state)
+                                ? _onFormSubmitted
+                                : null,
+                            isValid: isLoginButtonEnabled(state),
                           ),
-                        ),
-                      )
-                  ),
+                        ],
+                      ),
+                    ),
+                  )),
                 ),
               ),
             ),
           );
-        }else{
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: SafeArea(
-              child: ListView(
-                physics: ClampingScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: _horizontalPadding,
-                ),
-                children: [
-                  SizedBox(height: 80),
-                  _FarmLogo(),
-                  SizedBox(height: 24),
-                  _UsernameTextField(emailController: _emailController,state: state),
-                  SizedBox(height: 12),
-                  _PasswordTextField(passwordController: _passwordController,state: state),
-                  SizedBox(height: 16),
-                  LoginButton(
-                    onPressed: isLoginButtonEnabled(state)
-                        ? _onFormSubmitted
-                        : null,
-                    isValid: isLoginButtonEnabled(state),
-                  ),                ],
-              ),
-            )
+        } else {
+          return Stack(
+            children: [
+              Scaffold(
+                  backgroundColor: Colors.white,
+                  body: SafeArea(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: ClampingScrollPhysics(),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _horizontalPadding,
+                        ),
+                        child: Column(
+                          children: [
+                            _FarmLogo(),
+                            SizedBox(height: 24),
+                            _UsernameTextField(
+                                emailController: _emailController, state: state),
+                            SizedBox(height: 12),
+                            _PasswordTextField(
+                                passwordController: _passwordController,
+                                state: state),
+                            SizedBox(height: 16),
+                            LoginButton(
+                              onPressed: isLoginButtonEnabled(state)
+                                  ? _onFormSubmitted
+                                  : null,
+                              isValid: isLoginButtonEnabled(state),
+                            ),
+                            SizedBox(height: 70),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )),
+              Visibility(
+                  visible: state.isSubmitting,
+                  child: Container(
+                    color: Colors.black26,
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ))
+            ],
           );
         }
       }),
@@ -164,7 +196,6 @@ class _FarmLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final isDesktop = isDisplayDesktop(context);
 
     return ExcludeSemantics(
@@ -172,18 +203,16 @@ class _FarmLogo extends StatelessWidget {
         children: [
           Image.asset('assets/brandfarm.png', height: 80),
           SizedBox(height: 16),
-          Text(
-            'Brand Farm',
-            style: isDesktop?
-            Theme.of(context)
-                .textTheme
-                .headline2
-                .apply(fontFamily: 'Roboto', color: Color(0xffffffff))
-                :Theme.of(context)
-                .textTheme
-                .headline4
-                .apply(fontFamily: 'Roboto')
-          ),
+          Text('Brand Farm',
+              style: isDesktop
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline2
+                      .apply(fontFamily: 'Roboto', color: Color(0xffffffff))
+                  : Theme.of(context)
+                      .textTheme
+                      .headline4
+                      .apply(fontFamily: 'Roboto')),
         ],
       ),
     );
@@ -244,4 +273,25 @@ class _PasswordTextField extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> _showMyDialog(BuildContext context) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return CupertinoAlertDialog(
+        title: Text('안내'),
+        content: Text('BrandFarm 로그인에 실패하였습니다.\n 다시 시도해 주시기 바랍니다.'),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            child: Text('확인'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }
