@@ -1,3 +1,5 @@
+import 'package:brandfarmdemo/blocs/weather/bloc.dart';
+import 'package:brandfarmdemo/screens/field/field_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,7 +32,15 @@ class HomeScreen extends StatelessWidget {
         child: Icon(
           Icons.add,
         ),
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BlocProvider(
+              create: (BuildContext context) => WeatherBloc()..add(Wait_Fetch_Weather()),
+              child: WeatherMain(),
+            ),),
+          );
+        },
       ),
     );
   }
