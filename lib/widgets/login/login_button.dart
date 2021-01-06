@@ -12,8 +12,7 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 60.0,
+      height: 50.0,
       child: RaisedButton(
         padding: EdgeInsets.all(0.0),
         disabledColor: Color(0xfd888888),
