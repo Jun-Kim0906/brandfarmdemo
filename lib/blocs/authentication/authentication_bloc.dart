@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:brandfarmdemo/repository/user/user_repository.dart';
+import 'package:BrandFarm/repository/user/user_repository.dart';
 
 part 'authentication_state.dart';
 part 'authentication_event.dart';

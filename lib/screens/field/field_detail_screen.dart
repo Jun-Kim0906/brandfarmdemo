@@ -1,8 +1,8 @@
-import 'package:brandfarmdemo/blocs/weather/bloc.dart';
-import 'package:brandfarmdemo/screens/weather/weather_detail_screen.dart';
-import 'package:brandfarmdemo/utils/unicode/unicode_util.dart';
-import 'package:brandfarmdemo/utils/weather/weather_icons.dart';
-import 'package:brandfarmdemo/widgets/loading/loading.dart';
+import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
+import 'package:BrandFarm/utils/unicode/unicode_util.dart';
+import 'package:BrandFarm/utils/weather/weather_icons.dart';
+import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -141,7 +141,7 @@ class _WeatherMainState extends State<WeatherMain> {
                                               color: Colors.white),
                                         ),
                                         Text(
-                                          state.short_temp[0].fcstValue.toString(),
+                                          state.short_temp.isNotEmpty?state.short_temp[0].fcstValue.toString():'',
                                           style: TextStyle(
                                               fontSize: 70,
                                               color: Colors.white),
@@ -153,13 +153,13 @@ class _WeatherMainState extends State<WeatherMain> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '최고: ' + state.long_maxTemp[0].fcstValue.toString() + degrees,
+                                                '최고: ',
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),
                                               ),
                                               Text(
-                                                '최저: ' + state.long_minTemp[0].fcstValue.toString() + degrees,
+                                                '최저: ',
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),

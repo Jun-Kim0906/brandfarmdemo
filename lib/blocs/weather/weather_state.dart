@@ -1,4 +1,4 @@
-import 'package:brandfarmdemo/models/weather/weather_model.dart';
+import 'package:BrandFarm/models/weather/weather_model.dart';
 import 'package:flutter/cupertino.dart';
 //import 'package:friendlyeats/src/model/filter.dart';
 import 'package:meta/meta.dart';

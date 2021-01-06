@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:brandfarmdemo/blocs/authentication/bloc.dart';
-import 'package:brandfarmdemo/layout/adaptive.dart';
+import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/layout/adaptive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:brandfarmdemo/repository/user/user_repository.dart';
-import 'package:brandfarmdemo/blocs/login/bloc.dart';
-import 'package:brandfarmdemo/widgets/login/login.dart';
+import 'package:BrandFarm/repository/user/user_repository.dart';
+import 'package:BrandFarm/blocs/login/bloc.dart';
+import 'package:BrandFarm/widgets/login/login.dart';
 
 const _horizontalPadding = 24.0;
 

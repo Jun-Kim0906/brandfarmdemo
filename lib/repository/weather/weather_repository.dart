@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:brandfarmdemo/models/weather/weather_model.dart';
+import 'package:BrandFarm/models/weather/weather_model.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Weather>> fetchWeatherInfo(http.Response response) async {

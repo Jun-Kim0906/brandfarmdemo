@@ -1,5 +1,5 @@
-import 'package:brandfarmdemo/blocs/weather/bloc.dart';
-import 'package:brandfarmdemo/utils/unicode/unicode_util.dart';
+import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

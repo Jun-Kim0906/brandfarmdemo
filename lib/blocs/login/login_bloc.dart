@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:brandfarmdemo/blocs/login/bloc.dart';
-import 'package:brandfarmdemo/repository/user/user_repository.dart';
-import 'package:brandfarmdemo/widgets/validator/validators.dart';
+import 'package:BrandFarm/blocs/login/bloc.dart';
+import 'package:BrandFarm/repository/user/user_repository.dart';
+import 'package:BrandFarm/widgets/validator/validators.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserRepository _userRepository;
