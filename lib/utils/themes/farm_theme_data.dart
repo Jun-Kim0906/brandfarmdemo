@@ -51,7 +51,7 @@ class FarmThemeData {
     primaryVariant: Color(0xff5AC8E0),
     secondary: Color(0xFFEFF3F3),
     secondaryVariant: Color(0xFFFAFBFB),
-    background: Color(0xFFE6EBEB),
+    background: Color(0xFFF4F4F4),
     surface: Color(0xFFFAFBFB),
     onBackground: Colors.white,
     error: _lightFillColor,
