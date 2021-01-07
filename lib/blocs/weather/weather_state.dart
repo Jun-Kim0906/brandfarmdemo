@@ -13,10 +13,15 @@ class WeatherState {
   List<Weather> short_eastToWest_wind = []; // UUU
   List<Weather> short_southToNorth_wind = []; // VVV
 
-
   List<Weather> long_probOfPrecip = []; // POP
   List<Weather> long_maxTemp = []; // TMX
   List<Weather> long_minTemp = []; // TMN
+
+  String curr_temp;
+  String sky;
+  String max_temp;
+  String min_temp;
+  String precip_type;
 
   WeatherState(
       {@required this.isLoading,
@@ -30,6 +35,11 @@ class WeatherState {
         @required this.long_probOfPrecip,
         @required this.long_maxTemp,
         @required this.long_minTemp,
+        @required this.curr_temp,
+        @required this.sky,
+        @required this.max_temp,
+        @required this.min_temp,
+        @required this.precip_type,
       });
 
   factory WeatherState.empty() {
@@ -45,6 +55,11 @@ class WeatherState {
       long_probOfPrecip: [],
       long_maxTemp: [],
       long_minTemp: [],
+      curr_temp: '',
+      sky: '',
+      max_temp: '',
+      min_temp: '',
+      precip_type: '',
     );
   }
 
@@ -60,6 +75,11 @@ class WeatherState {
     List<Weather> long_probOfPrecip,
     List<Weather> long_maxTemp,
     List<Weather> long_minTemp,
+    String curr_temp,
+    String sky,
+    String max_temp,
+    String min_temp,
+    String precip_type,
   }) {
     return WeatherState(
       isLoading: isLoading ?? this.isLoading,
@@ -73,6 +93,11 @@ class WeatherState {
       long_probOfPrecip: long_probOfPrecip ?? this.long_probOfPrecip,
       long_maxTemp: long_maxTemp ?? this.long_maxTemp,
       long_minTemp: long_minTemp ?? this.long_minTemp,
+      curr_temp: curr_temp ?? this.curr_temp,
+      sky: sky ?? this.sky,
+      max_temp: max_temp ?? this.max_temp,
+      min_temp: min_temp ?? this.min_temp,
+      precip_type: precip_type ?? this.precip_type,
     );
   }
 
@@ -88,6 +113,11 @@ class WeatherState {
     List<Weather> long_probOfPrecip,
     List<Weather> long_maxTemp,
     List<Weather> long_minTemp,
+    String curr_temp,
+    String sky,
+    String max_temp,
+    String min_temp,
+    String precip_type,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -101,6 +131,11 @@ class WeatherState {
       long_probOfPrecip: long_probOfPrecip,
       long_maxTemp: long_maxTemp,
       long_minTemp: long_minTemp,
+      curr_temp: curr_temp,
+      sky: sky,
+      max_temp: max_temp,
+      min_temp: min_temp,
+      precip_type: precip_type,
     );
   }
 
@@ -118,6 +153,11 @@ class WeatherState {
     long_probOfPrecip: ${long_probOfPrecip.length},
     long_maxTemp: ${long_maxTemp.length},
     long_minTemp: ${long_minTemp.length},
+    curr_temp: ${curr_temp},
+    sky: ${sky},
+    max_temp: ${max_temp},
+    min_temp: ${min_temp},
+    precip_type: ${precip_type},
     ''';
   }
 }

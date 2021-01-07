@@ -5,6 +5,15 @@ import 'dart:convert';
 import 'package:BrandFarm/models/weather/weather_model.dart';
 import 'package:http/http.dart' as http;
 
+Weather _data;
+void setWeatherData(Weather data) async {
+_data = data;
+}
+
+Weather getWeatherData() {
+return _data;
+}
+
 Future<List<Weather>> fetchWeatherInfo(http.Response response) async {
   List<Weather> info = [];
   json
