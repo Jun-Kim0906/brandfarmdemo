@@ -37,12 +37,24 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     List<Weather> long_probOfPrecip = []; // POP
     List<Weather> long_maxTemp = []; // TMX
     List<Weather> long_minTemp = []; // TMN
+    List<Weather> long_precip = []; // R06
+    List<Weather> long_precip_type = []; // PTY
+    List<Weather> long_temp = []; // T3H
+    List<Weather> long_humidity = []; // REH
+    List<Weather> long_sky = []; // SKY
+    List<Weather> long_wind_dir = []; // VEC
+    List<Weather> long_wind_sp = []; // WSD
 
     String curr_temp;
     String max_temp;
     String min_temp;
     String sky;
     String precip_type;
+    String prob_of_precip;
+    String precip;
+    String humidity;
+    String windSP;
+    String windDIR;
 
     // testing values
     String str_lat = '36.1031';
@@ -110,7 +122,21 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         } else if (data['category'] == "TMX") {
           long_maxTemp.add(Weather.fromJson(data));
         } else if (data['category'] == "TMN") {
-          long_minTemp.add(Weather.fromJson(data));
+          long_minTemp.add(Weather.fromJson(data)); ///////////
+        } else if (data['category'] == "R06") {
+          long_precip.add(Weather.fromJson(data));
+        } else if (data['category'] == "PTY") {
+          long_precip_type.add(Weather.fromJson(data));
+        } else if (data['category'] == "T3H") {
+          long_temp.add(Weather.fromJson(data));
+        } else if (data['category'] == "REH") {
+          long_humidity.add(Weather.fromJson(data));
+        } else if (data['category'] == "SKY") {
+          long_sky.add(Weather.fromJson(data));
+        } else if (data['category'] == "VEC") {
+          long_wind_dir.add(Weather.fromJson(data));
+        } else if (data['category'] == "WSD") {
+          long_wind_sp.add(Weather.fromJson(data));
         } else {
           // print(data['category']);
           ;
@@ -133,11 +159,16 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // print(long_maxTemp.cast());
     // print(long_probOfPrecip.cast());
 
-    curr_temp = short_temp.first.fcstValue;
-    sky = short_sky.first.fcstValue;
+    curr_temp = long_temp.first.fcstValue;
+    sky = long_sky.first.fcstValue;
     max_temp = long_maxTemp.first.fcstValue;
     min_temp = long_minTemp.first.fcstValue;
-    precip_type = short_precip_type.first.fcstValue;
+    precip_type = long_precip_type.first.fcstValue;
+    prob_of_precip = long_probOfPrecip.first.fcstValue;
+    precip = long_precip.first.fcstValue;
+    humidity = long_humidity.first.fcstValue;
+    windSP = long_wind_sp.first.fcstValue;
+    windDIR = long_wind_dir.first.fcstValue;
 
 
     yield state.update(
@@ -152,11 +183,23 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       long_maxTemp: long_maxTemp,
       long_minTemp: long_minTemp,
       long_probOfPrecip: long_probOfPrecip,
+      long_precip: long_precip,
+      long_humidity: long_humidity,
+      long_precip_type: long_precip_type,
+      long_sky: long_sky,
+      long_temp: long_temp,
+      long_wind_dir: long_wind_dir,
+      long_wind_sp: long_wind_sp,
       curr_temp: curr_temp,
       sky: sky,
       max_temp: max_temp,
       min_temp: min_temp,
       precip_type: precip_type,
+      prob_of_precip: prob_of_precip,
+      precip: precip,
+      humidity: humidity,
+      windSP: windSP,
+      windDIR: windDIR,
     );
   }
 }

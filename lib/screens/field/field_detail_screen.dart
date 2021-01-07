@@ -137,12 +137,11 @@ class _WeatherMainState extends State<WeatherMain> {
                                     Column(
                                       children: [
                                         sky_type(
-                                                precipType: state.precip_type
-                                                        .toString() ??
+                                            precipType:
+                                                state.precip_type.toString() ??
                                                     'Error precip is empty',
-                                                skyType:
-                                                    state.sky.toString()) ??
-                                            'Error sky is empty',
+                                            skyType: state.sky.toString() ??
+                                                'Error sky is empty'),
                                         Text(
                                           state.curr_temp,
                                           style: TextStyle(
@@ -227,21 +226,15 @@ class _WeatherMainState extends State<WeatherMain> {
                                               scrollDirection: Axis.horizontal,
                                               shrinkWrap: true,
                                               physics: ClampingScrollPhysics(),
-                                              itemCount:
-                                                  state.short_temp.length,
+                                              itemCount: state.long_temp.length,
                                               itemBuilder: (context, index) {
                                                 if (index == 0) {
                                                   return Row(
                                                     children: [
-                                                      // horizontal_view(
-                                                      //     time: '지금',
-                                                      //     icon: 'sunny',
-                                                      //     temp: state.curr_temp,
-                                                      //     now: 1),
                                                       weather_horizontal_list(
                                                           state: state,
                                                           skyType: state
-                                                              .short_sky[index]
+                                                              .long_sky[index]
                                                               .fcstValue,
                                                           now: 1,
                                                           index: index),
@@ -253,19 +246,10 @@ class _WeatherMainState extends State<WeatherMain> {
                                                 } else {
                                                   return Row(
                                                     children: [
-                                                      // horizontal_view(
-                                                      //     time: state
-                                                      //         .short_temp[index]
-                                                      //         .fcstTime,
-                                                      //     icon: 'sunny',
-                                                      //     temp: state
-                                                      //         .short_temp[index]
-                                                      //         .fcstValue,
-                                                      //     now: 0),
                                                       weather_horizontal_list(
                                                           state: state,
                                                           skyType: state
-                                                              .short_sky[index]
+                                                              .long_sky[index]
                                                               .fcstValue,
                                                           now: 0,
                                                           index: index),
@@ -359,28 +343,28 @@ class _WeatherMainState extends State<WeatherMain> {
 
   Widget weather_horizontal_list(
       {WeatherState state, String skyType, int now, int index}) {
-    switch (state.short_precip_type[index].fcstValue.toString()) {
+    switch (state.long_precip_type[index].fcstValue.toString()) {
       case '0':
         {
           if (skyType == '1') {
             return horizontal_view(
-              time: state.short_temp[index].fcstTime,
+              time: state.long_temp[index].fcstTime,
               icon: 'sun',
-              temp: state.short_temp[index].fcstValue,
+              temp: state.long_temp[index].fcstValue,
               now: now,
             );
           } else if (skyType == '3') {
             return horizontal_view(
-              time: state.short_temp[index].fcstTime,
+              time: state.long_temp[index].fcstTime,
               icon: 'cloud_sun',
-              temp: state.short_temp[index].fcstValue,
+              temp: state.long_temp[index].fcstValue,
               now: now,
             );
           } else if (skyType == '4') {
             return horizontal_view(
-              time: state.short_temp[index].fcstTime,
+              time: state.long_temp[index].fcstTime,
               icon: 'clouds',
-              temp: state.short_temp[index].fcstValue,
+              temp: state.long_temp[index].fcstValue,
               now: now,
             );
           } else {
@@ -395,9 +379,9 @@ class _WeatherMainState extends State<WeatherMain> {
       case '6':
         {
           return horizontal_view(
-            time: state.short_temp[index].fcstTime,
+            time: state.long_temp[index].fcstTime,
             icon: 'rain',
-            temp: state.short_temp[index].fcstValue,
+            temp: state.long_temp[index].fcstValue,
             now: now,
           );
         }
@@ -406,9 +390,9 @@ class _WeatherMainState extends State<WeatherMain> {
       case '7':
         {
           return horizontal_view(
-            time: state.short_temp[index].fcstTime,
+            time: state.long_temp[index].fcstTime,
             icon: 'snow_heavy',
-            temp: state.short_temp[index].fcstValue,
+            temp: state.long_temp[index].fcstValue,
             now: now,
           );
         }
@@ -433,7 +417,7 @@ class _WeatherMainState extends State<WeatherMain> {
     tmp = time.substring(0, 2);
     if (tmp.contains('10')) {
       iTime = tmp;
-    } else if(tmp.contains('0')) {
+    } else if (tmp.contains('0')) {
       iTime = tmp.substring(1);
     } else {
       iTime = tmp;
