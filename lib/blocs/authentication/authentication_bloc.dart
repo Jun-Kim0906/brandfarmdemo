@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:BrandFarm/models/user/user_model.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:BrandFarm/repository/user/user_repository.dart';
@@ -31,7 +34,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
     final isSignedIn = await _userRepository.isSignedIn();
     if (isSignedIn) {
-//      final name = (await _userRepository.getUser()).email;
+     // final name = (await _userRepository.getUser()).email;
       yield* _mapAuthenticationLoggedInToState();
     } else {
       yield AuthenticationFailure();
@@ -41,13 +44,13 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
 //    yield AuthenticationSuccess((await _userRepository.getUser()).email);
     try {
-      // UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
-      //     .collection('User')
-      //     .doc((await UserRepository().getUser()).uid)
-      //     .get()));
-      // print('Login User Name : ' + UserUtil.getUser().name);
-      // yield AuthenticationSuccess(UserUtil.getUser().name);
-      yield AuthenticationSuccess('Username');
+      UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
+          .collection('User')
+          .doc((await UserRepository().getUser()).uid)
+          .get()));
+      print('Login User Name : ' + UserUtil.getUser().name);
+      yield AuthenticationSuccess(UserUtil.getUser().name);
+      // yield AuthenticationSuccess('Username');
     } catch (e) {
       print(e);
       yield AuthenticationFailure();
