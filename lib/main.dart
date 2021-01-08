@@ -1,4 +1,6 @@
 //screens
+import 'dart:io';
+
 import 'package:BrandFarm/screens/home/home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
@@ -7,6 +9,7 @@ import 'package:BrandFarm/screens/login/login_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:BrandFarm/blocs/login/bloc.dart';
+import 'blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/blocObserver.dart';
 
@@ -23,12 +26,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
-
-
   runApp(
     App(),
   );
@@ -42,14 +44,28 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final UserRepository userRepository = UserRepository();
   AuthenticationBloc _authenticationBloc;
+  bool isDesktop;
 
   @override
   void initState() {
     super.initState();
     _authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    Timer(Duration(seconds: 2), () {
+    try{
+      if(Platform.isIOS || Platform.isAndroid){
+        isDesktop = false;
+      }else{
+        isDesktop = true;
+      }
+    }catch(e){
+      isDesktop = true;
+    }
+    if(isDesktop){
       _authenticationBloc.add(AuthenticationStarted());
-    });
+    }else{
+      Timer(Duration(seconds: 2), () {
+        _authenticationBloc.add(AuthenticationStarted());
+      });
+    }
   }
 
   @override
@@ -59,7 +75,7 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitDown,
     ]);
     return BlocProvider.value(
-      value: _authenticationBloc,
+    value: _authenticationBloc,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: FarmThemeData.lightThemeData,
@@ -72,15 +88,13 @@ class _AppState extends State<App> {
         //   appBarTheme: AppBarTheme(brightness: Brightness.light),
         // ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          // ignore: missing_return
           builder: (context, state) {
             if (state is AuthenticationSuccess) {
-              return HomeScreen();
-                // BlocProvider<HomeBloc>(
-                //   create: (BuildContext context) =>
-                //       HomeBloc(),
-                //   child: HomeScreen(name: state.displayName));
-            } else if(state is AuthenticationInitial){
+              return BlocProvider<HomeBloc>(
+                  create: (BuildContext context) =>
+                      HomeBloc(),
+                  child: HomeScreen(name: state.displayName));
+            } else if(state is AuthenticationInitial && !isDesktop){
               return SplashScreen(duration: 2);
             } else{
               return BlocProvider<LoginBloc>(
