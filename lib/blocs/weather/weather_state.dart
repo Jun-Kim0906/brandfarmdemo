@@ -25,6 +25,8 @@ class WeatherState {
   List<Weather> long_wind_dir = []; // VEC
   List<Weather> long_wind_sp = []; // WSD
 
+  List midFcstInfoList = [];
+
   String curr_temp;
   String sky;
   String max_temp;
@@ -35,6 +37,8 @@ class WeatherState {
   String humidity;
   String windSP;
   String windDIR;
+  String sunrise;
+  String sunset;
 
   WeatherState(
       {@required this.isLoading,
@@ -65,6 +69,9 @@ class WeatherState {
         @required this.humidity,
         @required this.windSP,
         @required this.windDIR,
+        @required this.sunrise,
+        @required this.sunset,
+        @required this.midFcstInfoList,
       });
 
   factory WeatherState.empty() {
@@ -87,6 +94,7 @@ class WeatherState {
       long_sky: [],
       long_wind_dir: [],
       long_wind_sp: [],
+      midFcstInfoList: [],
       curr_temp: '',
       sky: '',
       max_temp: '',
@@ -97,6 +105,8 @@ class WeatherState {
       humidity: '',
       windSP: '',
       windDIR: '',
+      sunrise: '',
+      sunset: '',
     );
   }
 
@@ -119,6 +129,7 @@ class WeatherState {
     List<Weather> long_sky,
     List<Weather> long_wind_dir,
     List<Weather> long_wind_sp,
+    List midFcstInfoList,
     String curr_temp,
     String sky,
     String max_temp,
@@ -129,6 +140,8 @@ class WeatherState {
     String humidity,
     String windSP,
     String windDIR,
+    String sunrise,
+    String sunset,
   }) {
     return WeatherState(
       isLoading: isLoading ?? this.isLoading,
@@ -159,6 +172,9 @@ class WeatherState {
       humidity: humidity ?? this.humidity,
       windSP: windSP ?? this.windSP,
       windDIR: windDIR ?? this.windDIR,
+      sunrise: sunrise ?? this.sunrise,
+      sunset: sunset ?? this.sunset,
+      midFcstInfoList: midFcstInfoList ?? this.midFcstInfoList,
     );
   }
 
@@ -181,6 +197,7 @@ class WeatherState {
     List<Weather> long_sky,
     List<Weather> long_wind_dir,
     List<Weather> long_wind_sp,
+    List midFcstInfoList,
     String curr_temp,
     String sky,
     String max_temp,
@@ -191,6 +208,8 @@ class WeatherState {
     String humidity,
     String windSP,
     String windDIR,
+    String sunrise,
+    String sunset,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -221,6 +240,9 @@ class WeatherState {
       humidity: humidity,
       windSP: windSP,
       windDIR: windDIR,
+      sunrise: sunrise,
+      sunset: sunset,
+      midFcstInfoList: midFcstInfoList,
     );
   }
 
@@ -245,6 +267,7 @@ class WeatherState {
     long_sky: ${long_sky.length},
     long_wind_dir: ${long_wind_dir.length},
     long_wind_sp: ${long_wind_sp.length},
+    midFcstInfoList: ${midFcstInfoList.length},
     curr_temp: ${curr_temp},
     sky: ${sky},
     max_temp: ${max_temp},
@@ -255,6 +278,8 @@ class WeatherState {
     humidity: ${humidity},
     windSP: ${windSP},
     windDIR: ${windDIR},
+    sunrise: ${sunrise},
+    sunset: ${sunset},
     ''';
   }
 }

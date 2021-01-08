@@ -8,6 +8,7 @@ import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/weather/api_addr.dart';
 import 'package:BrandFarm/utils/weather/convert_grid_gps.dart';
 import 'package:http/http.dart' as http;
+import 'package:xml2json/xml2json.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   WeatherBloc() : super(WeatherState.empty());
@@ -45,6 +46,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     List<Weather> long_wind_dir = []; // VEC
     List<Weather> long_wind_sp = []; // WSD
 
+    List midFcstInfoList = [];
+
     String curr_temp;
     String max_temp;
     String min_temp;
@@ -55,13 +58,23 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     String humidity;
     String windSP;
     String windDIR;
+    String sun_rise;
+    String sun_set;
 
     // testing values
     String str_lat = '36.1031';
     String str_lon = '129.3884';
-    String base_date = '20210107';
+    String location = '포항';
+    // String lat_min = '3606';
+    // String lon_min = '12923';
+    String lat_min = '3601';
+    String lon_min = '12920';
+    String base_date = '20210108';
     String short_base_time = '0630';
     String long_base_time = '0500';
+    // String regId = '11H10201';
+    String regId = regionCode(region: '포항',);
+    String dt = '202101080600';
 
     double num_lat = double.parse(str_lat);
     double num_lon = double.parse(str_lon);
@@ -170,6 +183,37 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     windSP = long_wind_sp.first.fcstValue;
     windDIR = long_wind_dir.first.fcstValue;
 
+    http.Response sunRiseSetInfo;
+    // sunRiseSetInfo = await http.get(
+    //     '$riseSetLCInfoHeader&locdate=$base_date&hardness=$lon_min&latitude=$lat_min&dnYn=N');
+
+    var url = Uri.parse('$riseSetAreaInfoHeader&locdate=$base_date&location=$location');
+    sunRiseSetInfo = await http.get(url.toString());
+
+    // print(url);
+
+    if (sunRiseSetInfo.statusCode == 200) {
+      Xml2Json xml2Json = Xml2Json();
+      xml2Json.parse(sunRiseSetInfo.body);
+      var jsonString = xml2Json.toParker();
+      sun_set = jsonDecode(jsonString)['response']['body']['items']['item']['sunset'];
+      sun_rise = jsonDecode(jsonString)['response']['body']['items']['item']['sunrise'];
+    } else {
+      throw Exception('Failed to fetch sun rise & set info');
+    }
+    // print('$sun_set, $sun_rise');
+
+    http.Response midFcstInfo;
+    midFcstInfo = await http.get('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
+    // print('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
+
+    if (midFcstInfo.statusCode == 200) {
+      midFcstInfoList = jsonDecode(midFcstInfo.body)['response']['body']['items']['item'];
+    } else {
+      throw Exception('Failed to fetch mid fcst info');
+    }
+    // midFcstInfoList.removeAt(0);
+    print(midFcstInfoList);
 
     yield state.update(
       isLoading: false,
@@ -200,6 +244,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       humidity: humidity,
       windSP: windSP,
       windDIR: windDIR,
+      sunrise: sun_rise.toString(),
+      sunset: sun_set.toString(),
+      midFcstInfoList: midFcstInfoList,
     );
   }
 }

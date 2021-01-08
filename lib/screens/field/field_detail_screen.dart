@@ -270,22 +270,30 @@ class _WeatherMainState extends State<WeatherMain> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: 130,
-                            height: 130,
-                            decoration: BoxDecoration(
-                              color: Color(0x49FFFFFF),
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(150)),
+                          Positioned(
+                            top: 0.0,
+                            left: 0.0,
+                            child: Container(
+                              width: 130,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                color: Color(0x30FFFFFF),
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(150)),
+                              ),
                             ),
                           ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: Color(0x30FFFFFF),
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(150)),
+                          Positioned(
+                            top: 0.0,
+                            left: 0.0,
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: Color(0x20FFFFFF),
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(150)),
+                              ),
                             ),
                           ),
                         ],

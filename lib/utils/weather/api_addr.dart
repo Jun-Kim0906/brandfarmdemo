@@ -23,3 +23,34 @@ String villageFcstHeader = 'http://apis.data.go.kr/1360000/VilageFcstInfoService
 /// 습도 [REH] => % + fcstValue 참고
 String ultraSrtFcstHeader = 'http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtFcst?$serviceKey&pageNo=$pageNo&numOfRows=$numOfRows&dataType=$dataType';
 
+/// 일출 일몰 조회
+String riseSetLCInfoHeader = 'http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo?$serviceKey';
+
+String riseSetAreaInfoHeader = 'http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo?$serviceKey';
+
+
+/// 중기예보 조회
+String midFcstInfoHeader = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?$serviceKey&pageNo=$pageNo&numOfRows=$numOfRows&dataType=$dataType';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

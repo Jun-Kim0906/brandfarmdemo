@@ -19,7 +19,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
   // String curr_temp = '16' + degrees;
   // String maxTemp = '18';
   // String minTemp = '8';
-  String sunset = '6:31';
+  // String sunset = '6:31';
 
   // String prob_of_precip = '10';
   // String precip = '0';
@@ -161,7 +161,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                         fontSize: 14, color: Colors.white),
                                   ),
                                   circle(
-                                      info: sunset,
+                                      info: state.sunset ?? '0630',
                                       type: weather_circle_type.sunset),
                                 ],
                               ),
@@ -309,7 +309,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                   width: 110,
                   height: 110,
                   decoration: BoxDecoration(
-                    color: Color(0x49FFFFFF),
+                    color: Color(0x30FFFFFF),
                     borderRadius:
                         BorderRadius.only(bottomRight: Radius.circular(150)),
                   ),
@@ -318,7 +318,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: Color(0x30FFFFFF),
+                    color: Color(0x20FFFFFF),
                     borderRadius:
                         BorderRadius.only(bottomRight: Radius.circular(150)),
                   ),
@@ -380,7 +380,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
     switch (type) {
       case weather_circle_type.sunset:
         {
-          return circleStyle_row(info: '오후 ', info2: info, font_size: 15);
+          return circleStyle_row(info: getAmPm(time: info), info2: info, font_size: 15, time: 1);
         }
         break;
       case weather_circle_type.prob_of_precip:
@@ -392,7 +392,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
       case weather_circle_type.precip:
         {
           return circleStyle_row(
-              info: info, info2: ' mm', font_size: 24, font_size2: 15);
+              info: info, info2: ' mm', font_size: 24, font_size2: 15, time: 0);
         }
         break;
       case weather_circle_type.humidity:
@@ -410,10 +410,30 @@ class _WeatherDetailState extends State<WeatherDetail> {
       default:
         {
           return circleStyle_row(
-              info: '-', info2: '-', font_size: 15, font_size2: 15);
+              info: '-', info2: '-', font_size: 15, font_size2: 15, time: 0);
         }
         break;
     }
+  }
+
+  String getAmPm({String time}) {
+    String half_time;
+    String tmp;
+    String iTime;
+    tmp = time.substring(0, 2);
+    if (tmp.contains('10')) {
+      iTime = tmp;
+    } else if (tmp.contains('0')) {
+      iTime = tmp.substring(1);
+    } else {
+      iTime = tmp;
+    }
+    if (int.parse(iTime) >= 12) {
+      half_time = '오후 ';
+    } else {
+      half_time = '오전 ';
+    }
+    return half_time;
   }
 
   String wind_dir({String dir}) {
@@ -567,7 +587,23 @@ class _WeatherDetailState extends State<WeatherDetail> {
   }
 
   Widget circleStyle_row(
-      {String info, String info2, double font_size, double font_size2}) {
+      {String info, String info2, double font_size, double font_size2, int time}) {
+    String tmpHour;
+    String tmpMin;
+    String iTime;
+    if(time == 1) {
+      tmpHour = info2.substring(0, 2);
+      tmpMin = info2.substring(2);
+      if (tmpHour.contains('10')) {
+        iTime = tmpHour + ':' + tmpMin;
+      } else if (tmpHour.contains('0')) {
+        iTime = tmpHour.substring(1) + ':' + tmpMin;
+      } else {
+        iTime = tmpHour + ':' + tmpMin;
+      }
+    } else {
+      ;
+    }
     return Container(
       width: 64,
       height: 64,
@@ -576,26 +612,33 @@ class _WeatherDetailState extends State<WeatherDetail> {
         shape: BoxShape.circle,
       ),
       child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              info,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: font_size,
-                fontWeight: FontWeight.w500,
+        child: FittedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                info,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: font_size,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            Text(
-              info2,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: font_size2,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
+              (time == 0) ? Text(
+                info2,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: font_size2,
+                  fontWeight: FontWeight.w500,
+                ),
+              ) : Text(iTime,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: font_size2,
+                  fontWeight: FontWeight.w500,
+                ),),
+            ],
+          ),
         ),
       ),
     );
