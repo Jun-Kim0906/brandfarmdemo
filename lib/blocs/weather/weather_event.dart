@@ -10,15 +10,4 @@ class WeatherEvent extends Equatable {
 
 class Wait_Fetch_Weather extends WeatherEvent{}
 
-class GetWeatherInfo extends WeatherEvent{
-  // final String fid;
-  // final String nx;
-  // final String ny;
-  //
-  // const GetWeather({this.fid, this.ny, this.nx});
-  //
-  // List<Object> get props => [fid, ny, nx];
-  //
-  // @override
-  // String toString() => 'GetWeather { fid : $fid, nx : $nx, ny : $ny }';
-}
+class GetWeatherInfo extends WeatherEvent{}

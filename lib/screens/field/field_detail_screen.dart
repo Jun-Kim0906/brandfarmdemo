@@ -15,9 +15,11 @@ class WeatherMain extends StatefulWidget {
 class _WeatherMainState extends State<WeatherMain> {
   String fieldName = '한동이네 딸기 농장';
   String curr_addr = '경상북도 포항시';
+
   // String curr_temp = '16' + degrees;
   // String maxTemp = '18';
   // String minTemp = '8';
+
   var height;
   var width;
 
@@ -37,7 +39,7 @@ class _WeatherMainState extends State<WeatherMain> {
     return BlocBuilder<WeatherBloc, WeatherState>(
         cubit: _weatherBloc,
         builder: (context, state) {
-          return state.isLoading == true
+          return (state.isLoading == true)
               ? Loading()
               : Scaffold(
                   appBar: AppBar(
@@ -134,32 +136,36 @@ class _WeatherMainState extends State<WeatherMain> {
                                     ),
                                     Column(
                                       children: [
+                                        sky_type(
+                                            precipType:
+                                                state.precip_type.toString() ??
+                                                    'Error precip is empty',
+                                            skyType: state.sky.toString() ??
+                                                'Error sky is empty'),
                                         Text(
-                                          '맑음',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white),
-                                        ),
-                                        Text(
-                                          state.short_temp.isNotEmpty?state.short_temp[0].fcstValue.toString():'',
+                                          state.curr_temp,
                                           style: TextStyle(
                                               fontSize: 70,
                                               color: Colors.white),
                                         ),
                                         Container(
-                                          width: 107,
+                                          width: 140,
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '최고: ',
+                                                '최고: ' +
+                                                    state.max_temp +
+                                                    degrees,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),
                                               ),
                                               Text(
-                                                '최저: ',
+                                                '최저: ' +
+                                                    state.min_temp +
+                                                    degrees,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),
@@ -203,7 +209,7 @@ class _WeatherMainState extends State<WeatherMain> {
                                   height: 113,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: Color(0x308C8C8C),
+                                    color: Color(0xFF00B8D4),
                                   ),
                                   child: Container(
                                     padding: EdgeInsets.all(10),
@@ -220,16 +226,18 @@ class _WeatherMainState extends State<WeatherMain> {
                                               scrollDirection: Axis.horizontal,
                                               shrinkWrap: true,
                                               physics: ClampingScrollPhysics(),
-                                              itemCount: 24,
+                                              itemCount: state.long_temp.length,
                                               itemBuilder: (context, index) {
                                                 if (index == 0) {
                                                   return Row(
                                                     children: [
-                                                      horizontal_view(
-                                                          time: '지금',
-                                                          icon: 'sunny',
-                                                          temp: '16',
-                                                          now: 1),
+                                                      weather_horizontal_list(
+                                                          state: state,
+                                                          skyType: state
+                                                              .long_sky[index]
+                                                              .fcstValue,
+                                                          now: 1,
+                                                          index: index),
                                                       SizedBox(
                                                         width: 20,
                                                       ),
@@ -238,11 +246,13 @@ class _WeatherMainState extends State<WeatherMain> {
                                                 } else {
                                                   return Row(
                                                     children: [
-                                                      horizontal_view(
-                                                          time: '오후 9시',
-                                                          icon: 'sunny',
-                                                          temp: '16',
-                                                          now: 0),
+                                                      weather_horizontal_list(
+                                                          state: state,
+                                                          skyType: state
+                                                              .long_sky[index]
+                                                              .fcstValue,
+                                                          now: 0,
+                                                          index: index),
                                                       SizedBox(
                                                         width: 20,
                                                       ),
@@ -260,22 +270,30 @@ class _WeatherMainState extends State<WeatherMain> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: 130,
-                            height: 130,
-                            decoration: BoxDecoration(
-                              color: Color(0x49FFFFFF),
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(150)),
+                          Positioned(
+                            top: 0.0,
+                            left: 0.0,
+                            child: Container(
+                              width: 130,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                color: Color(0x30FFFFFF),
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(150)),
+                              ),
                             ),
                           ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: Color(0x30FFFFFF),
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(150)),
+                          Positioned(
+                            top: 0.0,
+                            left: 0.0,
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: Color(0x20FFFFFF),
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(150)),
+                              ),
                             ),
                           ),
                         ],
@@ -286,7 +304,137 @@ class _WeatherMainState extends State<WeatherMain> {
         });
   }
 
+  Widget sky_type({String precipType, String skyType}) {
+    switch (precipType) {
+      case '0':
+        {
+          if (skyType == '1') {
+            return sky_text(text: '맑음');
+          } else if (skyType == '3') {
+            return sky_text(text: '구름많음');
+          } else if (skyType == '4') {
+            return sky_text(text: '흐림');
+          } else {
+            print('Unknown sky type');
+          }
+        }
+        break;
+      case '1':
+      case '2':
+      case '4':
+      case '5':
+      case '6':
+        {
+          return sky_text(text: '비');
+        }
+        break;
+      case '3':
+      case '7':
+        {
+          return sky_text(text: '눈');
+        }
+        break;
+      default:
+        {
+          return sky_text(text: '--');
+        }
+        break;
+    }
+  }
+
+  Widget sky_text({String text}) {
+    return Text(
+      text,
+      style: TextStyle(fontSize: 18, color: Colors.white),
+    );
+  }
+
+  Widget weather_horizontal_list(
+      {WeatherState state, String skyType, int now, int index}) {
+    switch (state.long_precip_type[index].fcstValue.toString()) {
+      case '0':
+        {
+          if (skyType == '1') {
+            return horizontal_view(
+              time: state.long_temp[index].fcstTime,
+              icon: 'sun',
+              temp: state.long_temp[index].fcstValue,
+              now: now,
+            );
+          } else if (skyType == '3') {
+            return horizontal_view(
+              time: state.long_temp[index].fcstTime,
+              icon: 'cloud_sun',
+              temp: state.long_temp[index].fcstValue,
+              now: now,
+            );
+          } else if (skyType == '4') {
+            return horizontal_view(
+              time: state.long_temp[index].fcstTime,
+              icon: 'clouds',
+              temp: state.long_temp[index].fcstValue,
+              now: now,
+            );
+          } else {
+            print('Unknown sky type');
+          }
+        }
+        break;
+      case '1':
+      case '2':
+      case '4':
+      case '5':
+      case '6':
+        {
+          return horizontal_view(
+            time: state.long_temp[index].fcstTime,
+            icon: 'rain',
+            temp: state.long_temp[index].fcstValue,
+            now: now,
+          );
+        }
+        break;
+      case '3':
+      case '7':
+        {
+          return horizontal_view(
+            time: state.long_temp[index].fcstTime,
+            icon: 'snow_heavy',
+            temp: state.long_temp[index].fcstValue,
+            now: now,
+          );
+        }
+        break;
+      default:
+        {
+          return horizontal_view(
+            time: '--',
+            icon: 'all_inclusive',
+            temp: '--',
+            now: now,
+          );
+        }
+        break;
+    }
+  }
+
   Widget horizontal_view({String time, String icon, String temp, int now}) {
+    String half_time;
+    String tmp;
+    String iTime;
+    tmp = time.substring(0, 2);
+    if (tmp.contains('10')) {
+      iTime = tmp;
+    } else if (tmp.contains('0')) {
+      iTime = tmp.substring(1);
+    } else {
+      iTime = tmp;
+    }
+    if (int.parse(iTime) >= 12) {
+      half_time = '오후 ';
+    } else {
+      half_time = '오전 ';
+    }
     return Container(
       // width: 25,
       child: Column(
@@ -294,19 +442,48 @@ class _WeatherMainState extends State<WeatherMain> {
         children: [
           now == 0
               ? Text(
-                  time,
-                  style: TextStyle(color: Colors.white),
+                  half_time + iTime + '시',
+                  style: TextStyle(
+                      // fontSize: 14,
+                      color: Colors.white),
                 )
               : Text(
-                  time,
+                  '지금',
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      // fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
           // SizedBox(height: 10,),
-          Icon(
-            Weather.rain,
-            color: Colors.yellow,
-          ),
+          (icon == 'sun')
+              ? Icon(
+                  Weather.sun,
+                  color: Colors.yellow,
+                )
+              : (icon == 'cloud_sun')
+                  ? Icon(
+                      Weather.cloud_sun,
+                      color: Colors.yellow,
+                    )
+                  : (icon == 'clouds')
+                      ? Icon(
+                          Weather.clouds,
+                          color: Colors.yellow,
+                        )
+                      : (icon == 'rain')
+                          ? Icon(
+                              Weather.rain,
+                              color: Colors.yellow,
+                            )
+                          : (icon == 'snow_heavy')
+                              ? Icon(
+                                  Weather.snow_heavy,
+                                  color: Colors.yellow,
+                                )
+                              : Icon(
+                                  Icons.all_inclusive,
+                                  color: Colors.yellow,
+                                ),
           // SizedBox(height: 10,),
           Row(
             children: [
