@@ -28,14 +28,14 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: height * 0.263,
+              height: height * 0.15,
               width: width * 0.2,
               child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: Image.asset('assets/brandfarm.png')),
             ),
             SizedBox(
-              // height: height * 0.277,
+              height: height * 0.1,
               width: width * 0.702,
               child: FittedBox(
                 fit: BoxFit.fitWidth,
