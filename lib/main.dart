@@ -9,6 +9,7 @@ import 'package:BrandFarm/screens/login/login_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:BrandFarm/blocs/login/bloc.dart';
+import 'blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/blocObserver.dart';
 
@@ -23,6 +24,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
+
 
 
 void main() async {
@@ -86,14 +88,12 @@ class _AppState extends State<App> {
         //   appBarTheme: AppBarTheme(brightness: Brightness.light),
         // ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          // ignore: missing_return
           builder: (context, state) {
             if (state is AuthenticationSuccess) {
-              return HomeScreen();
-                // BlocProvider<HomeBloc>(
-                //   create: (BuildContext context) =>
-                //       HomeBloc(),
-                //   child: HomeScreen(name: state.displayName));
+              return BlocProvider<HomeBloc>(
+                  create: (BuildContext context) =>
+                      HomeBloc(),
+                  child: HomeScreen(name: state.displayName));
             } else if(state is AuthenticationInitial && !isDesktop){
               return SplashScreen(duration: 2);
             } else{
