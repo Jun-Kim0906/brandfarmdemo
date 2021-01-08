@@ -293,7 +293,7 @@ Future<void> _showMyDialog(BuildContext context) async {
       return isIOS
       ? CupertinoAlertDialog(
               title: Text('안내'),
-              content: Text('BrandFarm 로그인에 실패하였습니다.\n 다시 시도해 주시기 바랍니다.'),
+              content: Text('BrandFarm 로그인에 실패하였습니다.\n다시 시도해 주시기 바랍니다.'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('확인'),
@@ -305,7 +305,7 @@ Future<void> _showMyDialog(BuildContext context) async {
             )
           : AlertDialog(
               title: Text('안내'),
-              content: Text('BrandFarm 로그인에 실패하였습니다.\n 다시 시도해 주시기 바랍니다.'),
+              content: Text('BrandFarm 로그인에 실패하였습니다.\n다시 시도해 주시기 바랍니다.'),
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
