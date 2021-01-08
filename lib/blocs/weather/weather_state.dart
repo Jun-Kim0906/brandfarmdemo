@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 
 class WeatherState {
   final bool isLoading;
+
   List<Weather> short_precip = []; // RN1
   List<Weather> short_precip_type = []; // PTY
   List<Weather> short_temp = []; // T1H
@@ -16,7 +17,6 @@ class WeatherState {
   List<Weather> long_probOfPrecip = []; // POP
   List<Weather> long_maxTemp = []; // TMX
   List<Weather> long_minTemp = []; // TMN
-
   List<Weather> long_precip = []; // R06
   List<Weather> long_precip_type = []; // PTY
   List<Weather> long_temp = []; // T3H
@@ -25,7 +25,8 @@ class WeatherState {
   List<Weather> long_wind_dir = []; // VEC
   List<Weather> long_wind_sp = []; // WSD
 
-  List midFcstInfoList = [];
+  Map midFcstInfoList = {};
+  Map midFcstLandInfoList = {};
 
   String curr_temp;
   String sky;
@@ -72,6 +73,7 @@ class WeatherState {
         @required this.sunrise,
         @required this.sunset,
         @required this.midFcstInfoList,
+        @required this.midFcstLandInfoList,
       });
 
   factory WeatherState.empty() {
@@ -94,7 +96,8 @@ class WeatherState {
       long_sky: [],
       long_wind_dir: [],
       long_wind_sp: [],
-      midFcstInfoList: [],
+      midFcstInfoList: {},
+      midFcstLandInfoList: {},
       curr_temp: '',
       sky: '',
       max_temp: '',
@@ -129,7 +132,8 @@ class WeatherState {
     List<Weather> long_sky,
     List<Weather> long_wind_dir,
     List<Weather> long_wind_sp,
-    List midFcstInfoList,
+    Map midFcstInfoList,
+    Map midFcstLandInfoList,
     String curr_temp,
     String sky,
     String max_temp,
@@ -175,6 +179,7 @@ class WeatherState {
       sunrise: sunrise ?? this.sunrise,
       sunset: sunset ?? this.sunset,
       midFcstInfoList: midFcstInfoList ?? this.midFcstInfoList,
+      midFcstLandInfoList: midFcstLandInfoList ?? this.midFcstLandInfoList,
     );
   }
 
@@ -197,7 +202,8 @@ class WeatherState {
     List<Weather> long_sky,
     List<Weather> long_wind_dir,
     List<Weather> long_wind_sp,
-    List midFcstInfoList,
+    Map midFcstInfoList,
+    Map midFcstLandInfoList,
     String curr_temp,
     String sky,
     String max_temp,
@@ -243,6 +249,7 @@ class WeatherState {
       sunrise: sunrise,
       sunset: sunset,
       midFcstInfoList: midFcstInfoList,
+      midFcstLandInfoList: midFcstLandInfoList,
     );
   }
 
@@ -268,6 +275,7 @@ class WeatherState {
     long_wind_dir: ${long_wind_dir.length},
     long_wind_sp: ${long_wind_sp.length},
     midFcstInfoList: ${midFcstInfoList.length},
+    midFcstLandInfoList: ${midFcstLandInfoList.length},
     curr_temp: ${curr_temp},
     sky: ${sky},
     max_temp: ${max_temp},

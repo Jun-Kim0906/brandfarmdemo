@@ -46,7 +46,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     List<Weather> long_wind_dir = []; // VEC
     List<Weather> long_wind_sp = []; // WSD
 
-    List midFcstInfoList = [];
+    Map midFcstInfoList = {};
+    Map midFcstLandInfoList = {};
 
     String curr_temp;
     String max_temp;
@@ -75,6 +76,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String regId = '11H10201';
     String regId = regionCode(region: '포항',);
     String dt = '202101080600';
+    String regLnCode = regionLandCode(region: '경상북도');
 
     double num_lat = double.parse(str_lat);
     double num_lon = double.parse(str_lon);
@@ -208,12 +210,34 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // print('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
 
     if (midFcstInfo.statusCode == 200) {
-      midFcstInfoList = jsonDecode(midFcstInfo.body)['response']['body']['items']['item'];
+      Xml2Json xmlToJson = Xml2Json();
+      xmlToJson.parse(midFcstInfo.body);
+      var tmp = xmlToJson.toParker();
+      Map map = jsonDecode(tmp)['response']['body']['items']['item'];
+      map.remove('regId');
+      map.removeWhere((key, value) => key.contains('Low') || key.contains('High'));
+      midFcstInfoList = map;
+      // print(midFcstInfoList);
     } else {
       throw Exception('Failed to fetch mid fcst info');
     }
-    // midFcstInfoList.removeAt(0);
-    print(midFcstInfoList);
+
+    http.Response midFcstLandInfo;
+    midFcstLandInfo = await http.get('$midFcstLandInfoHeader&regId=$regLnCode&tmFc=$dt');
+    print('$midFcstLandInfoHeader&regId=$regLnCode&tmFc=$dt');
+
+    if (midFcstLandInfo.statusCode == 200) {
+      Xml2Json xml2json = Xml2Json();
+      xml2json.parse(midFcstLandInfo.body);
+      var tmp = xml2json.toParker();
+      Map map = jsonDecode(tmp)['response']['body']['items']['item'];
+      // print(map);
+      map.removeWhere((key, value) => key.startsWith('r'));
+      midFcstLandInfoList = map;
+      // print(midFcstLandInfoList);
+    } else {
+      throw Exception('Failed to fetch mid fcst land info');
+    }
 
     yield state.update(
       isLoading: false,
@@ -247,6 +271,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       sunrise: sun_rise.toString(),
       sunset: sun_set.toString(),
       midFcstInfoList: midFcstInfoList,
+      midFcstLandInfoList: midFcstLandInfoList,
     );
   }
 }

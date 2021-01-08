@@ -1,26 +1,179 @@
-import 'dart:convert';
+// weather repository
 
-import 'package:BrandFarm/models/weather/weather_model.dart';
-import 'package:http/http.dart' as http;
-
-Weather _data;
-
-void setWeatherData(Weather data) async {
-  _data = data;
+String getAmPm({String time}) {
+  String half_time;
+  String tmp;
+  String iTime;
+  tmp = time.substring(0, 2);
+  if (tmp.contains('10')) {
+    iTime = tmp;
+  } else if (tmp.contains('0')) {
+    iTime = tmp.substring(1);
+  } else {
+    iTime = tmp;
+  }
+  if (int.parse(iTime) >= 12) {
+    half_time = '오후 ';
+  } else {
+    half_time = '오전 ';
+  }
+  return half_time;
 }
 
-Weather getWeatherData() {
-  return _data;
+String wind_dir({String dir}) {
+  int wDir;
+  double tmp1 = double.parse(dir);
+  double tmp2 = (tmp1 + 22.5 * 0.5) / 22.5;
+  wDir = tmp2.toInt();
+  // print(dir);
+
+  switch (wDir) {
+    case 0:
+      {
+        return '북';
+      }
+      break;
+    case 1:
+      {
+        return '북북동';
+      }
+      break;
+    case 2:
+      {
+        return '북동';
+      }
+      break;
+    case 3:
+      {
+        return '동북동';
+      }
+      break;
+    case 4:
+      {
+        return '동';
+      }
+      break;
+    case 5:
+      {
+        return '동남동';
+      }
+      break;
+    case 6:
+      {
+        return '남동';
+      }
+      break;
+    case 7:
+      {
+        return '남남동';
+      }
+      break;
+    case 8:
+      {
+        return '남';
+      }
+      break;
+    case 9:
+      {
+        return '남남서';
+      }
+      break;
+    case 10:
+      {
+        return '남서';
+      }
+      break;
+    case 11:
+      {
+        return '서남서';
+      }
+      break;
+    case 12:
+      {
+        return '서';
+      }
+      break;
+    case 13:
+      {
+        return '서북서';
+      }
+      break;
+    case 14:
+      {
+        return '북서';
+      }
+      break;
+    case 15:
+      {
+        return '북북서';
+      }
+      break;
+    case 16:
+      {
+        return '북';
+      }
+      break;
+    default:
+      {
+        return '--';
+      }
+      break;
+  }
 }
 
-Future<List<Weather>> fetchWeatherInfo(http.Response response) async {
-  List<Weather> info = [];
-  json
-      .decode(response.body)['response']['body']['items']['item']
-      .forEach((dynamic data) {
-    info.add(Weather.fromJson(data));
-  });
-  return info;
+String regionLandCode ({String region}) {
+  switch(region) {
+    case '서울' :
+    case '인천' :
+    case '경기도' : {
+      return '11B00000';
+    }
+    break;
+    case '강원도영서' : {
+      return '11D10000';
+    }
+    case '강원도영동' : {
+      return '11D20000';
+    }
+    break;
+    case '대전' :
+    case '세종' :
+    case '충청남도' : {
+      return '11C20000';
+    }
+    break;
+    case '충청북도' : {
+      return '11C10000';
+    }
+    break;
+    case '광주' :
+    case '전라남도' : {
+      return '11F20000';
+    }
+    break;
+    case '전라북도' : {
+      return '11F10000';
+    }
+    break;
+    case '대구' :
+    case '경상북도' : {
+      return '11H10000';
+    }
+    break;
+    case '부산' :
+    case '울산' :
+    case '경상남도' : {
+      return '11H20000';
+    }
+    break;
+    case '제주도' : {
+      return '11G00000';
+    }
+    break;
+    default : {
+      return '--';
+    }
+  }
 }
 
 String regionCode({String region}) {

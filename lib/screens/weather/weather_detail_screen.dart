@@ -1,4 +1,5 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/weather/weather_icons.dart';
 import 'package:flutter/cupertino.dart';
@@ -286,7 +287,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
                             physics: ClampingScrollPhysics(),
-                            itemCount: 24,
+                            itemCount: 10,
                             itemBuilder: (context, index) {
                               return vertical_view(
                                 date: '화요일',
@@ -411,127 +412,6 @@ class _WeatherDetailState extends State<WeatherDetail> {
         {
           return circleStyle_row(
               info: '-', info2: '-', font_size: 15, font_size2: 15, time: 0);
-        }
-        break;
-    }
-  }
-
-  String getAmPm({String time}) {
-    String half_time;
-    String tmp;
-    String iTime;
-    tmp = time.substring(0, 2);
-    if (tmp.contains('10')) {
-      iTime = tmp;
-    } else if (tmp.contains('0')) {
-      iTime = tmp.substring(1);
-    } else {
-      iTime = tmp;
-    }
-    if (int.parse(iTime) >= 12) {
-      half_time = '오후 ';
-    } else {
-      half_time = '오전 ';
-    }
-    return half_time;
-  }
-
-  String wind_dir({String dir}) {
-    int wDir;
-    double tmp1 = double.parse(dir);
-    double tmp2 = (tmp1 + 22.5 * 0.5) / 22.5;
-    wDir = tmp2.toInt();
-    // print(dir);
-
-    switch (wDir) {
-      case 0:
-        {
-          return '북';
-        }
-        break;
-      case 1:
-        {
-          return '북북동';
-        }
-        break;
-      case 2:
-        {
-          return '북동';
-        }
-        break;
-      case 3:
-        {
-          return '동북동';
-        }
-        break;
-      case 4:
-        {
-          return '동';
-        }
-        break;
-      case 5:
-        {
-          return '동남동';
-        }
-        break;
-      case 6:
-        {
-          return '남동';
-        }
-        break;
-      case 7:
-        {
-          return '남남동';
-        }
-        break;
-      case 8:
-        {
-          return '남';
-        }
-        break;
-      case 9:
-        {
-          return '남남서';
-        }
-        break;
-      case 10:
-        {
-          return '남서';
-        }
-        break;
-      case 11:
-        {
-          return '서남서';
-        }
-        break;
-      case 12:
-        {
-          return '서';
-        }
-        break;
-      case 13:
-        {
-          return '서북서';
-        }
-        break;
-      case 14:
-        {
-          return '북서';
-        }
-        break;
-      case 15:
-        {
-          return '북북서';
-        }
-        break;
-      case 16:
-        {
-          return '북';
-        }
-        break;
-      default:
-        {
-          return '--';
         }
         break;
     }

@@ -30,7 +30,8 @@ String riseSetAreaInfoHeader = 'http://apis.data.go.kr/B090041/openapi/service/R
 
 
 /// 중기예보 조회
-String midFcstInfoHeader = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?$serviceKey&pageNo=$pageNo&numOfRows=$numOfRows&dataType=$dataType';
+String midFcstInfoHeader = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?$serviceKey&pageNo=$pageNo&numOfRows=$numOfRows&dataType=XML';
+String midFcstLandInfoHeader = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?$serviceKey&pageNo=$pageNo&numOfRows=$numOfRows&dataType=XML';
 
 
 
