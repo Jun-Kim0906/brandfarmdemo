@@ -17,7 +17,6 @@ import 'package:BrandFarm/utils/todays_date.dart';
 
 //plugin
 import 'package:badges/badges.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   final String name;
@@ -97,6 +96,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   name,
                 ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (BuildContext context) =>
+                            WeatherBloc()..add(Wait_Fetch_Weather()),
+                        child: WeatherMain(),
+                      ),
+                    ),
+                  );
+                },
               ),
             );
           }
