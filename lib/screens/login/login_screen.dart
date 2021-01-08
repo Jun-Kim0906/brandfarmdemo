@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
@@ -127,7 +128,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             _FarmLogo(),
                             SizedBox(height: 24),
                             _UsernameTextField(
-                                emailController: _emailController, state: state),
+                                emailController: _emailController,
+                                state: state),
                             SizedBox(height: 12),
                             _PasswordTextField(
                                 passwordController: _passwordController,
@@ -209,9 +211,7 @@ class _FarmLogo extends StatelessWidget {
                       .textTheme
                       .headline2
                       .apply(color: Color(0xffffffff))
-                  : Theme.of(context)
-                      .textTheme
-                      .headline3),
+                  : Theme.of(context).textTheme.headline3),
         ],
       ),
     );
@@ -233,7 +233,8 @@ class _UsernameTextField extends StatelessWidget {
         fillColor: Color(0xffffffff),
         hintText: '사원번호',
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.primary)),
         border: OutlineInputBorder(),
       ),
       keyboardType: TextInputType.emailAddress,
@@ -261,7 +262,8 @@ class _PasswordTextField extends StatelessWidget {
         fillColor: Color(0xffffffff),
         hintText: '패스워드',
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.primary)),
         border: OutlineInputBorder(),
       ),
       obscureText: true,
@@ -275,22 +277,43 @@ class _PasswordTextField extends StatelessWidget {
 }
 
 Future<void> _showMyDialog(BuildContext context) async {
+  bool isIOS;
+  try{
+    if(Platform.isIOS)
+      isIOS=true;
+    else
+      isIOS=false;
+  }catch(e){
+    isIOS=false;
+  }
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
-      return CupertinoAlertDialog(
-        title: Text('안내'),
-        content: Text('BrandFarm 로그인에 실패하였습니다.\n 다시 시도해 주시기 바랍니다.'),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            child: Text('확인'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          )
-        ],
-      );
+      return isIOS
+      ? CupertinoAlertDialog(
+              title: Text('안내'),
+              content: Text('BrandFarm 로그인에 실패하였습니다.\n 다시 시도해 주시기 바랍니다.'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('확인'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )
+          : AlertDialog(
+              title: Text('안내'),
+              content: Text('BrandFarm 로그인에 실패하였습니다.\n 다시 시도해 주시기 바랍니다.'),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('확인'),)
+              ],
+            );
     },
   );
 }
