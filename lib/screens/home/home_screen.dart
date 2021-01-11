@@ -92,10 +92,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 preferredSize: Size.fromHeight(80.0),
                 child: _AppBarContents(),
               ),
-              body: Center(
-                child: Text(
-                  name,
-                ),
+              body: ListView(
+                physics: ClampingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '$year년 $month월 $day일 $weekday',
+                          ),
+                          Row(
+                            children: [
+                              Text('$name'),
+                              Text(' 님, 안녕하세요')
+                            ],
+                          )
+                        ],
+                      ),
+                      Spacer(),
+                      Container(
+                        height: 30.0,
+                        child: Icon(
+                          Icons.add
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
@@ -141,39 +167,25 @@ class _AppBarContents extends StatelessWidget {
                 },
               ),
               Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Badge(
-                        position: BadgePosition.topEnd(top: 2, end: 8),
-                        badgeContent: Text(
-                          '2',
-                          style: TextStyle(color: Colors.white, fontSize: 14.0),
-                        ),
-                        child: IconButton(
-                          iconSize: 40.0,
-                          icon: Icon(
-                            Icons.notifications_none_sharp,
-                          ),
-                          onPressed: () {},
-                        ),
-                        padding: EdgeInsets.all(4.5),
-                      ),
-                      IconButton(
-                          iconSize: 40.0,
-                          icon: Icon(Icons.settings),
-                          onPressed: () {})
-                    ],
+              Badge(
+                position: BadgePosition.topEnd(top: 2, end: 8),
+                badgeContent: Text(
+                  '2',
+                  style: TextStyle(color: Colors.white, fontSize: 14.0),
+                ),
+                child: IconButton(
+                  iconSize: 40.0,
+                  icon: Icon(
+                    Icons.notifications_none_sharp,
                   ),
-                  Text(
-                    '$year년 $month월 $day일 $weekday',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  )
-                ],
-              )
+                  onPressed: () {},
+                ),
+                padding: EdgeInsets.all(4.5),
+              ),
+              IconButton(
+                  iconSize: 35.0,
+                  icon: Icon(Icons.settings),
+                  onPressed: () {})
             ],
           ),
         )
