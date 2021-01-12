@@ -78,6 +78,7 @@ class _WeatherMainState extends State<WeatherMain> {
                       child: Stack(
                         children: <Widget>[
                           Card(
+                            // margin: EdgeInsets.all(0),
                             elevation: 3.0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
@@ -188,6 +189,7 @@ class _WeatherMainState extends State<WeatherMain> {
                             left: 0.0,
                             right: 0.0,
                             child: Card(
+                              // margin: EdgeInsets.all(0),
                               elevation: 3.0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
@@ -279,7 +281,7 @@ class _WeatherMainState extends State<WeatherMain> {
                               decoration: BoxDecoration(
                                 color: Color(0x30FFFFFF),
                                 borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(150)),
+                                    bottomRight: Radius.circular(150), topLeft: Radius.circular(15)),
                               ),
                             ),
                           ),
@@ -292,7 +294,7 @@ class _WeatherMainState extends State<WeatherMain> {
                               decoration: BoxDecoration(
                                 color: Color(0x20FFFFFF),
                                 borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(150)),
+                                    bottomRight: Radius.circular(150), topLeft: Radius.circular(15)),
                               ),
                             ),
                           ),

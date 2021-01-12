@@ -1,6 +1,7 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
+import 'package:BrandFarm/utils/weather/datetime.dart';
 import 'package:BrandFarm/utils/weather/weather_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class WeatherDetail extends StatefulWidget {
 class _WeatherDetailState extends State<WeatherDetail> {
   String fieldName = '한동이네 딸기 농장';
   String curr_addr = '경상북도 포항시';
+  DateTime now = DateTime.now();
 
   // String curr_temp = '16' + degrees;
   // String maxTemp = '18';
@@ -245,12 +247,18 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                     if (index == 0) {
                                       return Row(
                                         children: [
-                                          weather_horizontal_list(
-                                              state: state,
-                                              skyType: state
-                                                  .long_sky[index].fcstValue,
-                                              now: 1,
-                                              index: index),
+                                          horizontal_view(
+                                            time:
+                                                state.long_temp[index].fcstTime,
+                                            skyType:
+                                                state.long_sky[index].fcstValue,
+                                            precipType: state
+                                                .long_precip_type[index]
+                                                .fcstValue,
+                                            temp: state
+                                                .long_temp[index].fcstValue,
+                                            now: 1,
+                                          ),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -259,12 +267,18 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                     } else {
                                       return Row(
                                         children: [
-                                          weather_horizontal_list(
-                                              state: state,
-                                              skyType: state
-                                                  .long_sky[index].fcstValue,
-                                              now: 0,
-                                              index: index),
+                                          horizontal_view(
+                                            time:
+                                                state.long_temp[index].fcstTime,
+                                            skyType:
+                                                state.long_sky[index].fcstValue,
+                                            precipType: state
+                                                .long_precip_type[index]
+                                                .fcstValue,
+                                            temp: state
+                                                .long_temp[index].fcstValue,
+                                            now: 0,
+                                          ),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -283,19 +297,72 @@ class _WeatherDetailState extends State<WeatherDetail> {
                         ),
                         Container(
                           height: 235,
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return vertical_view(
-                                date: '화요일',
-                                icon: '흐림',
-                                info: state.max_temp,
-                                info2: state.min_temp,
-                              );
-                            },
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                vertical_view(
+                                  date: daysOfWeek(index: now.weekday),
+                                  icon: long_sky_list(
+                                      precip_type:
+                                          state.precip_type_byDate[0].fcstValue,
+                                      skyType:
+                                          state.sky_type_byDate[0].fcstValue,
+                                      index: 0),
+                                  info: state.max_temp,
+                                  info2: state.min_temp,
+                                ),
+                                ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  physics: ClampingScrollPhysics(),
+                                  itemCount: 2,
+                                  itemBuilder: (context, index) {
+                                    return vertical_view(
+                                      date: daysOfWeek(
+                                          index: now
+                                              .add(Duration(days: index + 1))
+                                              .weekday),
+                                      icon: long_sky_list(
+                                          precip_type: state
+                                              .precip_type_byDate[index + 1]
+                                              .fcstValue,
+                                          skyType: state
+                                              .sky_type_byDate[index + 1]
+                                              .fcstValue,
+                                          index: index + 1),
+                                      info: state
+                                          .long_maxTemp[index + 1].fcstValue,
+                                      info2:
+                                          state.long_minTemp[index].fcstValue,
+                                    );
+                                  },
+                                ),
+                                ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  physics: ClampingScrollPhysics(),
+                                  itemCount: state.midFcstLandInfoAmList.length,
+                                  itemBuilder: (context, index) {
+                                    var max = state.midFcstInfoMaxList.entries
+                                        .toList();
+                                    var min = state.midFcstInfoMinList.entries
+                                        .toList();
+                                    var skyList = state
+                                        .midFcstLandInfoAmList.entries
+                                        .toList();
+                                    return vertical_view(
+                                      date: daysOfWeek(
+                                          index: now
+                                              .add(Duration(days: index + 3))
+                                              .weekday),
+                                      icon: skyList[index].value,
+                                      info: max[index].value,
+                                      info2: min[index].value,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Divider(
@@ -381,7 +448,8 @@ class _WeatherDetailState extends State<WeatherDetail> {
     switch (type) {
       case weather_circle_type.sunset:
         {
-          return circleStyle_row(info: getAmPm(time: info), info2: info, font_size: 15, time: 1);
+          return circleStyle_row(
+              info: getAmPm(time: info), info2: info, font_size: 15, time: 1);
         }
         break;
       case weather_circle_type.prob_of_precip:
@@ -467,11 +535,15 @@ class _WeatherDetailState extends State<WeatherDetail> {
   }
 
   Widget circleStyle_row(
-      {String info, String info2, double font_size, double font_size2, int time}) {
+      {String info,
+      String info2,
+      double font_size,
+      double font_size2,
+      int time}) {
     String tmpHour;
     String tmpMin;
     String iTime;
-    if(time == 1) {
+    if (time == 1) {
       tmpHour = info2.substring(0, 2);
       tmpMin = info2.substring(2);
       if (tmpHour.contains('10')) {
@@ -504,19 +576,23 @@ class _WeatherDetailState extends State<WeatherDetail> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              (time == 0) ? Text(
-                info2,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: font_size2,
-                  fontWeight: FontWeight.w500,
-                ),
-              ) : Text(iTime,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: font_size2,
-                  fontWeight: FontWeight.w500,
-                ),),
+              (time == 0)
+                  ? Text(
+                      info2,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: font_size2,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  : Text(
+                      iTime,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: font_size2,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
             ],
           ),
         ),
@@ -559,77 +635,78 @@ class _WeatherDetailState extends State<WeatherDetail> {
     );
   }
 
-  Widget weather_horizontal_list(
-      {WeatherState state, String skyType, int now, int index}) {
-    switch (state.long_precip_type[index].fcstValue.toString()) {
-      case '0':
-        {
-          if (skyType == '1') {
-            return horizontal_view(
-              time: state.long_temp[index].fcstTime,
-              icon: 'sun',
-              temp: state.long_temp[index].fcstValue,
-              now: now,
-            );
-          } else if (skyType == '3') {
-            return horizontal_view(
-              time: state.long_temp[index].fcstTime,
-              icon: 'cloud_sun',
-              temp: state.long_temp[index].fcstValue,
-              now: now,
-            );
-          } else if (skyType == '4') {
-            return horizontal_view(
-              time: state.long_temp[index].fcstTime,
-              icon: 'clouds',
-              temp: state.long_temp[index].fcstValue,
-              now: now,
-            );
-          } else {
-            print('Unknown sky type');
-          }
-        }
-        break;
-      case '1':
-      case '2':
-      case '4':
-      case '5':
-      case '6':
-        {
-          return horizontal_view(
-            time: state.long_temp[index].fcstTime,
-            icon: 'rain',
-            temp: state.long_temp[index].fcstValue,
-            now: now,
-          );
-        }
-        break;
-      case '3':
-      case '7':
-        {
-          return horizontal_view(
-            time: state.long_temp[index].fcstTime,
-            icon: 'snow_heavy',
-            temp: state.long_temp[index].fcstValue,
-            now: now,
-          );
-        }
-        break;
-      default:
-        {
-          return horizontal_view(
-            time: '--',
-            icon: 'all_inclusive',
-            temp: '--',
-            now: now,
-          );
-        }
-        break;
-    }
-  }
+  // Widget weather_horizontal_list(
+  //     {WeatherState state, String skyType, int now, int index}) {
+  //   switch (state.long_precip_type[index].fcstValue.toString()) {
+  //     case '0':
+  //       {
+  //         if (skyType == '1') {
+  //           return horizontal_view(
+  //             time: state.long_temp[index].fcstTime,
+  //             icon: 'sun',
+  //             temp: state.long_temp[index].fcstValue,
+  //             now: now,
+  //           );
+  //         } else if (skyType == '3') {
+  //           return horizontal_view(
+  //             time: state.long_temp[index].fcstTime,
+  //             icon: 'cloud_sun',
+  //             temp: state.long_temp[index].fcstValue,
+  //             now: now,
+  //           );
+  //         } else if (skyType == '4') {
+  //           return horizontal_view(
+  //             time: state.long_temp[index].fcstTime,
+  //             icon: 'clouds',
+  //             temp: state.long_temp[index].fcstValue,
+  //             now: now,
+  //           );
+  //         } else {
+  //           print('Unknown sky type');
+  //         }
+  //       }
+  //       break;
+  //     case '1':
+  //     case '2':
+  //     case '4':
+  //     case '5':
+  //     case '6':
+  //       {
+  //         return horizontal_view(
+  //           time: state.long_temp[index].fcstTime,
+  //           icon: 'rain',
+  //           temp: state.long_temp[index].fcstValue,
+  //           now: now,
+  //         );
+  //       }
+  //       break;
+  //     case '3':
+  //     case '7':
+  //       {
+  //         return horizontal_view(
+  //           time: state.long_temp[index].fcstTime,
+  //           icon: 'snow_heavy',
+  //           temp: state.long_temp[index].fcstValue,
+  //           now: now,
+  //         );
+  //       }
+  //       break;
+  //     default:
+  //       {
+  //         return horizontal_view(
+  //           time: '--',
+  //           icon: 'all_inclusive',
+  //           temp: '--',
+  //           now: now,
+  //         );
+  //       }
+  //       break;
+  //   }
+  // }
 
   // if now = 1 then now . . . else if now == 0 then not now
-  Widget horizontal_view({String time, String icon, String temp, int now}) {
+  Widget horizontal_view(
+      {String time, String precipType, String skyType, String temp, int now}) {
     String half_time;
     String tmp;
     String iTime;
@@ -662,35 +739,10 @@ class _WeatherDetailState extends State<WeatherDetail> {
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
           // SizedBox(height: 10,),
-          (icon == 'sun')
-              ? Icon(
-                  Weather.sun,
-                  color: Colors.yellow,
-                )
-              : (icon == 'cloud_sun')
-                  ? Icon(
-                      Weather.cloud_sun,
-                      color: Colors.yellow,
-                    )
-                  : (icon == 'clouds')
-                      ? Icon(
-                          Weather.clouds,
-                          color: Colors.yellow,
-                        )
-                      : (icon == 'rain')
-                          ? Icon(
-                              Weather.rain,
-                              color: Colors.yellow,
-                            )
-                          : (icon == 'snow_heavy')
-                              ? Icon(
-                                  Weather.snow_heavy,
-                                  color: Colors.yellow,
-                                )
-                              : Icon(
-                                  Icons.all_inclusive,
-                                  color: Colors.yellow,
-                                ),
+          horizontal_view_icon(
+            precip_type: precipType,
+            skyType: skyType,
+          ),
           // SizedBox(height: 10,),
           Row(
             children: [
@@ -713,6 +765,44 @@ class _WeatherDetailState extends State<WeatherDetail> {
     );
   }
 
+  Widget horizontal_view_icon({String precip_type, String skyType, int index}) {
+    switch (precip_type) {
+      case '0':
+        {
+          if (int.parse(skyType) < 6) {
+            return Icon(CupertinoIcons.sun_max);
+          } else if (int.parse(skyType) > 5 && int.parse(skyType) < 9) {
+            return Icon(CupertinoIcons.cloud_sun);
+          } else if (int.parse(skyType) > 8) {
+            return Icon(CupertinoIcons.cloud);
+          } else {
+            print('Unknown sky type');
+          }
+        }
+        break;
+      case '1':
+      case '2':
+      case '4':
+      case '5':
+      case '6':
+        {
+          return Icon(CupertinoIcons.cloud_rain_fill);
+        }
+        break;
+      case '3':
+      case '7':
+        {
+          return Icon(CupertinoIcons.cloud_snow_fill);
+        }
+        break;
+      default:
+        {
+          return Icon(CupertinoIcons.infinite);
+        }
+        break;
+    }
+  }
+
   Widget vertical_view({String date, String icon, String info, String info2}) {
     return Container(
       child: Row(
@@ -722,10 +812,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
             date,
             style: TextStyle(color: Colors.white),
           ),
-          Icon(
-            Icons.cloud_rounded,
-            color: Colors.grey,
-          ),
+          vertical_view_icon(skyType: icon),
           Row(
             children: [
               Text(
@@ -744,5 +831,44 @@ class _WeatherDetailState extends State<WeatherDetail> {
         ],
       ),
     );
+  }
+
+  Widget vertical_view_icon({String skyType}) {
+    switch (skyType) {
+      case '맑음':
+        {
+          return Icon(CupertinoIcons.sun_max);
+        }
+        break;
+      case '구름많음':
+      case '흐림':
+        {
+          return Icon(CupertinoIcons.cloud_fill);
+        }
+        break;
+      case '구름많고 비':
+      case '흐리고 비':
+      case '구름많고 비/눈':
+      case '흐리고 비/눈':
+      case '구름많고 소나기':
+      case '비':
+      case '흐리고 소나기':
+        {
+          return Icon(CupertinoIcons.cloud_rain_fill);
+        }
+        break;
+      case '구름많고 눈':
+      case '눈':
+      case '흐리고 눈':
+        {
+          return Icon(CupertinoIcons.cloud_snow_fill);
+        }
+        break;
+      default:
+        {
+          return Icon(CupertinoIcons.infinite);
+        }
+        break;
+    }
   }
 }
