@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FarmThemeData {
-  static const _lightFillColor = Colors.black;
+  static const _lightFillColor = Color(0xff343434);
   static const _darkFillColor = Colors.white;
 
   static final Color _lightFocusColor = Colors.black.withOpacity(0.12);
@@ -19,7 +19,7 @@ class FarmThemeData {
   static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
     return ThemeData(
       colorScheme: colorScheme,
-      textTheme: _textTheme.apply(displayColor: Color(0xff343434)),
+      textTheme: _textTheme.apply(displayColor: Color(0xff343434), fontFamily: GoogleFonts.roboto().fontFamily),
       // Matches manifest.json colors and background color.
       primaryColor: const Color(0xFF030303),
       appBarTheme: AppBarTheme(
@@ -35,14 +35,17 @@ class FarmThemeData {
       highlightColor: Colors.transparent,
       accentColor: colorScheme.primary,
       focusColor: focusColor,
-      snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Color.alphaBlend(
-          _lightFillColor.withOpacity(0.80),
-          _darkFillColor,
-        ),
-        contentTextStyle: _textTheme.subtitle1.apply(color: _darkFillColor),
-      ),
+      // snackBarTheme: SnackBarThemeData(
+      //   behavior: SnackBarBehavior.floating,
+      //   backgroundColor: Color.alphaBlend(
+      //     _lightFillColor.withOpacity(0.80),
+      //     _darkFillColor,
+      //   ),
+      //   contentTextStyle: _textTheme.subtitle1.apply(color: _darkFillColor),
+      // ),
+      buttonTheme: ButtonThemeData(
+        disabledColor: Color(0xfd888888),
+      )
     );
   }
 
@@ -89,12 +92,12 @@ class FarmThemeData {
     headline4: GoogleFonts.roboto(fontWeight: _bold, fontSize: 20.0),
     headline5: GoogleFonts.roboto(fontWeight: _medium, fontSize: 16.0),
     headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 16.0),
-    caption: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 16.0),
-    overline: GoogleFonts.roboto(fontWeight: _medium, fontSize: 12.0),
-    button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
     subtitle1: GoogleFonts.roboto(fontWeight: _medium, fontSize: 16.0),
     subtitle2: GoogleFonts.roboto(fontWeight: _medium, fontSize: 14.0),
     bodyText1: GoogleFonts.roboto(fontWeight: _regular, fontSize: 14.0),
     bodyText2: GoogleFonts.roboto(fontWeight: _regular, fontSize: 16.0),
+    caption: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 16.0),
+    overline: GoogleFonts.roboto(fontWeight: _medium, fontSize: 12.0),
+    button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
   );
 }
