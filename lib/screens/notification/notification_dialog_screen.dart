@@ -25,7 +25,7 @@ class _NotificationDialogScreenState extends State<NotificationDialogScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Image.asset('assets/megaphone.png', height: 40)),
+                Center(child: Icon(Icons.notification_important, size: 40,)),
                 Row(
                   children: [
                     Container(

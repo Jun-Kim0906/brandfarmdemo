@@ -88,7 +88,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                     leading: Badge(
                       position: BadgePosition.topStart(top: 0, start: 0),
                       shape: BadgeShape.circle,
-                      child: Image.asset('assets/megaphone.png', height: 40),
+                      child: Icon(Icons.notification_important, size: 40,),
                       padding: EdgeInsets.all(4.5),
                     ),
                     title: Row(

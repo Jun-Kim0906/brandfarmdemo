@@ -348,9 +348,9 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                         scrollDirection: Axis.vertical,
                                         shrinkWrap: true,
                                         physics: ClampingScrollPhysics(),
-                                        itemCount: 2,
+                                        itemCount: state.long_maxTemp.length,
                                         itemBuilder: (context, index) {
-                                          return vertical_view(
+                                          return (state.long_maxTemp.length == 3) ? vertical_view(
                                             date: daysOfWeek(
                                                 index: now
                                                     .add(Duration(
@@ -360,6 +360,29 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                                 precip_type: state
                                                     .precip_type_byDate[
                                                         index + 1]
+                                                    .fcstValue,
+                                                skyType: state
+                                                    .sky_type_byDate[index + 1]
+                                                    .fcstValue,
+                                                index: index + 1),
+                                            info: doubleToInt(
+                                              str: state.long_maxTemp[index + 1]
+                                                  .fcstValue,
+                                            ),
+                                            info2: doubleToInt(
+                                              str: state.long_minTemp[index + 1]
+                                                  .fcstValue,
+                                            ),
+                                          ) : vertical_view(
+                                            date: daysOfWeek(
+                                                index: now
+                                                    .add(Duration(
+                                                    days: index + 1))
+                                                    .weekday),
+                                            icon: long_sky_list(
+                                                precip_type: state
+                                                    .precip_type_byDate[
+                                                index + 1]
                                                     .fcstValue,
                                                 skyType: state
                                                     .sky_type_byDate[index + 1]
