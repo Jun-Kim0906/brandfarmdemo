@@ -209,9 +209,9 @@ class _FarmLogo extends StatelessWidget {
               style: isDesktop
                   ? Theme.of(context)
                       .textTheme
-                      .headline2
+                      .headline1
                       .apply(color: Color(0xffffffff))
-                  : Theme.of(context).textTheme.headline3),
+                  : Theme.of(context).textTheme.headline2),
         ],
       ),
     );
