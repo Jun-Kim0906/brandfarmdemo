@@ -7,6 +7,10 @@ import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/layout/adaptive.dart';
 import 'package:BrandFarm/screens/field/field_detail_screen.dart';
 
+import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
+import 'package:flutter/cupertino.dart';
+
+
 //flutter
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -203,7 +207,14 @@ class _AppBarContents extends StatelessWidget {
                   icon: Icon(
                     Icons.notifications_none_sharp,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                  Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NotificationListScreen(),
+                              ),
+                            );
+                  },
                 ),
                 padding: EdgeInsets.all(4.5),
               ),
@@ -211,6 +222,7 @@ class _AppBarContents extends StatelessWidget {
                   iconSize: 35.0,
                   icon: Icon(
                       BrandFarmIcons.settings,
+
                   ),
                   onPressed: () {}
                   )

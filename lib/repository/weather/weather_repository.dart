@@ -1,5 +1,17 @@
 // weather repository
 
+import 'package:BrandFarm/blocs/weather/weather_state.dart';
+
+String doubleToInt({String str}){
+  if(str == '0' || str == null || str == "") {
+    return '0';
+  }
+  var dNum = double.parse(str);
+  var iNum = dNum.toInt();
+  // print(dNum);
+  return iNum.toString();
+}
+
 String getAmPm({String time}) {
   String half_time;
   String tmp;
@@ -18,6 +30,46 @@ String getAmPm({String time}) {
     half_time = '오전 ';
   }
   return half_time;
+}
+
+String long_sky_list(
+    {String precip_type, String skyType, int index}) {
+  // print('$precip_type, $skyType');
+  switch (precip_type) {
+    case '0':
+      {
+        if (int.parse(skyType) < 6) {
+          return '맑음';
+        } else if (int.parse(skyType) > 5  && int.parse(skyType) < 9) {
+          return '흐림';
+        } else if (int.parse(skyType) > 8) {
+          return '구름많음';
+        } else {
+          print('Unknown sky type');
+        }
+      }
+      break;
+    case '1':
+    case '2':
+    case '4':
+    case '5':
+    case '6':
+      {
+        return '비';
+      }
+      break;
+    case '3':
+    case '7':
+      {
+        return '눈';
+      }
+      break;
+    default:
+      {
+        return '--';
+      }
+      break;
+  }
 }
 
 String wind_dir({String dir}) {
@@ -173,6 +225,7 @@ String regionLandCode ({String region}) {
     default : {
       return '--';
     }
+    break;
   }
 }
 

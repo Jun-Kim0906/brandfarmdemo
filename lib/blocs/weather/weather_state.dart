@@ -25,8 +25,15 @@ class WeatherState {
   List<Weather> long_wind_dir = []; // VEC
   List<Weather> long_wind_sp = []; // WSD
 
+  List<Weather> precip_type_byDate = [];
+  List<Weather> sky_type_byDate = [];
+
   Map midFcstInfoList = {};
+  Map midFcstInfoMaxList = {};
+  Map midFcstInfoMinList = {};
   Map midFcstLandInfoList = {};
+  Map midFcstLandInfoAmList = {};
+  Map midFcstLandInfoPmList = {};
 
   String curr_temp;
   String sky;
@@ -74,6 +81,12 @@ class WeatherState {
         @required this.sunset,
         @required this.midFcstInfoList,
         @required this.midFcstLandInfoList,
+        @required this.midFcstInfoMaxList,
+        @required this.midFcstInfoMinList,
+        @required this.midFcstLandInfoAmList,
+        @required this.midFcstLandInfoPmList,
+        @required this.precip_type_byDate,
+        @required this.sky_type_byDate,
       });
 
   factory WeatherState.empty() {
@@ -96,8 +109,14 @@ class WeatherState {
       long_sky: [],
       long_wind_dir: [],
       long_wind_sp: [],
+      precip_type_byDate: [],
+      sky_type_byDate: [],
       midFcstInfoList: {},
+      midFcstInfoMaxList: {},
+      midFcstInfoMinList: {},
       midFcstLandInfoList: {},
+      midFcstLandInfoAmList: {},
+      midFcstLandInfoPmList: {},
       curr_temp: '',
       sky: '',
       max_temp: '',
@@ -132,8 +151,14 @@ class WeatherState {
     List<Weather> long_sky,
     List<Weather> long_wind_dir,
     List<Weather> long_wind_sp,
+    List<Weather> precip_type_byDate,
+    List<Weather> sky_type_byDate,
     Map midFcstInfoList,
+    Map midFcstInfoMaxList,
+    Map midFcstInfoMinList,
     Map midFcstLandInfoList,
+    Map midFcstLandInfoAmList,
+    Map midFcstLandInfoPmList,
     String curr_temp,
     String sky,
     String max_temp,
@@ -180,6 +205,12 @@ class WeatherState {
       sunset: sunset ?? this.sunset,
       midFcstInfoList: midFcstInfoList ?? this.midFcstInfoList,
       midFcstLandInfoList: midFcstLandInfoList ?? this.midFcstLandInfoList,
+      midFcstInfoMaxList: midFcstInfoMaxList ?? this.midFcstInfoMaxList,
+      midFcstInfoMinList: midFcstInfoMinList ?? this.midFcstInfoMinList,
+      midFcstLandInfoAmList: midFcstLandInfoAmList ?? this.midFcstLandInfoAmList,
+      midFcstLandInfoPmList: midFcstLandInfoPmList ?? this.midFcstLandInfoPmList,
+      precip_type_byDate: precip_type_byDate ?? this.precip_type_byDate,
+      sky_type_byDate: sky_type_byDate ?? this.sky_type_byDate,
     );
   }
 
@@ -202,8 +233,14 @@ class WeatherState {
     List<Weather> long_sky,
     List<Weather> long_wind_dir,
     List<Weather> long_wind_sp,
+    List<Weather> precip_type_byDate,
+    List<Weather> sky_type_byDate,
     Map midFcstInfoList,
+    Map midFcstInfoMaxList,
+    Map midFcstInfoMinList,
     Map midFcstLandInfoList,
+    Map midFcstLandInfoAmList,
+    Map midFcstLandInfoPmList,
     String curr_temp,
     String sky,
     String max_temp,
@@ -250,6 +287,12 @@ class WeatherState {
       sunset: sunset,
       midFcstInfoList: midFcstInfoList,
       midFcstLandInfoList: midFcstLandInfoList,
+      midFcstInfoMaxList: midFcstInfoMaxList,
+      midFcstInfoMinList: midFcstInfoMinList,
+      midFcstLandInfoAmList: midFcstLandInfoAmList,
+      midFcstLandInfoPmList: midFcstLandInfoPmList,
+      precip_type_byDate: precip_type_byDate,
+      sky_type_byDate: sky_type_byDate,
     );
   }
 
@@ -274,8 +317,14 @@ class WeatherState {
     long_sky: ${long_sky.length},
     long_wind_dir: ${long_wind_dir.length},
     long_wind_sp: ${long_wind_sp.length},
+    precip_type_byDate: ${precip_type_byDate.length},
+    sky_type_byDate: ${sky_type_byDate.length},
     midFcstInfoList: ${midFcstInfoList.length},
+    midFcstInfoMaxList: ${midFcstInfoMaxList.length},
+    midFcstInfoMinList: ${midFcstInfoMinList.length},
     midFcstLandInfoList: ${midFcstLandInfoList.length},
+    midFcstLandInfoAmList: ${midFcstLandInfoAmList.length},
+    midFcstLandInfoPmList: ${midFcstLandInfoPmList.length},
     curr_temp: ${curr_temp},
     sky: ${sky},
     max_temp: ${max_temp},
