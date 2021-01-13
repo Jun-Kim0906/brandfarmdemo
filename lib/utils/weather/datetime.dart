@@ -16,6 +16,7 @@ String daysOfWeek({int index, bool shorter = false}) {
 }
 
 String base_date = '$year$month$day';
+String base_date_time = '$year$month$day$hour$minute';
 String base_time = '$hour$minute';
 List<String> villageFcstBT = ['02', '05', '08', '11', '14', '17', '20', '23'];
 
