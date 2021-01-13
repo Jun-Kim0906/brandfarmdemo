@@ -183,7 +183,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     longWeatherInfo = await http.get(
         '$villageFcstHeader&base_date=$today_long&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
 
-    // print('$villageFcstHeader&base_date=$base_date&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
+    // print('$villageFcstHeader&base_date=$today_long&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
 
     if (longWeatherInfo.statusCode == 200) {
       json
@@ -216,7 +216,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       });
       List<Weather> pt = [];
       List<Weather> sky = [];
-      DateTime tmpDate = now;
+      DateTime tmpDate = DateTime.now();
       // print(tmpDate);
       long_precip_type.forEach((data) {
         if(formatDate(tmpDate, [yyyy,mm,dd]).toString() == data.fcstDate.toString()) {
