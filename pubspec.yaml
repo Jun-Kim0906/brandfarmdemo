@@ -46,6 +46,9 @@ flutter:
     - family: Roboto
       fonts:
         - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+    - family:  BrandFarmIcons
+      fonts:
+        - asset: assets/icons/setting_icon.ttf
     - family: Weather
       fonts:
         - asset: assets/fonts/Weather/Weather.ttf
