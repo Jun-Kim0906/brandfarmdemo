@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FarmThemeData {
-  static const _lightFillColor = Colors.black;
+  static const _lightFillColor = Color(0xff343434);
   static const _darkFillColor = Colors.white;
 
   static final Color _lightFocusColor = Colors.black.withOpacity(0.12);
@@ -19,9 +19,9 @@ class FarmThemeData {
   static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
     return ThemeData(
       colorScheme: colorScheme,
-      textTheme: _textTheme.apply(displayColor: Color(0xff343434)),
+      textTheme: _textTheme.apply(displayColor: Color(0xff343434), fontFamily: GoogleFonts.roboto().fontFamily),
       // Matches manifest.json colors and background color.
-      primaryColor: const Color(0xFF030303),
+      primaryColor: colorScheme.primary,
       appBarTheme: AppBarTheme(
         textTheme: _textTheme.apply(bodyColor: colorScheme.onPrimary),
         color: colorScheme.background,
@@ -35,14 +35,17 @@ class FarmThemeData {
       highlightColor: Colors.transparent,
       accentColor: colorScheme.primary,
       focusColor: focusColor,
-      snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Color.alphaBlend(
-          _lightFillColor.withOpacity(0.80),
-          _darkFillColor,
-        ),
-        contentTextStyle: _textTheme.subtitle1.apply(color: _darkFillColor),
-      ),
+      // snackBarTheme: SnackBarThemeData(
+      //   behavior: SnackBarBehavior.floating,
+      //   backgroundColor: Color.alphaBlend(
+      //     _lightFillColor.withOpacity(0.80),
+      //     _darkFillColor,
+      //   ),
+      //   contentTextStyle: _textTheme.subtitle1.apply(color: _darkFillColor),
+      // ),
+      buttonTheme: ButtonThemeData(
+        disabledColor: Color(0xfd888888),
+      )
     );
   }
 
@@ -84,17 +87,18 @@ class FarmThemeData {
   static const _bold = FontWeight.w700;
 
   static final TextTheme _textTheme = TextTheme(
-    headline2: GoogleFonts.roboto(fontWeight: _bold, fontSize: 52.0),
-    headline3: GoogleFonts.roboto(fontWeight: _bold, fontSize: 45.0),
+    headline1: GoogleFonts.roboto(fontWeight: _bold, fontSize: 52.0),
+    headline2: GoogleFonts.roboto(fontWeight: _bold, fontSize: 45.0),
+    headline3: GoogleFonts.roboto(fontWeight: _bold, fontSize: 24.0),
     headline4: GoogleFonts.roboto(fontWeight: _bold, fontSize: 20.0),
     headline5: GoogleFonts.roboto(fontWeight: _medium, fontSize: 16.0),
-    headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 16.0),
-    caption: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 16.0),
-    overline: GoogleFonts.roboto(fontWeight: _medium, fontSize: 12.0),
-    button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
+    headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 13.0),
     subtitle1: GoogleFonts.roboto(fontWeight: _medium, fontSize: 16.0),
     subtitle2: GoogleFonts.roboto(fontWeight: _medium, fontSize: 14.0),
-    bodyText1: GoogleFonts.roboto(fontWeight: _regular, fontSize: 14.0),
-    bodyText2: GoogleFonts.roboto(fontWeight: _regular, fontSize: 16.0),
+    bodyText1: GoogleFonts.roboto(fontWeight: _regular, fontSize: 16.0),
+    bodyText2: GoogleFonts.roboto(fontWeight: _regular, fontSize: 14.0),
+    caption: GoogleFonts.roboto(fontWeight: _bold, fontSize: 8.0),
+    overline: GoogleFonts.roboto(fontWeight: _medium, fontSize: 12.0),
+    button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
   );
 }

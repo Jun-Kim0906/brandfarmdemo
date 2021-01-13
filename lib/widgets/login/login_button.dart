@@ -15,7 +15,6 @@ class LoginButton extends StatelessWidget {
       height: 50.0,
       child: RaisedButton(
         padding: EdgeInsets.all(0.0),
-        disabledColor: Color(0xfd888888),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),

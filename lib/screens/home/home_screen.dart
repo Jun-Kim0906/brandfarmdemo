@@ -6,15 +6,21 @@ import 'package:BrandFarm/blocs/authentication/bloc.dart';
 //screen
 import 'package:BrandFarm/layout/adaptive.dart';
 import 'package:BrandFarm/screens/field/field_detail_screen.dart';
+
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 
+
 //flutter
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 //util
 import 'package:BrandFarm/utils/todays_date.dart';
+
+import 'package:BrandFarm/widgets/brandfarm_icons.dart';
+import 'package:BrandFarm/widgets/department_badge.dart';
 
 //plugin
 import 'package:badges/badges.dart';
@@ -93,10 +99,58 @@ class _HomeScreenState extends State<HomeScreen> {
                 preferredSize: Size.fromHeight(80.0),
                 child: _AppBarContents(),
               ),
-              body: Center(
-                child: Text(
-                  name,
-                ),
+              body: ListView(
+                physics: ClampingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '$year년 $month월 $day일 $weekday',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              DepartmentBadge(department: 'field',),
+                              SizedBox(width: 4.0,),
+                              Text('$name', style: Theme.of(context).textTheme.headline3.copyWith(fontWeight: FontWeight.bold)),
+                              Text(' 님, 안녕하세요', style:  Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),)
+                            ],
+                          )
+                        ],
+                      ),
+                      Spacer(),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xffbfbfbf),
+                              offset: Offset(0.0, 4.0),
+                              spreadRadius: 2.0,
+                              blurRadius: 4.0,
+                            )
+                          ]
+                        ),
+                        child: CircleAvatar(
+                          radius: 34.0,
+                          backgroundImage: NetworkImage(
+                            'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70'
+                          )
+                        ),
+                      )
+                    ],
+                  )
+                ],
               ),
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
@@ -128,7 +182,7 @@ class _AppBarContents extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
               IconButton(
@@ -142,46 +196,36 @@ class _AppBarContents extends StatelessWidget {
                 },
               ),
               Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Badge(
-                        position: BadgePosition.topEnd(top: 2, end: 8),
-                        badgeContent: Text(
-                          '2',
-                          style: TextStyle(color: Colors.white, fontSize: 14.0),
-                        ),
-                        child: IconButton(
-                          iconSize: 40.0,
-                          icon: Icon(
-                            Icons.notifications_none_sharp,
-                          ),
-                          onPressed: () {
-                            Navigator.push(
+              Badge(
+                position: BadgePosition.topEnd(top: 2, end: 8),
+                badgeContent: Text(
+                  '2',
+                  style: TextStyle(color: Colors.white, fontSize: 14.0),
+                ),
+                child: IconButton(
+                  iconSize: 40.0,
+                  icon: Icon(
+                    Icons.notifications_none_sharp,
+                  ),
+                  onPressed: () {
+                  Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => NotificationListScreen(),
                               ),
                             );
-                          },
-                        ),
-                        padding: EdgeInsets.all(4.5),
-                      ),
-                      IconButton(
-                          iconSize: 40.0,
-                          icon: Icon(Icons.settings),
-                          onPressed: () {})
-                    ],
+                  },
+                ),
+                padding: EdgeInsets.all(4.5),
+              ),
+              IconButton(
+                  iconSize: 35.0,
+                  icon: Icon(
+                      BrandFarmIcons.settings,
+
                   ),
-                  Text(
-                    '$year년 $month월 $day일 $weekday',
-                    style: Theme.of(context).textTheme.bodyText2,
+                  onPressed: () {}
                   )
-                ],
-              )
             ],
           ),
         )
