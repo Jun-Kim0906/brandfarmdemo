@@ -1,4 +1,5 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/weather/weather_icons.dart';
@@ -117,19 +118,26 @@ class _WeatherMainState extends State<WeatherMain> {
                                 child: ListView(
                                   children: [
                                     Container(
-                                      height: 18.64,
+                                      padding: EdgeInsets.all(0),
+                                      margin: EdgeInsets.all(0),
+                                      height: 30,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          IconButton(
-                                            icon: Icon(
+                                          FlatButton(
+                                            padding: EdgeInsets.all(0),
+                                            height: 30,
+                                            minWidth: 1,
+                                            child: Icon(
                                               Icons.refresh,
                                               color: Colors.white,
                                               size: 25,
                                             ),
                                             onPressed: () {
                                               print('refresh button pressed');
+                                              _weatherBloc.add(Wait_Fetch_Weather());
+                                              _weatherBloc.add(GetWeatherInfo());
                                             },
                                           ),
                                         ],
@@ -156,17 +164,13 @@ class _WeatherMainState extends State<WeatherMain> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '최고: ' +
-                                                    state.max_temp +
-                                                    degrees,
+                                                '최고: ' + doubleToInt(str: state.max_temp) + degrees,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),
                                               ),
                                               Text(
-                                                '최저: ' +
-                                                    state.min_temp +
-                                                    degrees,
+                                                '최저: ' + doubleToInt(str: state.min_temp) + degrees,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),
@@ -281,7 +285,8 @@ class _WeatherMainState extends State<WeatherMain> {
                               decoration: BoxDecoration(
                                 color: Color(0x30FFFFFF),
                                 borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(150), topLeft: Radius.circular(15)),
+                                    bottomRight: Radius.circular(150),
+                                    topLeft: Radius.circular(15)),
                               ),
                             ),
                           ),
@@ -294,7 +299,8 @@ class _WeatherMainState extends State<WeatherMain> {
                               decoration: BoxDecoration(
                                 color: Color(0x20FFFFFF),
                                 borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(150), topLeft: Radius.circular(15)),
+                                    bottomRight: Radius.circular(150),
+                                    topLeft: Radius.circular(15)),
                               ),
                             ),
                           ),

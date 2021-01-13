@@ -3,6 +3,7 @@ import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/weather/datetime.dart';
 import 'package:BrandFarm/utils/weather/weather_icons.dart';
+import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,357 +44,399 @@ class _WeatherDetailState extends State<WeatherDetail> {
     return BlocBuilder<WeatherBloc, WeatherState>(
         cubit: _weatherBloc,
         builder: (context, state) {
-          return Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              title: Text(
-                fieldName,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              actions: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.white,
-                  size: 14,
-                ),
-                Center(
-                    child: Text(
-                  curr_addr,
-                  style: TextStyle(fontSize: 12),
-                )),
-              ],
-            ),
-            body: Stack(
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [
-                        0.1032,
-                        0.3218,
-                        0.4822,
-                        0.6571,
-                        0.7919,
-                      ],
-                      colors: [
-                        Color(0xFF82BFED),
-                        Color(0xFF80D0F6),
-                        Color(0xFF6BDCFF),
-                        Color(0xFFADEBFF),
-                        Color(0xFF7BE7FF),
-                      ],
+          return (state.isLoading == true)
+              ? Loading()
+              : Scaffold(
+                  extendBodyBehindAppBar: true,
+                  appBar: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0.0,
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
+                    title: Text(
+                      fieldName,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    actions: [
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                      Center(
+                          child: Text(
+                        curr_addr,
+                        style: TextStyle(fontSize: 12),
+                      )),
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
-                    child: ListView(
-                      children: [
-                        Container(
-                          height: 18.64,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.refresh,
-                                  color: Colors.white,
-                                  size: 25,
-                                ),
-                                onPressed: () {
-                                  print('refresh button pressed');
-                                },
-                              ),
+                  body: Stack(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [
+                              0.1032,
+                              0.3218,
+                              0.4822,
+                              0.6571,
+                              0.7919,
+                            ],
+                            colors: [
+                              Color(0xFF82BFED),
+                              Color(0xFF80D0F6),
+                              Color(0xFF6BDCFF),
+                              Color(0xFFADEBFF),
+                              Color(0xFF7BE7FF),
                             ],
                           ),
                         ),
-                        Column(
-                          children: [
-                            sky_type(
-                                precipType: state.precip_type.toString() ??
-                                    'Error precip is empty',
-                                skyType: state.sky.toString() ??
-                                    'Error sky is empty'),
-                            Text(
-                              state.curr_temp,
-                              style:
-                                  TextStyle(fontSize: 70, color: Colors.white),
-                            ),
-                            Container(
-                              width: 140,
-                              child: Row(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
+                          child: ListView(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(0),
+                                margin: EdgeInsets.all(0),
+                                height: 30,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    FlatButton(
+                                      padding: EdgeInsets.all(0),
+                                      height: 30,
+                                      minWidth: 1,
+                                      child: Icon(
+                                        Icons.refresh,
+                                        color: Colors.white,
+                                        size: 25,
+                                      ),
+                                      onPressed: () {
+                                        print('refresh button pressed');
+                                        _weatherBloc.add(Wait_Fetch_Weather());
+                                        _weatherBloc.add(GetWeatherInfo());
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  sky_type(
+                                      precipType:
+                                          state.precip_type.toString() ??
+                                              'Error precip is empty',
+                                      skyType: state.sky.toString() ??
+                                          'Error sky is empty'),
+                                  Text(
+                                    state.curr_temp,
+                                    style: TextStyle(
+                                        fontSize: 70, color: Colors.white),
+                                  ),
+                                  Container(
+                                    width: 140,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '최고: ' +
+                                              doubleToInt(str: state.max_temp) +
+                                              degrees,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                        Text(
+                                          '최저: ' +
+                                              doubleToInt(str: state.min_temp) +
+                                              degrees,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 45,
+                              ),
+                              Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '최고: ' + state.max_temp + degrees,
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '일몰',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                        circle(
+                                            info: state.sunset ?? '0630',
+                                            type: weather_circle_type.sunset),
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    '최저: ' + state.min_temp + degrees,
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '강수확률',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                        circle(
+                                            info: state.prob_of_precip,
+                                            type: weather_circle_type
+                                                .prob_of_precip),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '강수량',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                        circle(
+                                            info: state.precip,
+                                            type: weather_circle_type.precip),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '습도',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                        circle(
+                                            info: state.humidity,
+                                            type: weather_circle_type.humidity),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '바람',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        ),
+                                        circle(
+                                            info: state.windSP,
+                                            windDir: state.windDIR,
+                                            type:
+                                                weather_circle_type.wind_info),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 45,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '일몰',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  circle(
-                                      info: state.sunset ?? '0630',
-                                      type: weather_circle_type.sunset),
-                                ],
+                              Divider(
+                                color: Colors.white,
+                                thickness: 0.4,
                               ),
-                            ),
-                            Flexible(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '강수확률',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  circle(
-                                      info: state.prob_of_precip,
-                                      type: weather_circle_type.prob_of_precip),
-                                ],
-                              ),
-                            ),
-                            Flexible(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '강수량',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  circle(
-                                      info: state.precip,
-                                      type: weather_circle_type.precip),
-                                ],
-                              ),
-                            ),
-                            Flexible(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '습도',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  circle(
-                                      info: state.humidity,
-                                      type: weather_circle_type.humidity),
-                                ],
-                              ),
-                            ),
-                            Flexible(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '바람',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  circle(
-                                      info: state.windSP,
-                                      windDir: state.windDIR,
-                                      type: weather_circle_type.wind_info),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          color: Colors.white,
-                          thickness: 0.4,
-                        ),
-                        Container(
-                          height: 80,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  physics: ClampingScrollPhysics(),
-                                  itemCount: state.long_temp.length,
-                                  itemBuilder: (context, index) {
-                                    if (index == 0) {
-                                      return Row(
-                                        children: [
-                                          horizontal_view(
-                                            time:
-                                                state.long_temp[index].fcstTime,
-                                            skyType:
-                                                state.long_sky[index].fcstValue,
-                                            precipType: state
-                                                .long_precip_type[index]
-                                                .fcstValue,
-                                            temp: state
-                                                .long_temp[index].fcstValue,
-                                            now: 1,
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                        ],
-                                      );
-                                    } else {
-                                      return Row(
-                                        children: [
-                                          horizontal_view(
-                                            time:
-                                                state.long_temp[index].fcstTime,
-                                            skyType:
-                                                state.long_sky[index].fcstValue,
-                                            precipType: state
-                                                .long_precip_type[index]
-                                                .fcstValue,
-                                            temp: state
-                                                .long_temp[index].fcstValue,
-                                            now: 0,
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  },
+                              Container(
+                                height: 80,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        shrinkWrap: true,
+                                        physics: ClampingScrollPhysics(),
+                                        itemCount: state.long_temp.length,
+                                        itemBuilder: (context, index) {
+                                          if (index == 0) {
+                                            return Row(
+                                              children: [
+                                                horizontal_view(
+                                                  time: state.long_temp[index]
+                                                      .fcstTime,
+                                                  skyType: state.long_sky[index]
+                                                      .fcstValue,
+                                                  precipType: state
+                                                      .long_precip_type[index]
+                                                      .fcstValue,
+                                                  temp: state.long_temp[index]
+                                                      .fcstValue,
+                                                  now: 1,
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                              ],
+                                            );
+                                          } else {
+                                            return Row(
+                                              children: [
+                                                horizontal_view(
+                                                  time: state.long_temp[index]
+                                                      .fcstTime,
+                                                  skyType: state.long_sky[index]
+                                                      .fcstValue,
+                                                  precipType: state
+                                                      .long_precip_type[index]
+                                                      .fcstValue,
+                                                  temp: state.long_temp[index]
+                                                      .fcstValue,
+                                                  now: 0,
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                                thickness: 0.4,
+                              ),
+                              Container(
+                                height: 235,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      vertical_view(
+                                        date: daysOfWeek(index: now.weekday),
+                                        icon: long_sky_list(
+                                            precip_type: state
+                                                .precip_type_byDate[0]
+                                                .fcstValue,
+                                            skyType: state
+                                                .sky_type_byDate[0].fcstValue,
+                                            index: 0),
+                                        info: doubleToInt(
+                                          str: state.max_temp,
+                                        ),
+                                        info2: doubleToInt(
+                                          str: state.min_temp,
+                                        ),
+                                      ),
+                                      ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        physics: ClampingScrollPhysics(),
+                                        itemCount: 2,
+                                        itemBuilder: (context, index) {
+                                          return vertical_view(
+                                            date: daysOfWeek(
+                                                index: now
+                                                    .add(Duration(
+                                                        days: index + 1))
+                                                    .weekday),
+                                            icon: long_sky_list(
+                                                precip_type: state
+                                                    .precip_type_byDate[
+                                                        index + 1]
+                                                    .fcstValue,
+                                                skyType: state
+                                                    .sky_type_byDate[index + 1]
+                                                    .fcstValue,
+                                                index: index + 1),
+                                            info: doubleToInt(
+                                              str: state.long_maxTemp[index + 1]
+                                                  .fcstValue,
+                                            ),
+                                            info2: doubleToInt(
+                                              str: state.long_minTemp[index]
+                                                  .fcstValue,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        physics: ClampingScrollPhysics(),
+                                        itemCount:
+                                            state.midFcstLandInfoAmList.length,
+                                        itemBuilder: (context, index) {
+                                          var max = state
+                                              .midFcstInfoMaxList.entries
+                                              .toList();
+                                          var min = state
+                                              .midFcstInfoMinList.entries
+                                              .toList();
+                                          var skyList = state
+                                              .midFcstLandInfoAmList.entries
+                                              .toList();
+                                          return vertical_view(
+                                            date: daysOfWeek(
+                                                index: now
+                                                    .add(Duration(
+                                                        days: index + 3))
+                                                    .weekday),
+                                            icon: skyList[index].value,
+                                            info: max[index].value,
+                                            info2: min[index].value,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                                thickness: 0.4,
                               ),
                             ],
                           ),
                         ),
-                        Divider(
-                          color: Colors.white,
-                          thickness: 0.4,
+                      ),
+                      Container(
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          color: Color(0x30FFFFFF),
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(150)),
                         ),
-                        Container(
-                          height: 235,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                vertical_view(
-                                  date: daysOfWeek(index: now.weekday),
-                                  icon: long_sky_list(
-                                      precip_type:
-                                          state.precip_type_byDate[0].fcstValue,
-                                      skyType:
-                                          state.sky_type_byDate[0].fcstValue,
-                                      index: 0),
-                                  info: state.max_temp,
-                                  info2: state.min_temp,
-                                ),
-                                ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  physics: ClampingScrollPhysics(),
-                                  itemCount: 2,
-                                  itemBuilder: (context, index) {
-                                    return vertical_view(
-                                      date: daysOfWeek(
-                                          index: now
-                                              .add(Duration(days: index + 1))
-                                              .weekday),
-                                      icon: long_sky_list(
-                                          precip_type: state
-                                              .precip_type_byDate[index + 1]
-                                              .fcstValue,
-                                          skyType: state
-                                              .sky_type_byDate[index + 1]
-                                              .fcstValue,
-                                          index: index + 1),
-                                      info: state
-                                          .long_maxTemp[index + 1].fcstValue,
-                                      info2:
-                                          state.long_minTemp[index].fcstValue,
-                                    );
-                                  },
-                                ),
-                                ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  physics: ClampingScrollPhysics(),
-                                  itemCount: state.midFcstLandInfoAmList.length,
-                                  itemBuilder: (context, index) {
-                                    var max = state.midFcstInfoMaxList.entries
-                                        .toList();
-                                    var min = state.midFcstInfoMinList.entries
-                                        .toList();
-                                    var skyList = state
-                                        .midFcstLandInfoAmList.entries
-                                        .toList();
-                                    return vertical_view(
-                                      date: daysOfWeek(
-                                          index: now
-                                              .add(Duration(days: index + 3))
-                                              .weekday),
-                                      icon: skyList[index].value,
-                                      info: max[index].value,
-                                      info2: min[index].value,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                      ),
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Color(0x20FFFFFF),
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(150)),
                         ),
-                        Divider(
-                          color: Colors.white,
-                          thickness: 0.4,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-                Container(
-                  width: 110,
-                  height: 110,
-                  decoration: BoxDecoration(
-                    color: Color(0x30FFFFFF),
-                    borderRadius:
-                        BorderRadius.only(bottomRight: Radius.circular(150)),
-                  ),
-                ),
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Color(0x20FFFFFF),
-                    borderRadius:
-                        BorderRadius.only(bottomRight: Radius.circular(150)),
-                  ),
-                ),
-              ],
-            ),
-          );
+                );
         });
   }
 
@@ -487,26 +530,13 @@ class _WeatherDetailState extends State<WeatherDetail> {
 
   Widget circleStyle_gradient(
       {String info, String info2, double font_size, double font_size2}) {
-    var top = double.parse(info);
-    var bottom = 100 - top;
-    var top_dec = top / 100;
-    var bottom_dec = bottom / 100;
-    // print('$top, $bottom, $top_dec, $bottom_dec');
     return Container(
       width: 64,
       height: 64,
       decoration: BoxDecoration(
 //        color: Color(0x20FFFFFF),
         shape: BoxShape.circle,
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [top_dec, bottom_dec],
-          colors: [
-            Color(0x20FFFFFF),
-            Color(0xFF75BDFF),
-          ],
-        ),
+        gradient: getGradient(num: info),
       ),
       child: Center(
         child: Row(
@@ -532,6 +562,51 @@ class _WeatherDetailState extends State<WeatherDetail> {
         ),
       ),
     );
+  }
+
+  LinearGradient getGradient({String num}) {
+    var amt = int.parse(num); // amount
+    var tmp = 100 - amt;
+    var amt_dec = tmp / 100; // decimal value
+    // print('$amt, $amt_dec');
+    switch (amt) {
+      case 0:
+        {
+          return LinearGradient(
+            colors: [
+              Color(0x20FFFFFF),
+              Color(0x20FFFFFF),
+            ],
+          );
+        }
+        break;
+      case 100:
+        {
+          return LinearGradient(
+            colors: [
+              Color(0xFF75BDFF),
+              Color(0xFF75BDFF),
+            ],
+          );
+        }
+        break;
+      default:
+        {
+          return LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [
+              amt_dec,
+              amt_dec,
+            ],
+            colors: [
+              Color(0x20FFFFFF),
+              Color(0xFF75BDFF),
+            ],
+          );
+        }
+        break;
+    }
   }
 
   Widget circleStyle_row(

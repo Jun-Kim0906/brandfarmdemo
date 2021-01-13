@@ -78,14 +78,14 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String lon_min = '12923';
     String lat_min = '3601';
     String lon_min = '12920';
-    String base_date = '20210112';
+    String base_date = '20210113';
     String short_base_time = '0630';
     String long_base_time = '0500';
     // String regId = '11H10201';
     String regId = regionCode(
       region: '포항',
     );
-    String dt = '202101120600';
+    String dt = '202101130600';
     String regLnCode = regionLandCode(region: '경상북도');
 
     double num_lat = double.parse(str_lat);
@@ -170,7 +170,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       List<Weather> pt = [];
       List<Weather> sky = [];
       DateTime now = DateTime.parse(base_date);
-      print(now);
+      // print(now);
       long_precip_type.forEach((data) {
         if(formatDate(now, [yyyy,mm,dd]).toString() == data.fcstDate.toString()) {
           pt.add(data);
@@ -180,8 +180,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           print('date not matching');
         }
       });
-      print(pt.length);
-      print(sky.length);
+      // print(pt.length);
+      // print(sky.length);
       precip_type_byDate = pt;
       sky_type_byDate = sky;
       // weather_info = await fetchWeatherInfo(weatherInfo);
@@ -197,8 +197,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // print(short_temp.cast());
     // print(long_precip_type.length);
     // print(short_precip.cast());
-    print(long_minTemp.length);
-    print(long_maxTemp.length);
+    // print(long_minTemp.length);
+    // print(long_maxTemp.length);
     // print(long_sky.length);
     // print(long_probOfPrecip.cast());
 

@@ -2,6 +2,16 @@
 
 import 'package:BrandFarm/blocs/weather/weather_state.dart';
 
+String doubleToInt({String str}){
+  if(str == '0' || str == null || str == "") {
+    return '0';
+  }
+  var dNum = double.parse(str);
+  var iNum = dNum.toInt();
+  print(dNum);
+  return iNum.toString();
+}
+
 String getAmPm({String time}) {
   String half_time;
   String tmp;
