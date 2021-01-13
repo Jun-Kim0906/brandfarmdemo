@@ -366,7 +366,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                                     .fcstValue,
                                                 index: index + 1),
                                             info: doubleToInt(
-                                              str: state.long_maxTemp[index + 1]
+                                              str: state.long_maxTemp[index]
                                                   .fcstValue,
                                             ),
                                             info2: doubleToInt(

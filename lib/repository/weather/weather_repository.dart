@@ -8,7 +8,7 @@ String doubleToInt({String str}){
   }
   var dNum = double.parse(str);
   var iNum = dNum.toInt();
-  print(dNum);
+  // print(dNum);
   return iNum.toString();
 }
 

@@ -6,6 +6,7 @@ import 'package:BrandFarm/models/weather/weather_model.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/weather/api_addr.dart';
 import 'package:BrandFarm/utils/weather/convert_grid_gps.dart';
+import 'package:BrandFarm/utils/weather/datetime.dart';
 import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -78,9 +79,13 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String lon_min = '12923';
     String lat_min = '3601';
     String lon_min = '12920';
-    String base_date = '20210113';
-    String short_base_time = '0630';
-    String long_base_time = '0500';
+    // String base_date = '20210113';
+    // String short_base_time = '0630';
+    // String long_base_time = '0500';
+    String today_short;
+    String today_long;
+    String short_base_time;
+    String long_base_time;
     // String regId = '11H10201';
     String regId = regionCode(
       region: '포항',
@@ -97,10 +102,46 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     int gridY = point.y;
     // print('$gridX, $gridY');
 
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
+    DateTime now = DateTime.now();
+    // short fcst
+    int request_time = now.minute < 30 ? 30 : 0;
+
+    short_base_time =
+        "${(now.subtract(Duration(minutes: request_time)).toIso8601String().substring(0, 16))}";
+    today_short = short_base_time.substring(0, 10).replaceAll('-', '');
+    short_base_time = short_base_time.substring(11, 16).replaceAll(":", "");
+
+    // long fcst
+    int requestTime = 0;
+
+    if (now.hour % 3 == 0) {
+      requestTime = 1;
+    } else if (now.hour % 3 == 1) {
+      requestTime = 2;
+    } else {
+      requestTime = 3;
+    }
+
+    long_base_time =
+        "${(now.subtract(Duration(hours: requestTime)).toIso8601String().substring(0, 16))}";
+    today_long = long_base_time.substring(0, 10).replaceAll('-', '');
+    long_base_time = long_base_time.substring(11, 16).replaceAll(":", "");
+
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
+
     http.Response shortWeatherInfo;
 
     shortWeatherInfo = await http.get(
-        '$ultraSrtFcstHeader&base_date=$base_date&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
+        '$ultraSrtFcstHeader&base_date=$today_short&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
 
     // print('$ultraSrtFcstHeader&base_date=$base_date&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
 
@@ -131,10 +172,16 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       throw Exception('Failed to fetch short weather info');
     }
 
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
+
     http.Response longWeatherInfo;
 
     longWeatherInfo = await http.get(
-        '$villageFcstHeader&base_date=$base_date&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
+        '$villageFcstHeader&base_date=$today_long&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
 
     // print('$villageFcstHeader&base_date=$base_date&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
 
@@ -169,13 +216,13 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       });
       List<Weather> pt = [];
       List<Weather> sky = [];
-      DateTime now = DateTime.parse(base_date);
-      // print(now);
+      DateTime tmpDate = now;
+      // print(tmpDate);
       long_precip_type.forEach((data) {
-        if(formatDate(now, [yyyy,mm,dd]).toString() == data.fcstDate.toString()) {
+        if(formatDate(tmpDate, [yyyy,mm,dd]).toString() == data.fcstDate.toString()) {
           pt.add(data);
           sky.add(data);
-          now = now.add(Duration(days: 1));
+          tmpDate = tmpDate.add(Duration(days: 1));
         } else {
           print('date not matching');
         }
@@ -213,6 +260,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     windSP = long_wind_sp.first.fcstValue;
     windDIR = long_wind_dir.first.fcstValue;
 
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
+
     http.Response sunRiseSetInfo;
     // sunRiseSetInfo = await http.get(
     //     '$riseSetLCInfoHeader&locdate=$base_date&hardness=$lon_min&latitude=$lat_min&dnYn=N');
@@ -235,6 +288,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       throw Exception('Failed to fetch sun rise & set info');
     }
     // print('$sun_set, $sun_rise');
+
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
 
     http.Response midFcstInfo;
     midFcstInfo = await http.get('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
@@ -266,6 +325,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       throw Exception('Failed to fetch mid fcst info');
     }
 
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
+
     http.Response midFcstLandInfo;
     midFcstLandInfo =
         await http.get('$midFcstLandInfoHeader&regId=$regLnCode&tmFc=$dt');
@@ -295,6 +360,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // print('${midFcstLandInfoPmList.entries.toList().length}');
     // print('${midFcstInfoList.entries.toList().length}');
     // print('${midFcstLandInfoList.entries.toList().length}');
+
+    /******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************
+     ******************************************************************************************/
 
     yield state.update(
       isLoading: false,
