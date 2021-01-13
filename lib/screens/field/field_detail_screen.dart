@@ -1,6 +1,6 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
-import 'package:BrandFarm/screens/test/test_screen.dart';
+// import 'package:BrandFarm/screens/test/test_screen.dart';
 import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/weather/weather_icons.dart';
@@ -322,17 +322,17 @@ class _WeatherMainState extends State<WeatherMain> {
                               ),
                             ],
                           ),
-                          RaisedButton(
-                            child: Text('Go To Test Page'),
-                              onPressed: (){
-                                print('test page');
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TestScreen()),
-                                );
-                              }
-                          ),
+                          // RaisedButton(
+                          //   child: Text('Go To Test Page'),
+                          //     onPressed: (){
+                          //       print('test page');
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => TestScreen()),
+                          //       );
+                          //     }
+                          // ),
                         ],
                       ),
                     ),
