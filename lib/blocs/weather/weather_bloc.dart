@@ -6,7 +6,7 @@ import 'package:BrandFarm/models/weather/weather_model.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/weather/api_addr.dart';
 import 'package:BrandFarm/utils/weather/convert_grid_gps.dart';
-import 'package:BrandFarm/utils/weather/datetime.dart';
+// import 'package:BrandFarm/utils/weather/datetime.dart';
 import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -79,7 +79,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String lon_min = '12923';
     String lat_min = '3601';
     String lon_min = '12920';
-    // String base_date = '20210113';
+    String base_date = '20210114';
     // String short_base_time = '0630';
     // String long_base_time = '0500';
     String today_short;
@@ -90,7 +90,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     String regId = regionCode(
       region: '포항',
     );
-    String dt = '202101130600';
+    String dt = '202101140600';
     String regLnCode = regionLandCode(region: '경상북도');
 
     double num_lat = double.parse(str_lat);
