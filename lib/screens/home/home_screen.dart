@@ -3,6 +3,7 @@ import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/screens/journal/journal_list_screen.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/rendering.dart';
 import 'package:quiver/time.dart';
 
@@ -53,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _isVisible = true;
     _hideBottomNavController = ScrollController();
     _hideBottomNavController.addListener(
-          () {
+      () {
         if (_hideBottomNavController.position.userScrollDirection ==
             ScrollDirection.reverse) {
           if (_isVisible)
@@ -77,7 +78,17 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
-    final List<Widget> _children = [Home(hideBottomNavController: _hideBottomNavController, name: name,),Home(), JournalListScreen(scrollController: _hideBottomNavController,), Container()];
+    final List<Widget> _children = [
+      Home(
+        hideBottomNavController: _hideBottomNavController,
+        name: name,
+      ),
+      Home(),
+      JournalListScreen(
+        scrollController: _hideBottomNavController,
+      ),
+      Container()
+    ];
 
     return BlocListener(
       cubit: _homeBloc,
@@ -129,7 +140,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 preferredSize: Size.fromHeight(80.0),
                 child: _AppBarContents(),
               ),
-              body: _children[state.currentIndex],
+              body: PageTransitionSwitcher(
+                transitionBuilder: (
+                    Widget child,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    ) {
+                  return FadeThroughTransition(
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    child: child,
+                  );
+                },
+                child: _children[state.currentIndex],
+              ),
               floatingActionButton: FloatingActionButton(
                 heroTag: 'home',
                 child: Icon(Icons.add),
@@ -156,10 +180,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       currentIndex: state.currentIndex,
                       backgroundColor: colorScheme.surface,
                       selectedItemColor: colorScheme.onSurface,
-                      unselectedItemColor: colorScheme.onSurface.withOpacity(.60),
+                      unselectedItemColor:
+                          colorScheme.onSurface.withOpacity(.60),
                       selectedLabelStyle: textTheme.caption,
                       unselectedLabelStyle: textTheme.caption,
-                      onTap: (value){
+                      onTap: (value) {
                         _homeBloc.add(BottomNavBarClicked(index: value));
                       },
                       items: [
@@ -194,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class Home extends StatelessWidget {
   Home({this.hideBottomNavController, this.name});
+
   final ScrollController hideBottomNavController;
   final String name;
 
@@ -245,8 +271,7 @@ class Home extends StatelessWidget {
             ),
             Spacer(),
             Container(
-              decoration:
-              BoxDecoration(shape: BoxShape.circle, boxShadow: [
+              decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
                 BoxShadow(
                   color: Color(0xffbfbfbf),
                   offset: Offset(0.0, 4.0),
@@ -275,7 +300,6 @@ class Home extends StatelessWidget {
     );
   }
 }
-
 
 class _AppBarContents extends StatelessWidget {
   @override
