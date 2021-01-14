@@ -24,8 +24,8 @@ class LoginButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
             gradient: LinearGradient(
               colors: <Color>[
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primaryVariant,
+                Color(0xff27D878),
+                Color(0xff5AC8E0),
               ]
             )
           ) : null,

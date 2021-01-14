@@ -73,10 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int _currentIndex = 0;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
+    final List<Widget> _children = [Home(hideBottomNavController: _hideBottomNavController, name: name,),Home(), Container(), Container()];
+
     return BlocListener(
       cubit: _homeBloc,
       listener: (BuildContext context, HomeState state) {},
@@ -126,80 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 preferredSize: Size.fromHeight(80.0),
                 child: _AppBarContents(),
               ),
-              body: ListView(
-                physics: ClampingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                controller: _hideBottomNavController,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$year년 $month월 $day일 $weekday',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              DepartmentBadge(
-                                department: 'field',
-                              ),
-                              SizedBox(
-                                width: 4.0,
-                              ),
-                              Text('$name',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      .copyWith(fontWeight: FontWeight.bold)),
-                              Text(
-                                ' 님, 안녕하세요',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                      Spacer(),
-                      Container(
-                        decoration:
-                            BoxDecoration(shape: BoxShape.circle, boxShadow: [
-                          BoxShadow(
-                            color: Color(0xffbfbfbf),
-                            offset: Offset(0.0, 4.0),
-                            spreadRadius: 2.0,
-                            blurRadius: 4.0,
-                          )
-                        ]),
-                        child: CircleAvatar(
-                            radius: 34.0,
-                            backgroundImage: NetworkImage(
-                                'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70')),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 32.0),
-                  _Announce(),
-                  SizedBox(
-                    height: 17,
-                  ),
-                  _HomeCalendar(),
-                  SizedBox(
-                    height: 19.0,
-                  ),
-                  FMHomeScreenWidget(),
-                ],
-              ),
+              body: _children[state.currentIndex],
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
                 onPressed: () {
@@ -222,15 +150,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     BottomNavigationBar(
                       type: BottomNavigationBarType.fixed,
-                      currentIndex: _currentIndex,
+                      currentIndex: state.currentIndex,
                       backgroundColor: colorScheme.surface,
                       selectedItemColor: colorScheme.onSurface,
                       unselectedItemColor: colorScheme.onSurface.withOpacity(.60),
                       selectedLabelStyle: textTheme.caption,
                       unselectedLabelStyle: textTheme.caption,
-                      onTap: (value) {
-                        // Respond to item press.
-                        setState(() => _currentIndex = value);
+                      onTap: (value){
+                        _homeBloc.add(BottomNavBarClicked(index: value));
                       },
                       items: [
                         BottomNavigationBarItem(
@@ -261,6 +188,90 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+class Home extends StatelessWidget {
+  Home({this.hideBottomNavController, this.name});
+  final ScrollController hideBottomNavController;
+  final String name;
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      physics: ClampingScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      controller: hideBottomNavController,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$year년 $month월 $day일 $weekday',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DepartmentBadge(
+                      department: 'field',
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text('$name',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline3
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      ' 님, 안녕하세요',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          .copyWith(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                )
+              ],
+            ),
+            Spacer(),
+            Container(
+              decoration:
+              BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                BoxShadow(
+                  color: Color(0xffbfbfbf),
+                  offset: Offset(0.0, 4.0),
+                  spreadRadius: 2.0,
+                  blurRadius: 4.0,
+                )
+              ]),
+              child: CircleAvatar(
+                  radius: 34.0,
+                  backgroundImage: NetworkImage(
+                      'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70')),
+            )
+          ],
+        ),
+        SizedBox(height: 32.0),
+        _Announce(),
+        SizedBox(
+          height: 17,
+        ),
+        _HomeCalendar(),
+        SizedBox(
+          height: 19.0,
+        ),
+        FMHomeScreenWidget(),
+      ],
+    );
+  }
+}
+
 
 class _AppBarContents extends StatelessWidget {
   @override

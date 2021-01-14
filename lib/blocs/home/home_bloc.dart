@@ -6,12 +6,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async*{
-    if(event is ExampleEvent){
-      yield* _mapExampleEventToState(event);
+    if(event is NextMonthClicked){
+      yield* _mapNextMonthClickedToState();
+    } else if(event is PrevMonthClicked){
+      yield* _mapPrevMonthClickedToState();
+    } else if(event is DateClicked){
+      yield* _mapDateClickedToState(event.SelectedDay);
+    } else if(event is BottomNavBarClicked){
+      yield* _mapBottomNavBarClickedToState(event.index);
     }
   }
 
-  Stream<HomeState> _mapExampleEventToState(ExampleEvent event) async*{
-    yield state.update();
+  Stream<HomeState> _mapNextMonthClickedToState() async*{
+    yield state.update(monthState: state.monthState+1);
+  }
+
+  Stream<HomeState> _mapPrevMonthClickedToState() async*{
+    yield state.update(monthState: state.monthState-1);
+  }
+
+  Stream<HomeState> _mapDateClickedToState(int SelectedDay) async*{
+    yield state.update(dayState: SelectedDay);
+  }
+
+  Stream<HomeState> _mapBottomNavBarClickedToState(int index) async*{
+    yield state.update(currentIndex: index);
   }
 }

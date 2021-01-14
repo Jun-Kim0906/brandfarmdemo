@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 abstract class HomeEvent extends Equatable{
   const HomeEvent();
@@ -6,11 +7,6 @@ abstract class HomeEvent extends Equatable{
   @override
   List<Object> get props => [];
 }
-
-class ExampleEvent extends HomeEvent{
-
-}
-
 class NextMonthClicked extends HomeEvent{
   @override
   String toString() => 'NextMonthClicked';
@@ -19,4 +15,20 @@ class NextMonthClicked extends HomeEvent{
 class PrevMonthClicked extends HomeEvent{
   @override
   String toString() => 'PrevMonthClicked';
+}
+
+class DateClicked extends HomeEvent{
+  final int SelectedDay;
+  const DateClicked({@required this.SelectedDay});
+
+  @override
+  String toString() => 'DateClicked { SelectedDate: $SelectedDay}';
+}
+
+class BottomNavBarClicked extends HomeEvent{
+  final int index;
+  const BottomNavBarClicked({@required this.index});
+
+  @override
+  String toString() => 'BottomNavBarClicked { index: $index';
 }

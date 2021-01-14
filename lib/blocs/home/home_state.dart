@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 
@@ -6,12 +8,14 @@ class HomeState {
   int monthState;
   int yearState;
   int dayState;
+  int currentIndex;
 
   HomeState({
     @required this.isLoading,
     @required this.yearState,
     @required this.monthState,
     @required this.dayState,
+    @required this.currentIndex,
   });
 
   factory HomeState.empty() {
@@ -20,6 +24,7 @@ class HomeState {
       monthState: int.parse('$month'),
       yearState: int.parse('$year'),
       dayState: int.parse('$day'),
+      currentIndex: 0,
     );
   }
 
@@ -28,12 +33,14 @@ class HomeState {
     int monthState,
     int yearState,
     int dayState,
+    int currentIndex,
   }) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
       monthState: monthState ?? this.monthState,
       yearState: yearState ?? this.yearState,
       dayState: dayState ?? this.dayState,
+      currentIndex: currentIndex ?? this.currentIndex,
     );
   }
 
@@ -42,12 +49,14 @@ class HomeState {
     int monthState,
     int yearState,
     int dayState,
+    int currentIndex,
   }) {
     return copyWith(
       isLoading: isLoading,
       monthState: monthState,
       yearState: yearState,
       dayState: dayState,
+      currentIndex: currentIndex,
     );
   }
 
@@ -58,6 +67,7 @@ class HomeState {
     monthState: $monthState,
     yearState: $yearState,
     dayState: $dayState,
+    currentIndex: $currentIndex,
     }
     ''';
   }
