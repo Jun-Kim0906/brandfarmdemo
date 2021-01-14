@@ -1,6 +1,7 @@
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class FMHomeScreenWidget extends StatefulWidget {
   @override
@@ -18,78 +19,155 @@ class _FMHomeScreenWidgetState extends State<FMHomeScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14.0),
+              border: Border.all(color: Theme.of(context).dividerColor)),
+          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 13.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/brandfarm.png',
+                        height: 21.0,
+                        width: 17.0,
+                      ),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        '농장 관리',
+                        style: Theme.of(context).textTheme.headline5,
+                      )
+                    ],
+                  ),
+                  Container(
+                    height: 23,
+                    width: 65,
+                    color: Colors.white,
+                    child: RaisedButton(
+                      elevation: 0.0,
+                      color: Colors.white,
+                      padding: EdgeInsets.all(2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(color: Color(0xFFD6D6D6)),
+                      ),
+                      child: FittedBox(
+                        child: Row(
+                          children: [
+                            Text(fieldListOptions),
+                            Icon(Icons.keyboard_arrow_down),
+                          ],
+                        ),
+                      ),
+                      onPressed: () {
+                        _settingModalBottomSheet(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return (index == 0)
+                      ? CardWthBgImage()
+                      : CardWthDefaultImage();
+                },
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 100,)
+      ],
+    );
+  }
+
+  Widget CardWthBgImage() {
+    return InkWell(
+      onTap: (){},
       child: Container(
-        // height: 500,
-        padding: EdgeInsets.all(10),
-        child: ListView(
-          physics: ClampingScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            image: DecorationImage(
+              image: AssetImage("assets/strawberry_farm.png"),
+              fit: BoxFit.cover,
+              alignment: Alignment.bottomLeft,
+            )
+        ),
+        padding: EdgeInsets.all(8),
+        // margin: EdgeInsets.all(8),
+        child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/brandfarm.png',
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      '농장 관리',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
-                ),
-                Container(
-                  height: 23,
-                  width: 65,
-                  color: Colors.white,
-                  child: RaisedButton(
-                    elevation: 0.0,
+                Text(
+                  '한동이네 딸기 농장',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    padding: EdgeInsets.all(2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      side: BorderSide(color: Color(0xFFD6D6D6)),
-                    ),
-                    child: FittedBox(
-                      child: Row(
-                        children: [
-                          Text(fieldListOptions),
-                          Icon(Icons.keyboard_arrow_down),
-                        ],
-                      ),
-                    ),
-                    onPressed: () {
-                      _settingModalBottomSheet(context);
-                    },
                   ),
                 ),
               ],
             ),
             SizedBox(
-              height: 15,
+              height: 25,
             ),
-            ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return (index == 0)
-                    ? CardWthBgImage()
-                    : CardWthDefaultImage();
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '16',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.white
+                  ),
+                ),
+                Container(
+                  height: 30,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        degrees + 'C',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(CupertinoIcons.sun_max, color: Colors.white,),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '경북 포항시',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -97,165 +175,78 @@ class _FMHomeScreenWidgetState extends State<FMHomeScreenWidget> {
     );
   }
 
-  Widget CardWthBgImage() {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: InkWell(
-        onTap: (){},
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                image: AssetImage("assets/strawberry_farm.png"),
-                fit: BoxFit.cover,
-                alignment: Alignment.bottomLeft,
-              )
-          ),
-          padding: EdgeInsets.all(8),
-          // margin: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    '한동이네 딸기 농장',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '16',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      color: Colors.white
-                    ),
-                  ),
-                  Container(
-                    height: 30,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          degrees + 'C',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(CupertinoIcons.sun_max, color: Colors.white,),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '경북 포항시',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget CardWthDefaultImage() {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: InkWell(
-        onTap: (){},
-        child: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                scale: 1.2,
-                image: AssetImage("assets/default_card_bg_image.png"),
-                alignment: Alignment.bottomLeft,
-              )
-          ),
-          // padding: EdgeInsets.all(8),
-          margin: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    '한동이네 딸기 농장',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF37949B),
-                    ),
+    return InkWell(
+      onTap: (){},
+      child: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              scale: 1.2,
+              image: AssetImage("assets/default_card_bg_image.png"),
+              alignment: Alignment.bottomLeft,
+            ),
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        // padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  '한동이네 딸기 농장',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF37949B),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '16',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                    ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '16',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
                   ),
-                  Container(
-                    height: 30,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          degrees + 'C',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
+                ),
+                Container(
+                  height: 30,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        degrees + 'C',
+                        style: TextStyle(
+                          fontSize: 15,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Icon(CupertinoIcons.sun_max),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '경북 포항시',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                Icon(CupertinoIcons.sun_max),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '경북 포항시',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

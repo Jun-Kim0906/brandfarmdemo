@@ -2,8 +2,6 @@ import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
-// import 'package:BrandFarm/utils/weather/datetime.dart';
-import 'package:BrandFarm/utils/weather/weather_icons.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

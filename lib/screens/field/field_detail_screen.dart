@@ -325,7 +325,6 @@ class _WeatherMainState extends State<WeatherMain> {
                                 ),
                               ],
                             ),
-                            FMHomeScreenWidget(),
                           ],
                         ),
                       ),

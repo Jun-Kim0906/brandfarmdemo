@@ -23,6 +23,8 @@ import 'package:BrandFarm/widgets/department_badge.dart';
 //plugin
 import 'package:badges/badges.dart';
 
+import 'fm_home_screen_widget.dart';
+
 class HomeScreen extends StatefulWidget {
   final String name;
 
@@ -164,6 +166,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 17,
                   ),
                   _HomeCalendar(),
+                  SizedBox(
+                    height: 19.0,
+                  ),
+                  FMHomeScreenWidget(),
                 ],
               ),
               floatingActionButton: FloatingActionButton(
@@ -256,14 +262,20 @@ class _Announce extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
         child: Row(
           children: [
-            Icon(Icons.error_outline_rounded,color: Color(0xfffdd015),),
-            SizedBox(width: 7.0,),
+            Icon(
+              Icons.error_outline_rounded,
+              color: Color(0xfffdd015),
+            ),
+            SizedBox(
+              width: 7.0,
+            ),
             Expanded(
-              child: Text('$month/$day - test용입니다. 람쥐 원숭이 토끼 개구리 강아지 고양이 호랑이 백두산 호랑이 감자 고구',
-                  style: Theme.of(context)
-                      .textTheme
-                      .overline
-                      .copyWith(color: Color(0xff8b8b8b)),
+              child: Text(
+                '$month/$day - test용입니다. 람쥐 원숭이 토끼 개구리 강아지 고양이 호랑이 백두산 호랑이 감자 고구',
+                style: Theme.of(context)
+                    .textTheme
+                    .overline
+                    .copyWith(color: Color(0xff8b8b8b)),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),

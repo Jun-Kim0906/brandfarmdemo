@@ -6,10 +6,8 @@ import 'package:BrandFarm/models/weather/weather_model.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/weather/api_addr.dart';
 import 'package:BrandFarm/utils/weather/convert_grid_gps.dart';
-// import 'package:BrandFarm/utils/weather/datetime.dart';
 import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:xml2json/xml2json.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
