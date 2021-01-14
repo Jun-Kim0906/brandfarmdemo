@@ -58,7 +58,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(),
+      // appBar: _appBar(),
       body: _sliverList(context),
       floatingActionButton: AnimatedContainer(
         duration: Duration(milliseconds: 500),
@@ -67,6 +67,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
         child: Wrap(
           children: [
             FloatingActionButton.extended(
+              heroTag: 'journal',
               icon: Icon(Icons.edit),
               label: Text('일지쓰기'),
               onPressed: () {},
@@ -211,7 +212,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 color: Color(0xFF37949B),
               ),
               onPressed: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
               },
             ),
             title: Row(

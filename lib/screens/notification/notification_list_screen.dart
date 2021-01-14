@@ -92,8 +92,10 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                       print('testing');
                       Navigator.of(context).push(
                         PageRouteBuilder(
-                            pageBuilder: (context, _, __) =>
+                            pageBuilder: (context, a1, a2) =>
                                 NotificationDialogScreen(),
+                            transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                            transitionDuration: Duration(milliseconds: 500),
                             opaque: false),
                       );
                     },
