@@ -54,12 +54,12 @@ class FarmThemeData {
   }
 
   static const ColorScheme lightColorScheme = ColorScheme(
-    primary: Color(0xff27D878),
-    primaryVariant: Color(0xff5AC8E0),
+    primary: Color(0xff00db69),
+    primaryVariant: Color(0xff7ACE96),
     secondary: Color(0xFF37949B),
-    secondaryVariant: Color(0xFFFAFBFB),
+    secondaryVariant: Color(0xFF018786),
     background: Color(0xFFFFFFFF),
-    surface: Color(0xFFFAFBFB),
+    surface: Color(0xFFFFFFFF),
     onBackground: Colors.white,
     error: _lightFillColor,
     onError: _lightFillColor,
