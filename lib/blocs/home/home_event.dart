@@ -10,3 +10,13 @@ abstract class HomeEvent extends Equatable{
 class ExampleEvent extends HomeEvent{
 
 }
+
+class NextMonthClicked extends HomeEvent{
+  @override
+  String toString() => 'NextMonthClicked';
+}
+
+class PrevMonthClicked extends HomeEvent{
+  @override
+  String toString() => 'PrevMonthClicked';
+}

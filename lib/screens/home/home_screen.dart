@@ -2,6 +2,7 @@
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:quiver/time.dart';
 
 //screen
 import 'package:BrandFarm/layout/adaptive.dart';
@@ -22,7 +23,6 @@ import 'package:BrandFarm/widgets/department_badge.dart';
 
 //plugin
 import 'package:badges/badges.dart';
-
 import 'fm_home_screen_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,6 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int _currentIndex = 0;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
     return BlocListener(
       cubit: _homeBloc,
@@ -186,6 +189,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 },
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                currentIndex: _currentIndex,
+                backgroundColor: colorScheme.surface,
+                selectedItemColor: colorScheme.onSurface,
+                unselectedItemColor: colorScheme.onSurface.withOpacity(.60),
+                selectedLabelStyle: textTheme.caption,
+                unselectedLabelStyle: textTheme.caption,
+                onTap: (value) {
+                  // Respond to item press.
+                  setState(() => _currentIndex = value);
+                },
+                items: [
+                  BottomNavigationBarItem(
+                    label: '',
+                    icon: Icon(Icons.favorite),
+                  ),
+                  BottomNavigationBarItem(
+                    label: '',
+                    icon: Icon(Icons.music_note),
+                  ),
+                  BottomNavigationBarItem(
+                    label: '',
+                    icon: Icon(Icons.location_on),
+                  ),
+                  BottomNavigationBarItem(
+                    label: '',
+                    icon: Icon(Icons.library_books),
+                  ),
+                ],
               ),
             );
           }
@@ -342,7 +376,7 @@ class _HomeCalendar extends StatelessWidget {
               SizedBox(
                 height: 17.0,
               ),
-              _CalendarDate(
+              CalendarDateBuilder(
                 onPressed: () {
                   print('aaa');
                 },
@@ -380,10 +414,14 @@ class _HomeCalendar extends StatelessWidget {
   }
 }
 
-class _CalendarDate extends StatelessWidget {
-  _CalendarDate({this.onPressed});
+class CalendarDateBuilder extends StatelessWidget {
+  CalendarDateBuilder({this.onPressed});
 
   final VoidCallback onPressed;
+
+  int _year = int.parse('$year');
+  int _month = int.parse('$month');
+  int DOM = daysInMonth(2020, 12);
 
   @override
   Widget build(BuildContext context) {
