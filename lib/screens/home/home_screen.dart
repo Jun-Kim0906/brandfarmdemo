@@ -2,6 +2,7 @@
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/screens/journal/journal_list_screen.dart';
 import 'package:flutter/rendering.dart';
 import 'package:quiver/time.dart';
 
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
-    final List<Widget> _children = [Home(hideBottomNavController: _hideBottomNavController, name: name,),Home(), Container(), Container()];
+    final List<Widget> _children = [Home(hideBottomNavController: _hideBottomNavController, name: name,),Home(), JournalListScreen(), Container()];
 
     return BlocListener(
       cubit: _homeBloc,
@@ -104,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text('test page'),
               ),
               floatingActionButton: FloatingActionButton(
+                heroTag: 'home',
                 child: Icon(
                   Icons.add,
                 ),
@@ -129,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               body: _children[state.currentIndex],
               floatingActionButton: FloatingActionButton(
+                heroTag: 'home',
                 child: Icon(Icons.add),
                 onPressed: () {
                   Navigator.push(
