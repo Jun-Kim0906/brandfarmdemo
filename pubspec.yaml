@@ -28,6 +28,7 @@ dependencies:
   badges: ^1.1.6
   intl: ^0.16.1
   date_format: ^1.0.9
+  animations: ^1.1.2
 
 
 
