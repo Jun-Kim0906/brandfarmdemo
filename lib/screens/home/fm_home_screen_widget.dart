@@ -74,18 +74,20 @@ class _FMHomeScreenWidgetState extends State<FMHomeScreenWidget> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 15,
-              ),
               ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: 3,
+                itemCount: 5,
                 itemBuilder: (context, index) {
-                  return (index == 0)
+                  return Column(
+                    children: [
+                      SizedBox(height: 18.0,),
+                      (index == 0)
                       ? CardWthBgImage()
-                      : CardWthDefaultImage();
+                      : CardWthDefaultImage(),
+                    ],
+                  );
                 },
               ),
             ],

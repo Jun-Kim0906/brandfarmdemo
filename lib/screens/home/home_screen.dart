@@ -2,6 +2,7 @@
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:flutter/rendering.dart';
 import 'package:quiver/time.dart';
 
 //screen
@@ -39,12 +40,35 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String name;
   HomeBloc _homeBloc;
+  ScrollController _hideBottomNavController;
+
+  bool _isVisible;
 
   @override
   void initState() {
     super.initState();
     _homeBloc = BlocProvider.of<HomeBloc>(context);
     this.name = widget.name;
+    _isVisible = true;
+    _hideBottomNavController = ScrollController();
+    _hideBottomNavController.addListener(
+          () {
+        if (_hideBottomNavController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          if (_isVisible)
+            setState(() {
+              _isVisible = false;
+            });
+        }
+        if (_hideBottomNavController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          if (!_isVisible)
+            setState(() {
+              _isVisible = true;
+            });
+        }
+      },
+    );
   }
 
   @override
@@ -105,6 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
               body: ListView(
                 physics: ClampingScrollPhysics(),
                 padding: EdgeInsets.symmetric(horizontal: 16),
+                controller: _hideBottomNavController,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -190,36 +215,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-              bottomNavigationBar: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                currentIndex: _currentIndex,
-                backgroundColor: colorScheme.surface,
-                selectedItemColor: colorScheme.onSurface,
-                unselectedItemColor: colorScheme.onSurface.withOpacity(.60),
-                selectedLabelStyle: textTheme.caption,
-                unselectedLabelStyle: textTheme.caption,
-                onTap: (value) {
-                  // Respond to item press.
-                  setState(() => _currentIndex = value);
-                },
-                items: [
-                  BottomNavigationBarItem(
-                    label: '',
-                    icon: Icon(Icons.favorite),
-                  ),
-                  BottomNavigationBarItem(
-                    label: '',
-                    icon: Icon(Icons.music_note),
-                  ),
-                  BottomNavigationBarItem(
-                    label: '',
-                    icon: Icon(Icons.location_on),
-                  ),
-                  BottomNavigationBarItem(
-                    label: '',
-                    icon: Icon(Icons.library_books),
-                  ),
-                ],
+              bottomNavigationBar: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                height: _isVisible ? 56.0 : 0.0,
+                child: Wrap(
+                  children: [
+                    BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      currentIndex: _currentIndex,
+                      backgroundColor: colorScheme.surface,
+                      selectedItemColor: colorScheme.onSurface,
+                      unselectedItemColor: colorScheme.onSurface.withOpacity(.60),
+                      selectedLabelStyle: textTheme.caption,
+                      unselectedLabelStyle: textTheme.caption,
+                      onTap: (value) {
+                        // Respond to item press.
+                        setState(() => _currentIndex = value);
+                      },
+                      items: [
+                        BottomNavigationBarItem(
+                          label: '',
+                          icon: Icon(CupertinoIcons.home),
+                        ),
+                        BottomNavigationBarItem(
+                          label: '',
+                          icon: Icon(CupertinoIcons.graph_circle),
+                        ),
+                        BottomNavigationBarItem(
+                          label: '',
+                          icon: Icon(Icons.note_outlined),
+                        ),
+                        BottomNavigationBarItem(
+                          label: '',
+                          icon: Icon(CupertinoIcons.person_alt_circle),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -305,7 +338,7 @@ class _Announce extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                '$month/$day - test용입니다. 람쥐 원숭이 토끼 개구리 강아지 고양이 호랑이 백두산 호랑이 감자 고구',
+                '$month/$day - 안전에 유의하시길 당부드립니다.',
                 style: Theme.of(context)
                     .textTheme
                     .overline
