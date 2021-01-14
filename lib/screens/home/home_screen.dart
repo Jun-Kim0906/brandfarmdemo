@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
-    final List<Widget> _children = [Home(hideBottomNavController: _hideBottomNavController, name: name,),Home(), JournalListScreen(), Container()];
+    final List<Widget> _children = [Home(hideBottomNavController: _hideBottomNavController, name: name,),Home(), JournalListScreen(scrollController: _hideBottomNavController,), Container()];
 
     return BlocListener(
       cubit: _homeBloc,
@@ -196,6 +196,7 @@ class Home extends StatelessWidget {
   Home({this.hideBottomNavController, this.name});
   final ScrollController hideBottomNavController;
   final String name;
+
   @override
   Widget build(BuildContext context) {
     return ListView(

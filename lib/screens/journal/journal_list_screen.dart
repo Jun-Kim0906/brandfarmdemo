@@ -9,6 +9,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JournalListScreen extends StatefulWidget {
+  final ScrollController scrollController;
+  const JournalListScreen({this.scrollController});
+
   @override
   _JournalListScreenState createState() => _JournalListScreenState();
 }
@@ -29,7 +32,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
     items = List<int>.generate(21, (i) => 21 - i);
     _isVisible = true;
     selectedDate = DateTime.now();
-    _scrollController = ScrollController();
+    _scrollController = widget.scrollController;
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
