@@ -551,34 +551,37 @@ class _showDatePickerState extends State<showDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Container(
+      // child: _showDatePicker(context),
+    );
   }
 
-  // showCupertinoModalPopup is a built-in function of the cupertino library
-  // void _showCupertinoModalPopup(
-  //     context: ctx,
-  //     builder: (_) => Container(
-  //       height: 500,
-  //       color: Color.fromARGB(255, 255, 255, 255),
-  //       child: Column(
-  //         children: [
-  //           Container(
-  //             height: 400,
-  //             child: CupertinoDatePicker(
-  //                 initialDateTime: DateTime.now(),
-  //                 onDateTimeChanged: (val) {
-  //                   setState(() {
-  //                     _chosenDateTime = val;
-  //                   });
-  //                 }),
-  //           ),
-  //
-  //           // Close the modal
-  //           CupertinoButton(
-  //             child: Text('OK'),
-  //             onPressed: () => Navigator.of(ctx).pop(),
-  //           )
-  //         ],
-  //       ),
-  //     ));
+  void _showDatePicker(BuildContext context) {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (_) => Container(
+          height: 500,
+          color: Color.fromARGB(255, 255, 255, 255),
+          child: Column(
+            children: [
+              Container(
+                height: 400,
+                child: CupertinoDatePicker(
+                    initialDateTime: DateTime.now(),
+                    onDateTimeChanged: (val) {
+                      setState(() {
+                        // _chosenDateTime = val;
+                      });
+                    }),
+              ),
+
+              // Close the modal
+              CupertinoButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          ),
+        ));
+  }
 }
