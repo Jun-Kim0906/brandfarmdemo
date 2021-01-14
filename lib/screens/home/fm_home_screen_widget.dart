@@ -1,7 +1,10 @@
+import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/screens/facility/facility_home.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMHomeScreenWidget extends StatefulWidget {
   @override
@@ -100,78 +103,103 @@ class _FMHomeScreenWidgetState extends State<FMHomeScreenWidget> {
 
   Widget CardWthBgImage() {
     return InkWell(
-      onTap: (){},
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            image: DecorationImage(
-              image: AssetImage("assets/strawberry_farm.png"),
-              fit: BoxFit.cover,
-              alignment: Alignment.bottomLeft,
-            )
-        ),
-        padding: EdgeInsets.all(8),
-        // margin: EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  '한동이네 딸기 농장',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+      onTap: (){
+        Navigator.of(context).push(
+            PageRouteBuilder(
+              transitionDuration: Duration(milliseconds: 300),
+              pageBuilder: (_, __, ___) => BlocProvider(
+                create: (BuildContext context) =>
+                WeatherBloc()..add(Wait_Fetch_Weather()),
+                child: FacilityHome(),
+              ),
+              fullscreenDialog: true,
+              transitionsBuilder: (
+                  BuildContext context,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                  Widget child,
+                  ) =>
+                  FadeTransition(
+                    opacity: animation,
+                    child: child,
                   ),
-                ),
-              ],
+            ));
+      },
+      child: Hero(
+        tag: 123,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                image: DecorationImage(
+                  colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.4), BlendMode.darken),
+                  image: AssetImage("assets/strawberry_farm.png"),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.bottomLeft,
+                )
             ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            padding: EdgeInsets.all(8),
+            // margin: EdgeInsets.all(8),
+            child: Column(
               children: [
-                Text(
-                  '16',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.white
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      '한동이네 딸기 농장',
+                      style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
+                    ),
+                  ],
                 ),
-                Container(
-                  height: 30,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        degrees + 'C',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
+                SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '16',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 36,
+                        color: Colors.white
                       ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      height: 30,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            degrees + 'C',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(CupertinoIcons.sun_max, color: Colors.white,),
+                  ],
                 ),
-                Icon(CupertinoIcons.sun_max, color: Colors.white,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '경북 포항시',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  '경북 포항시',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -179,7 +207,9 @@ class _FMHomeScreenWidgetState extends State<FMHomeScreenWidget> {
 
   Widget CardWthDefaultImage() {
     return InkWell(
-      onTap: (){},
+      onTap: (){
+
+      },
       child: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
