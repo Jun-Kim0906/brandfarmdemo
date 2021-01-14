@@ -35,20 +35,15 @@ class FarmThemeData {
       highlightColor: Colors.transparent,
       accentColor: colorScheme.primary,
       focusColor: focusColor,
-      // snackBarTheme: SnackBarThemeData(
-      //   behavior: SnackBarBehavior.floating,
-      //   backgroundColor: Color.alphaBlend(
-      //     _lightFillColor.withOpacity(0.80),
-      //     _darkFillColor,
-      //   ),
-      //   contentTextStyle: _textTheme.subtitle1.apply(color: _darkFillColor),
-      // ),
       buttonTheme: ButtonThemeData(
         disabledColor: Color(0xfd888888),
       ),
       dividerColor: Color(0xffd4d4d4),
       dividerTheme: DividerThemeData(
         thickness: 1.0,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colorScheme.primary
       )
     );
   }
