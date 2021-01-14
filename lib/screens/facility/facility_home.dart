@@ -492,30 +492,15 @@ class _FacilityHomeState extends State<FacilityHome> {
           ),
           // SizedBox(height: 10,),
           (icon == 'sun')
-              ? Icon(
-            Weather.sun,
-            color: Colors.yellow,
-          )
+              ? Image.asset('assets/weather_image/sunny.png', width: 24.0,)
               : (icon == 'cloud_sun')
-              ? Icon(
-            Weather.cloud_sun,
-            color: Colors.yellow,
-          )
+              ? Image.asset('assets/weather_image/sunny.png', width: 24.0,)
               : (icon == 'clouds')
-              ? Icon(
-            Weather.clouds,
-            color: Colors.yellow,
-          )
+              ? Image.asset('assets/weather_image/cloudy.png', width: 24.0,)
               : (icon == 'rain')
-              ? Icon(
-            Weather.rain,
-            color: Colors.yellow,
-          )
+              ? Image.asset('assets/weather_image/rainy.png', width: 24.0,)
               : (icon == 'snow_heavy')
-              ? Icon(
-            Weather.snow_heavy,
-            color: Colors.yellow,
-          )
+              ? Image.asset('assets/weather_image/snowy.png', width: 24.0,)
               : Icon(
             Icons.all_inclusive,
             color: Colors.yellow,
