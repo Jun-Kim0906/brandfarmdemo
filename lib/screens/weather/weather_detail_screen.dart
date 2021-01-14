@@ -51,15 +51,14 @@ class _WeatherDetailState extends State<WeatherDetail> {
                     backgroundColor: Colors.transparent,
                     elevation: 0.0,
                     leading: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.white,),
                       onPressed: () {
                         Navigator.pop(context);
                       },
                     ),
                     title: Text(
                       fieldName,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.white),
                     ),
                     actions: [
                       Icon(
@@ -67,11 +66,14 @@ class _WeatherDetailState extends State<WeatherDetail> {
                         color: Colors.white,
                         size: 14,
                       ),
-                      Center(
-                          child: Text(
-                        curr_addr,
-                        style: TextStyle(fontSize: 12),
-                      )),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 11.0),
+                        child: Center(
+                            child: Text(
+                          curr_addr,
+                          style: TextStyle(fontSize: 12),
+                        )),
+                      ),
                     ],
                   ),
                   body: Stack(
@@ -867,11 +869,11 @@ class _WeatherDetailState extends State<WeatherDetail> {
       case '0':
         {
           if (int.parse(skyType) < 6) {
-            return Icon(CupertinoIcons.sun_max);
+            return Image.asset('assets/weather_image/sunny.png', width: 24.0,);
           } else if (int.parse(skyType) > 5 && int.parse(skyType) < 9) {
-            return Icon(CupertinoIcons.cloud_sun);
+            return Image.asset('assets/weather_image/sunny.png', width: 24.0,);
           } else if (int.parse(skyType) > 8) {
-            return Icon(CupertinoIcons.cloud);
+            return Image.asset('assets/weather_image/cloudy.png', width: 24.0,);
           } else {
             print('Unknown sky type');
           }
@@ -883,13 +885,13 @@ class _WeatherDetailState extends State<WeatherDetail> {
       case '5':
       case '6':
         {
-          return Icon(CupertinoIcons.cloud_rain_fill);
+          return Image.asset('assets/weather_image/rainny.png', width: 24.0,);
         }
         break;
       case '3':
       case '7':
         {
-          return Icon(CupertinoIcons.cloud_snow_fill);
+          return Image.asset('assets/weather_image/snowy.png', width: 24.0,);
         }
         break;
       default:
@@ -901,6 +903,24 @@ class _WeatherDetailState extends State<WeatherDetail> {
   }
 
   Widget vertical_view({String date, String icon, String info, String info2}) {
+    String infoA;
+    String info2A;
+    if(int.parse(info)>=10){
+      infoA = info;
+    }else if(int.parse(info)<0){
+      infoA = ' '+info;
+    }else{
+      infoA = '  '+info;
+    }
+
+    if(int.parse(info2)>=10){
+      info2A = info2;
+    }else if(int.parse(info2)<0){
+      info2A = ' '+info2;
+    }else{
+      info2A = '  '+info2;
+    }
+
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -911,16 +931,17 @@ class _WeatherDetailState extends State<WeatherDetail> {
           ),
           vertical_view_icon(skyType: icon),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                info,
+                infoA,
                 style: TextStyle(color: Colors.white),
               ),
               SizedBox(
                 width: 25,
               ),
               Text(
-                info2,
+                info2A,
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -934,13 +955,13 @@ class _WeatherDetailState extends State<WeatherDetail> {
     switch (skyType) {
       case '맑음':
         {
-          return Icon(CupertinoIcons.sun_max);
+          return Image.asset('assets/weather_image/sunny.png', width: 24.0,);
         }
         break;
       case '구름많음':
       case '흐림':
         {
-          return Icon(CupertinoIcons.cloud_fill);
+          return Image.asset('assets/weather_image/cloudy.png', width: 24.0,);
         }
         break;
       case '구름많고 비':
@@ -951,14 +972,14 @@ class _WeatherDetailState extends State<WeatherDetail> {
       case '비':
       case '흐리고 소나기':
         {
-          return Icon(CupertinoIcons.cloud_rain_fill);
+          return Image.asset('assets/weather_image/rainy.png', width: 24.0,);
         }
         break;
       case '구름많고 눈':
       case '눈':
       case '흐리고 눈':
         {
-          return Icon(CupertinoIcons.cloud_snow_fill);
+          return Image.asset('assets/weather_image/snowy.png', width: 24.0,);
         }
         break;
       default:
