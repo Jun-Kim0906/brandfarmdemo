@@ -40,7 +40,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                   margin: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
                   elevation: 1,
                   child: ListTile(
-                    onTap: (){
+                    onTap: () {
                       print('testing');
                     },
                     contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -54,19 +54,32 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                       children: [
                         Container(
                           color: Color(0xFFFFD231),
-                          child: Text('OM'),
+                          child: Text('OM',
+                            style: Theme.of(context).textTheme.overline.copyWith(
+                              fontSize: 9,
+                              color: Theme.of(context).colorScheme.background,
+                            ),
+                          ),
                         ),
-                        Center(child: Text('안전에 유의하시길 당부드립니다')),
+                        Center(
+                            child: Text(
+                          '안전에 유의하시길 당부드립니다',
+                          style: Theme.of(context).textTheme.overline.copyWith(fontSize: 15),
+                        )),
                       ],
                     ),
                     subtitle: Text(
                       '날씨가 여전히 추운 관계로 농작물 관리에 조금 더 신경써 주시고 빙판길로 인해 미끄러울 수 있으니 집에 가세요',
+                      style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('상시'),
+                        Text('상시',
+                          style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
+                        ),
                       ],
                     ),
                   ),
@@ -75,12 +88,13 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                   margin: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
                   elevation: 1,
                   child: ListTile(
-                    onTap: (){
+                    onTap: () {
                       print('testing');
                       Navigator.of(context).push(
                         PageRouteBuilder(
-                          pageBuilder: (context, _, __) => NotificationDialogScreen(), opaque: false
-                        ),
+                            pageBuilder: (context, _, __) =>
+                                NotificationDialogScreen(),
+                            opaque: false),
                       );
                     },
                     contentPadding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -88,26 +102,43 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                     leading: Badge(
                       position: BadgePosition.topStart(top: 0, start: 0),
                       shape: BadgeShape.circle,
-                      child: Icon(Icons.notification_important, size: 40,),
+                      child: Icon(
+                        Icons.notification_important,
+                        size: 40,
+                      ),
                       padding: EdgeInsets.all(4.5),
                     ),
                     title: Row(
                       children: [
                         Container(
                           color: Color(0xFFFFD231),
-                          child: Text('OM'),
+                          child: Text('OM',
+                            style: Theme.of(context).textTheme.overline.copyWith(
+                              fontSize: 9,
+                              color: Theme.of(context).colorScheme.background,
+                            ),
+                          ),
                         ),
-                        Center(child: Text('딸기수확 완료여부 파악 요망')),
+                        Center(
+                          child: Text(
+                            '딸기수확 완료여부 파악 요망',
+                            style: Theme.of(context).textTheme.overline.copyWith(fontSize: 15),
+                          ),
+                        ),
                       ],
                     ),
                     subtitle: Text(
-                      '2/22 까지 한동이네 딸기농장에서의 목표치 만큼의 딸기수확이 완료되면',
+                      '2/22 까지 한동이네 딸기농장에서의 목표치 만큼의 딸기수확이 완료되면 일지에서 세부내용을 작성해주시면 됩니다. 감사합니다',
+                      style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('2시간 전'),
+                        Text('2시간 전',
+                          style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
+                        ),
                       ],
                     ),
                   ),

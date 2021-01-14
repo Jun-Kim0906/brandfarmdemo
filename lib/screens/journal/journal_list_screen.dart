@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
+import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/widgets/brandfarm_icons.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ class JournalListScreen extends StatefulWidget {
 }
 
 class _JournalListScreenState extends State<JournalListScreen> {
+  DateTime now = DateTime.now();
   DateTime selectedDate;
 
   @override
@@ -43,11 +45,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 children: [
                   Text(
                     '한동이네 딸기 농장',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold),
                   ),
                   IconButton(
                     icon: Icon(
@@ -105,50 +103,149 @@ class _JournalListScreenState extends State<JournalListScreen> {
               onPressed: () {})
         ],
       ),
-      body: Container(
-        child: RaisedButton(
-          onPressed: (){
-
-          },
-          child: Row(
-            children: [
-              Text('2021'),
-              Icon(Icons.keyboard_arrow_down),
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(22, 0, 22, 0),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FlatButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Text('2021년 2월',
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 18),
+                      ),
+                      Icon(Icons.keyboard_arrow_down),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 23,
+                  width: 65,
+                  color: Colors.white,
+                  child: RaisedButton(
+                    elevation: 0.0,
+                    color: Colors.white,
+                    padding: EdgeInsets.all(2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Color(0xFFD6D6D6)),
+                    ),
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          Text('최신순'),
+                          Icon(Icons.keyboard_arrow_down),
+                        ],
+                      ),
+                    ),
+                    onPressed: () {
+                      // _settingModalBottomSheet(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            ListView.builder(
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 21,
+              itemBuilder: (context, index) {
+                int date = 21;
+                return list_tile(
+                  date: 21 - index,
+                  week: daysOfWeek(
+                      index: now.add(Duration(days: index + 1)).weekday),
+                );
+              },
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.list),
+        icon: Icon(Icons.edit),
         label: Text('일지쓰기'),
-        onPressed: (){},
+        onPressed: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // Row(
-      //   children: [
-      //     YearPicker(
-      //       initialDate: selectedDate,
-      //       firstDate: DateTime(2020),
-      //       lastDate: DateTime(2021, 12, 31),
-      //       selectedDate: selectedDate,
-      //       onChanged: (date) {
-      //         setState(() {
-      //           selectedDate = date;
-      //         });
-      //       },
-      //     ),
-      //     CalendarDatePicker(
-      //       initialDate: selectedDate,
-      //       firstDate: DateTime(2020),
-      //       lastDate: DateTime(2021, 12, 31),
-      //       onDateChanged: (date) {
-      //         setState(() {
-      //           selectedDate = date;
-      //         });
-      //       },
-      //     ),
-      //   ],
-      // ),
+    );
+  }
+
+  Widget list_tile({int date, String week}) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      onTap: () {},
+      leading: leadingIcon(date: date, week: week),
+      title: Text(
+        '2022년 2월 21일의 일지',
+        style: Theme.of(context)
+            .textTheme
+            .bodyText1
+            .copyWith(fontWeight: FontWeight.normal),
+      ),
+      subtitle: Text(
+        '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
+        style: Theme.of(context)
+            .textTheme
+            .bodyText2
+            .copyWith(fontWeight: FontWeight.normal),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      trailing: trailingIcon(),
+    );
+  }
+
+  Widget leadingIcon({int date, String week}) {
+    return Container(
+      child: FittedBox(
+        child: Column(
+          children: [
+            Text(
+              '$date',
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 36,
+                  ),
+            ),
+            Text(
+              week,
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget trailingIcon() {
+    return Container(
+      height: 55,
+      width: 55,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/strawberry.png"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.5), BlendMode.srcATop),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          '+2',
+          style: Theme.of(context).textTheme.headline3.copyWith(
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).colorScheme.background,
+              ),
+        ),
+      ),
     );
   }
 }
