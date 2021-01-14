@@ -6,6 +6,7 @@ String month = DateFormat('M').format(now);
 String day = DateFormat('dd').format(now);
 String hour = DateFormat('HH').format(now);
 String minute = DateFormat('mm').format(now);
+String engWeekday = DateFormat('E').format(now);
 String weekday = daysOfWeek(index: now.weekday);
 
 String daysOfWeek({int index, bool shorter = false}) {

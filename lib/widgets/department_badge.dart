@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 
 
-class DepartmentBadge extends StatelessWidget {
+class DepartmentBadge extends StatefulWidget {
   DepartmentBadge({this.department});
 
   final String department;
 
+  @override
+  _DepartmentBadgeState createState() => _DepartmentBadgeState();
+}
+
+class _DepartmentBadgeState extends State<DepartmentBadge> {
   Color _badgeColor;
+
   String _department;
 
   @override
   Widget build(BuildContext context) {
-    switch(department){
+    switch(widget.department){
       case 'field':
         _badgeColor = Theme.of(context).primaryColor;
         _department = '필드';

@@ -45,6 +45,10 @@ class FarmThemeData {
       // ),
       buttonTheme: ButtonThemeData(
         disabledColor: Color(0xfd888888),
+      ),
+      dividerColor: Color(0xffd4d4d4),
+      dividerTheme: DividerThemeData(
+        thickness: 1.0,
       )
     );
   }
@@ -52,9 +56,9 @@ class FarmThemeData {
   static const ColorScheme lightColorScheme = ColorScheme(
     primary: Color(0xff27D878),
     primaryVariant: Color(0xff5AC8E0),
-    secondary: Color(0xFFEFF3F3),
+    secondary: Color(0xFF37949B),
     secondaryVariant: Color(0xFFFAFBFB),
-    background: Color(0xFFF4F4F4),
+    background: Color(0xFFFFFFFF),
     surface: Color(0xFFFAFBFB),
     onBackground: Colors.white,
     error: _lightFillColor,
@@ -91,14 +95,14 @@ class FarmThemeData {
     headline2: GoogleFonts.roboto(fontWeight: _bold, fontSize: 45.0),
     headline3: GoogleFonts.roboto(fontWeight: _bold, fontSize: 24.0),
     headline4: GoogleFonts.roboto(fontWeight: _bold, fontSize: 20.0),
-    headline5: GoogleFonts.roboto(fontWeight: _medium, fontSize: 16.0),
-    headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 13.0),
-    subtitle1: GoogleFonts.roboto(fontWeight: _medium, fontSize: 16.0),
+    headline5: GoogleFonts.roboto(fontWeight: _bold, fontSize: 18.0),
+    headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 16.0),
+    subtitle1: GoogleFonts.roboto(fontWeight: _medium, fontSize: 20.0),
     subtitle2: GoogleFonts.roboto(fontWeight: _medium, fontSize: 14.0),
     bodyText1: GoogleFonts.roboto(fontWeight: _regular, fontSize: 16.0),
     bodyText2: GoogleFonts.roboto(fontWeight: _regular, fontSize: 14.0),
     caption: GoogleFonts.roboto(fontWeight: _bold, fontSize: 8.0),
-    overline: GoogleFonts.roboto(fontWeight: _medium, fontSize: 12.0),
+    overline: GoogleFonts.roboto(fontWeight: _bold, fontSize: 13.0),
     button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
   );
 }
