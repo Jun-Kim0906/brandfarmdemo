@@ -42,6 +42,9 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/default_card_bg_image.png
+    - assets/strawberry_farm.png
+    - assets/megaphone.png
   uses-material-design: true
 
   fonts:

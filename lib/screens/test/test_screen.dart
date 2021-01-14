@@ -1,5 +1,6 @@
 
 import 'package:BrandFarm/screens/home/fm_home_screen_widget.dart';
+import 'package:BrandFarm/screens/journal/journal_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class TestScreen extends StatefulWidget {
@@ -20,7 +21,19 @@ class _TestScreenState extends State<TestScreen> {
       appBar: AppBar(
         title: Text('test screen'),
       ),
-      body: FMHomeScreenWidget(),
+      body: Column(
+        children: [
+          RaisedButton(
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => JournalListScreen()),
+              );
+            },
+            child: Text('일지 리스트 화면으로 이동'),
+          ),
+          FMHomeScreenWidget(),
+        ],
+      ),
     );
   }
 }
