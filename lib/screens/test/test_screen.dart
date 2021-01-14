@@ -21,18 +21,15 @@ class _TestScreenState extends State<TestScreen> {
       appBar: AppBar(
         title: Text('test screen'),
       ),
-      body: Column(
-        children: [
-          RaisedButton(
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => JournalListScreen()),
-              );
-            },
-            child: Text('일지 리스트 화면으로 이동'),
-          ),
-          FMHomeScreenWidget(),
-        ],
+      body: Center(
+        child: RaisedButton(
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => JournalListScreen()),
+            );
+          },
+          child: Text('일지 리스트 화면으로 이동'),
+        ),
       ),
     );
   }
