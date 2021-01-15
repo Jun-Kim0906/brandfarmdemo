@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+// import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:bloc/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/models/weather/weather_model.dart';
@@ -77,7 +78,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String lon_min = '12923';
     String lat_min = '3601';
     String lon_min = '12920';
-    String base_date = '20210114';
+    String base_date = '20210115';
+    // String baseDate = base_date;
     // String short_base_time = '0630';
     // String long_base_time = '0500';
     String today_short;
@@ -88,7 +90,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     String regId = regionCode(
       region: '포항',
     );
-    String dt = '202101140600';
+    // String dt = '202101150600';
+    String dt = '202101150600';
     String regLnCode = regionLandCode(region: '경상북도');
 
     double num_lat = double.parse(str_lat);
