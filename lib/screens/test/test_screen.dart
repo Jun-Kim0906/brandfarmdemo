@@ -24,9 +24,9 @@ class _TestScreenState extends State<TestScreen> {
       body: Center(
         child: RaisedButton(
           onPressed: (){
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => JournalListScreen()),
-            );
+            // Navigator.push(context, MaterialPageRoute(
+            //     builder: (context) => JournalListScreen()),
+            // );
           },
           child: Text('일지 리스트 화면으로 이동'),
         ),
