@@ -30,6 +30,9 @@ import 'package:badges/badges.dart';
 import 'fm_home_screen_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+TextTheme textTheme;
+ColorScheme colorScheme;
+
 class HomeScreen extends StatefulWidget {
   final String name;
 
@@ -77,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    colorScheme = Theme.of(context).colorScheme;
+    textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
 
     return BlocListener(
@@ -243,7 +246,7 @@ class Home extends StatelessWidget {
               children: [
                 Text(
                   '$year년 $month월 $day일 $weekday',
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: textTheme.bodyText2,
                 ),
                 SizedBox(
                   height: 15.0,
@@ -257,18 +260,9 @@ class Home extends StatelessWidget {
                     SizedBox(
                       width: 4.0,
                     ),
-                    Text('$name',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline3
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    Text(
-                      ' 님, 안녕하세요',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6
-                          .copyWith(fontWeight: FontWeight.bold),
-                    )
+                    Text('$name', style: textTheme.headline3),
+                    Text(' 님, 안녕하세요',
+                        style: textTheme.headline6)
                   ],
                 )
               ],
@@ -384,8 +378,7 @@ class _Announce extends StatelessWidget {
             Expanded(
               child: Text(
                 '$month/$day - 안전에 유의하시길 당부드립니다.',
-                style: Theme.of(context)
-                    .textTheme
+                style: textTheme
                     .overline
                     .copyWith(color: Color(0xff8b8b8b)),
                 overflow: TextOverflow.ellipsis,
@@ -426,7 +419,7 @@ class _HomeCalendar extends StatelessWidget {
                         image: AssetImage('assets/brandfarm.png'),
                       ),
                     ),
-                    Text('캘린더', style: Theme.of(context).textTheme.headline5),
+                    Text('캘린더', style: textTheme.headline5),
                     Spacer(),
                     Icon(
                       CupertinoIcons.calendar,
@@ -447,7 +440,7 @@ class _HomeCalendar extends StatelessWidget {
                       onPressed: () {}),
                   Text(
                     '$month월',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: textTheme.headline6,
                   ),
                   IconButton(
                       color: Color(0xff878787),
@@ -471,19 +464,18 @@ class _HomeCalendar extends StatelessWidget {
                   children: [
                     Text(
                       '메모   ',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: textTheme.headline5,
                     ),
                     Text(
                       '1',
-                      style: Theme.of(context)
-                          .textTheme
+                      style: textTheme
                           .headline5
                           .copyWith(color: Theme.of(context).primaryColor),
                     ),
                     Spacer(),
                     Icon(
                       Icons.keyboard_arrow_down_sharp,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: colorScheme.secondary,
                     )
                   ],
                 ),
@@ -536,13 +528,14 @@ class CalendarDateBuilder extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          DateFormat('E').format(DateTime(homeState.yearState, homeState.monthState, index+1)),
+                          DateFormat('E').format(DateTime(homeState.yearState,
+                              homeState.monthState, index + 1)),
                           style: (index + 1 == homeState.dayState)
                               ? Theme.of(context)
                                   .textTheme
                                   .bodyText2
                                   .copyWith(color: Colors.white)
-                              : Theme.of(context).textTheme.bodyText2.copyWith(
+                              : textTheme.bodyText2.copyWith(
                                   color: Theme.of(context).dividerColor),
                         ),
                         SizedBox(
@@ -555,7 +548,7 @@ class CalendarDateBuilder extends StatelessWidget {
                                   .textTheme
                                   .subtitle1
                                   .copyWith(color: Colors.white)
-                              : Theme.of(context).textTheme.subtitle1,
+                              : textTheme.subtitle1,
                         ),
                       ],
                     )),

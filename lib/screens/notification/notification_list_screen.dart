@@ -85,7 +85,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                       children: [
                         Text('상시',
                           // style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
-                          style: TextStyle(fontFamily: 'AppleSDGothicNeoR', fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF737373)),
+                          style: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: FontWeight.w300, fontSize: 13, color: Color(0xFF737373)),
                         ),
                       ],
                     ),
