@@ -29,6 +29,7 @@ dependencies:
   intl: ^0.16.1
   date_format: ^1.0.9
   animations: ^1.1.2
+  scrollable_positioned_list: ^0.1.8
 
 
 

@@ -5,6 +5,7 @@ import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/screens/journal/journal_list_screen.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:quiver/time.dart';
 
 //screen
@@ -27,6 +28,7 @@ import 'package:BrandFarm/widgets/department_badge.dart';
 //plugin
 import 'package:badges/badges.dart';
 import 'fm_home_screen_widget.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class HomeScreen extends StatefulWidget {
   final String name;
@@ -78,23 +80,24 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final isDesktop = isDisplayDesktop(context);
-    final List<Widget> _children = [
-      Home(
-        hideBottomNavController: _hideBottomNavController,
-        name: name,
-      ),
-      Home(),
-      JournalListScreen(
-        scrollController: _hideBottomNavController,
-      ),
-      Container()
-    ];
 
     return BlocListener(
       cubit: _homeBloc,
       listener: (BuildContext context, HomeState state) {},
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
+          final List<Widget> _children = [
+            Home(
+              hideBottomNavController: _hideBottomNavController,
+              name: name,
+              homeState: state,
+            ),
+            Home(),
+            JournalListScreen(
+              scrollController: _hideBottomNavController,
+            ),
+            Container()
+          ];
           if (isDesktop) {
             return Scaffold(
               appBar: AppBar(
@@ -142,10 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               body: PageTransitionSwitcher(
                 transitionBuilder: (
-                    Widget child,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                    ) {
+                  Widget child,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                ) {
                   return FadeThroughTransition(
                     animation: animation,
                     secondaryAnimation: secondaryAnimation,
@@ -218,8 +221,9 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class Home extends StatelessWidget {
-  Home({this.hideBottomNavController, this.name});
+  Home({this.hideBottomNavController, this.name, this.homeState});
 
+  final HomeState homeState;
   final ScrollController hideBottomNavController;
   final String name;
 
@@ -291,7 +295,9 @@ class Home extends StatelessWidget {
         SizedBox(
           height: 17,
         ),
-        _HomeCalendar(),
+        _HomeCalendar(
+          homeState: homeState,
+        ),
         SizedBox(
           height: 19.0,
         ),
@@ -394,6 +400,10 @@ class _Announce extends StatelessWidget {
 }
 
 class _HomeCalendar extends StatelessWidget {
+  final HomeState homeState;
+
+  _HomeCalendar({this.homeState});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -449,9 +459,7 @@ class _HomeCalendar extends StatelessWidget {
                 height: 17.0,
               ),
               CalendarDateBuilder(
-                onPressed: () {
-                  print('aaa');
-                },
+                homeState: homeState,
               ),
               SizedBox(
                 height: 31.0,
@@ -487,47 +495,116 @@ class _HomeCalendar extends StatelessWidget {
 }
 
 class CalendarDateBuilder extends StatelessWidget {
-  CalendarDateBuilder({this.onPressed});
+  final HomeState homeState;
 
-  final VoidCallback onPressed;
+  CalendarDateBuilder({this.homeState});
 
-  int _year = int.parse('$year');
-  int _month = int.parse('$month');
-  int DOM = daysInMonth(2020, 12);
+  final ItemScrollController _controllerDay = ItemScrollController();
+  int initialIndex;
+  Color tapColor;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          color: Theme.of(context).primaryColor,
-        ),
-        child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Text(
-                  '$engWeekday',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(color: Colors.white),
+    if (homeState.dayState < 3) {
+      initialIndex = homeState.dayState;
+    } else {
+      initialIndex = homeState.dayState - 4;
+    }
+
+    return Container(
+      height: 63.0,
+      child: ScrollablePositionedList.builder(
+          itemScrollController: _controllerDay,
+          initialScrollIndex: initialIndex,
+          initialAlignment: 0,
+          scrollDirection: Axis.horizontal,
+          itemCount: daysInMonth(homeState.yearState, homeState.monthState),
+          itemBuilder: (BuildContext context, int index) {
+            return InkWell(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: (index + 1 == homeState.dayState)
+                      ? Theme.of(context).primaryColor
+                      : Colors.white,
                 ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Text(
-                  '$day',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(color: Colors.white),
-                ),
-              ],
-            )),
-      ),
+                child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          DateFormat('E').format(DateTime(homeState.yearState, homeState.monthState, index+1)),
+                          style: (index + 1 == homeState.dayState)
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(color: Colors.white)
+                              : Theme.of(context).textTheme.bodyText2.copyWith(
+                                  color: Theme.of(context).dividerColor),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          '${index + 1}',
+                          style: (index + 1 == homeState.dayState)
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(color: Colors.white)
+                              : Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ],
+                    )),
+              ),
+            );
+          }),
     );
   }
+// CalendarDateBuilder({this.onPressed});
+
+// final VoidCallback onPressed;
+
+// int _year = int.parse('$year');
+// int _month = int.parse('$month');
+// int DOM = daysInMonth(2020, 12);
+//
+// @override
+// Widget build(BuildContext context) {
+//   return InkWell(
+//     onTap: onPressed,
+//     child: Container(
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(8.0),
+//         color: Theme.of(context).primaryColor,
+//       ),
+//       child: Padding(
+//           padding: EdgeInsets.all(8.0),
+//           child: Column(
+//             children: [
+//               Text(
+//                 '$engWeekday',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .bodyText2
+//                     .copyWith(color: Colors.white),
+//               ),
+//               SizedBox(
+//                 height: 5.0,
+//               ),
+//               Text(
+//                 '$day',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .subtitle1
+//                     .copyWith(color: Colors.white),
+//               ),
+//             ],
+//           )),
+//     ),
+//   );
+// }
 }
