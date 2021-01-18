@@ -78,7 +78,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String lon_min = '12923';
     String lat_min = '3601';
     String lon_min = '12920';
-    String base_date = '20210115';
+    String base_date = '20210118';
     // String baseDate = base_date;
     // String short_base_time = '0630';
     // String long_base_time = '0500';
@@ -91,7 +91,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       region: '포항',
     );
     // String dt = '202101150600';
-    String dt = '202101150600';
+    String dt = '202101180600';
     String regLnCode = regionLandCode(region: '경상북도');
 
     double num_lat = double.parse(str_lat);

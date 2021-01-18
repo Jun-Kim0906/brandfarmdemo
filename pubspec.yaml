@@ -64,3 +64,11 @@ flutter:
     - family: Weather
       fonts:
         - asset: assets/fonts/Weather/Weather.ttf
+    - family: AppleSDGothicNeo
+      fonts:
+        - asset: assets/fonts/AppleSDGothicNeo/AppleSDGothicNeoB.ttf
+        - asset: assets/fonts/AppleSDGothicNeo/AppleSDGothicNeoEB.ttf
+        - asset: assets/fonts/AppleSDGothicNeo/AppleSDGothicNeoH.ttf
+        - asset: assets/fonts/AppleSDGothicNeo/AppleSDGothicNeoL.ttf
+        - asset: assets/fonts/AppleSDGothicNeo/AppleSDGothicNeoM.ttf
+        - asset: assets/fonts/AppleSDGothicNeo/AppleSDGothicNeoR.ttf

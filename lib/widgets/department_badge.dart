@@ -23,7 +23,12 @@ class _DepartmentBadgeState extends State<DepartmentBadge> {
         _department = '필드';
         break;
       case 'office':
+        _badgeColor = Color(0xFFFFD231);
+        _department = 'OM';
         break;
+      case 'shed' :
+        _badgeColor = Color(0xFFFFD231);
+        _department = '쉐드';
     }
     return Container(
       decoration: BoxDecoration(
