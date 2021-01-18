@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JournalListScreen extends StatefulWidget {
   final ScrollController scrollController;
+
   const JournalListScreen({this.scrollController});
 
   @override
@@ -38,20 +39,24 @@ class _JournalListScreenState extends State<JournalListScreen> {
           ScrollDirection.reverse) {
         if (_isVisible == true) {
           print("**** ${_isVisible} up");
-          setState(() {
-            _isVisible = false;
-            _elevation = 3.0;
-          });
+          if (this.mounted) {
+            setState(() {
+              _isVisible = false;
+              _elevation = 3.0;
+            });
+          }
         }
       } else {
         if (_scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           if (_isVisible == false) {
             print("**** ${_isVisible} down");
-            setState(() {
-              _isVisible = true;
-              _elevation = 0.0;
-            });
+            if (this.mounted) {
+              setState(() {
+                _isVisible = true;
+                _elevation = 0.0;
+              });
+            }
           }
         }
       }
@@ -66,7 +71,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
       floatingActionButton: AnimatedContainer(
         duration: Duration(milliseconds: 500),
         // height: _isVisible ? 45.0 : 0.0,
-        alignment: _isVisible ? Alignment(0,1) : Alignment(0, 1.5),
+        alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
         child: Wrap(
           children: [
             FloatingActionButton.extended(
@@ -367,7 +372,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 }
 
-class _Delegate extends SliverPersistentHeaderDelegate{
+class _Delegate extends SliverPersistentHeaderDelegate {
   _Delegate(this._isVisible);
 
   int index = 2;
@@ -474,21 +479,27 @@ class _Delegate extends SliverPersistentHeaderDelegate{
                   title: Text(''),
                   trailing: (index == 1)
                       ? Icon(Icons.check)
-                      : Container(height: 1, width: 1,),
+                      : Container(
+                          height: 1,
+                          width: 1,
+                        ),
                   onTap: () => {
-                    Navigator.pop(context),
-                    // setState(() {
-                    //   fieldListOptions = '가나다순';
-                    //   index = 1;
-                    // }),
-                  }),
+                        Navigator.pop(context),
+                        // setState(() {
+                        //   fieldListOptions = '가나다순';
+                        //   index = 1;
+                        // }),
+                      }),
               Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
               ListTile(
                 leading: Text('거리순'),
                 title: Text(''),
                 trailing: (index == 2)
                     ? Icon(Icons.check)
-                    : Container(height: 1, width: 1,),
+                    : Container(
+                        height: 1,
+                        width: 1,
+                      ),
                 onTap: () => {
                   Navigator.pop(context),
                   // setState(() {
@@ -503,7 +514,10 @@ class _Delegate extends SliverPersistentHeaderDelegate{
                 title: Text(''),
                 trailing: (index == 3)
                     ? Icon(Icons.check)
-                    : Container(height: 1, width: 1,),
+                    : Container(
+                        height: 1,
+                        width: 1,
+                      ),
                 onTap: () => {
                   Navigator.pop(context),
                   // setState(() {
@@ -518,7 +532,10 @@ class _Delegate extends SliverPersistentHeaderDelegate{
                 title: Text(''),
                 trailing: (index == 4)
                     ? Icon(Icons.check)
-                    : Container(height: 1, width: 1,),
+                    : Container(
+                        height: 1,
+                        width: 1,
+                      ),
                 onTap: () => {
                   Navigator.pop(context),
                   // setState(() {
@@ -541,12 +558,12 @@ class _Delegate extends SliverPersistentHeaderDelegate{
 
 class showDatePicker extends StatefulWidget {
   showDatePicker({Key key}) : super(key: key);
+
   @override
   _showDatePickerState createState() => _showDatePickerState();
 }
 
 class _showDatePickerState extends State<showDatePicker> {
-
   @override
   void initState() {
     super.initState();
@@ -555,36 +572,36 @@ class _showDatePickerState extends State<showDatePicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // child: _showDatePicker(context),
-    );
+        // child: _showDatePicker(context),
+        );
   }
 
   void _showDatePicker(BuildContext context) {
     showCupertinoModalPopup(
         context: context,
         builder: (_) => Container(
-          height: 500,
-          color: Color.fromARGB(255, 255, 255, 255),
-          child: Column(
-            children: [
-              Container(
-                height: 400,
-                child: CupertinoDatePicker(
-                    initialDateTime: DateTime.now(),
-                    onDateTimeChanged: (val) {
-                      setState(() {
-                        // _chosenDateTime = val;
-                      });
-                    }),
-              ),
+              height: 500,
+              color: Color.fromARGB(255, 255, 255, 255),
+              child: Column(
+                children: [
+                  Container(
+                    height: 400,
+                    child: CupertinoDatePicker(
+                        initialDateTime: DateTime.now(),
+                        onDateTimeChanged: (val) {
+                          setState(() {
+                            // _chosenDateTime = val;
+                          });
+                        }),
+                  ),
 
-              // Close the modal
-              CupertinoButton(
-                child: Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          ),
-        ));
+                  // Close the modal
+                  CupertinoButton(
+                    child: Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ),
+            ));
   }
 }
