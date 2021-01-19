@@ -242,7 +242,7 @@ class _FacilityHomeState extends State<FacilityHome> {
                                           color: Color(0xFF00B8D4),
                                         ),
                                         child: Container(
-                                          padding: EdgeInsets.all(10),
+                                          padding: EdgeInsets.symmetric(vertical: 10),
                                           height: 80,
                                           child: Row(
                                             mainAxisAlignment:
@@ -261,6 +261,9 @@ class _FacilityHomeState extends State<FacilityHome> {
                                                       if (index == 0) {
                                                         return Row(
                                                           children: [
+                                                            SizedBox(
+                                                              width: 20,
+                                                            ),
                                                             weather_horizontal_list(
                                                                 state: state,
                                                                 skyType: state

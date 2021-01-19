@@ -157,25 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: _children[state.currentIndex],
               ),
-              floatingActionButton: FloatingActionButton(
-                heroTag: 'home',
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (BuildContext context) =>
-                            WeatherBloc()..add(Wait_Fetch_Weather()),
-                        child: WeatherMain(),
-                      ),
-                    ),
-                  );
-                },
-              ),
               bottomNavigationBar: AnimatedContainer(
                 duration: Duration(milliseconds: 300),
-                height: _isVisible ? 56.0 : 0.0,
+                height: (_isVisible || state.currentIndex == 2) ? 56.0 : 0.0,
                 child: Wrap(
                   children: [
                     BottomNavigationBar(

@@ -34,6 +34,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
     _isVisible = true;
     selectedDate = DateTime.now();
     _scrollController = widget.scrollController;
+    // _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -220,7 +221,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 color: Color(0xFF37949B),
               ),
               onPressed: () {
-                // Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
             title: Row(

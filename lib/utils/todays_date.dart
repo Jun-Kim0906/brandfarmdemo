@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 DateTime now = DateTime.now();
 String year = DateFormat('yyyy').format(now);
-String month = DateFormat('M').format(now);
+String month = DateFormat('MM').format(now);
 String day = DateFormat('dd').format(now);
 String hour = DateFormat('HH').format(now);
 String minute = DateFormat('mm').format(now);
