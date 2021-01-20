@@ -70,7 +70,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
       // appBar: _appBar(),
       body: _sliverList(context),
       floatingActionButton: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
+        duration: Duration(milliseconds: 200),
         // height: _isVisible ? 45.0 : 0.0,
         alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
         child: Wrap(

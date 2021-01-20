@@ -41,7 +41,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   String name;
   HomeBloc _homeBloc;
   ScrollController _hideBottomNavController;
@@ -139,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else {
             return Scaffold(
+              // extendBody: true,
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(80.0),
                 child: _AppBarContents(),
@@ -157,49 +158,67 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: _children[state.currentIndex],
               ),
-              bottomNavigationBar: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                height: (_isVisible || state.currentIndex == 2) ? 56.0 : 0.0,
-                child: Wrap(
-                  children: [
-                    BottomNavigationBar(
-                      type: BottomNavigationBarType.fixed,
-                      currentIndex: state.currentIndex,
-                      backgroundColor: colorScheme.surface,
-                      selectedItemColor: colorScheme.onSurface,
-                      unselectedItemColor:
-                          colorScheme.onSurface.withOpacity(.60),
-                      selectedLabelStyle: textTheme.caption,
-                      unselectedLabelStyle: textTheme.caption,
-                      onTap: (value) {
-                        _homeBloc.add(BottomNavBarClicked(index: value));
-                      },
-                      items: [
-                        BottomNavigationBarItem(
-                          label: '',
-                          icon: Icon(CupertinoIcons.home),
-                        ),
-                        BottomNavigationBarItem(
-                          label: '',
-                          icon: Icon(CupertinoIcons.graph_circle),
-                        ),
-                        BottomNavigationBarItem(
-                          label: '',
-                          icon: Icon(Icons.note_outlined),
-                        ),
-                        BottomNavigationBarItem(
-                          label: '',
-                          icon: Icon(CupertinoIcons.person_alt_circle),
-                        ),
-                      ],
+              bottomNavigationBar: (state.currentIndex == 2)
+                  ? AnimatedContainer(
+                      duration: Duration(milliseconds: 0),
+                      height: 0.0,
+                      child: Wrap(
+                        children: [
+                          _bottomNavBar(context: context, state: state),
+                          // _bottomAppBar(context: context, state: state),
+                          // _fabBottomAppBar(),
+                        ],
+                      ),
+                    )
+                  : AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      height: (_isVisible) ? 56.0 : 0.0,
+                      child: Wrap(
+                        children: [
+                          _bottomNavBar(context: context, state: state),
+                          // _bottomAppBar(context: context, state: state),
+                          // _fabBottomAppBar(),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
             );
           }
         },
       ),
+    );
+  }
+
+  Widget _bottomNavBar({BuildContext context, HomeState state}) {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      currentIndex: state.currentIndex,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      selectedItemColor: Theme.of(context).colorScheme.onSurface,
+      unselectedItemColor:
+          Theme.of(context).colorScheme.onSurface.withOpacity(.60),
+      selectedLabelStyle: Theme.of(context).textTheme.caption,
+      unselectedLabelStyle: Theme.of(context).textTheme.caption,
+      onTap: (value) {
+        _homeBloc.add(BottomNavBarClicked(index: value));
+      },
+      items: [
+        BottomNavigationBarItem(
+          label: '',
+          icon: Icon(CupertinoIcons.home),
+        ),
+        BottomNavigationBarItem(
+          label: '',
+          icon: Icon(CupertinoIcons.graph_circle),
+        ),
+        BottomNavigationBarItem(
+          label: '',
+          icon: Icon(Icons.note_outlined),
+        ),
+        BottomNavigationBarItem(
+          label: '',
+          icon: Icon(CupertinoIcons.person_alt_circle),
+        ),
+      ],
     );
   }
 }
@@ -520,7 +539,8 @@ class CalendarDateBuilder extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          DateFormat('E').format(DateTime(homeState.yearState, homeState.monthState, index+1)),
+                          DateFormat('E').format(DateTime(homeState.yearState,
+                              homeState.monthState, index + 1)),
                           style: (index + 1 == homeState.dayState)
                               ? Theme.of(context)
                                   .textTheme

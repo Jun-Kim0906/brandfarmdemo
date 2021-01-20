@@ -206,7 +206,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                           height: 48,
                           child: Center(
                             child: Icon(
-                              CupertinoIcons.exclamationmark_circle,
+                              Icons.error_outline_rounded,
                               size: 38,
                               color: Color(0xFFFDD015),
                             ),)),
