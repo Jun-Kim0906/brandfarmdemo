@@ -87,6 +87,22 @@ class FarmThemeData {
   // static const _extraBold = FontWeight.w800;
 
 
+  // static final TextTheme _textTheme = TextTheme(
+  //   headline1: GoogleFonts.roboto(fontWeight: _bold, fontSize: 52.0),
+  //   headline2: GoogleFonts.roboto(fontWeight: _bold, fontSize: 45.0),
+  //   headline3: GoogleFonts.roboto(fontWeight: _bold, fontSize: 24.0),
+  //   headline4: GoogleFonts.roboto(fontWeight: _bold, fontSize: 20.0),
+  //   headline5: GoogleFonts.roboto(fontWeight: _bold, fontSize: 18.0),
+  //   headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 16.0),
+  //   subtitle1: GoogleFonts.roboto(fontWeight: _medium, fontSize: 20.0),
+  //   subtitle2: GoogleFonts.roboto(fontWeight: _medium, fontSize: 14.0),
+  //   bodyText1: GoogleFonts.roboto(fontWeight: _regular, fontSize: 16.0),
+  //   bodyText2: GoogleFonts.roboto(fontWeight: _regular, fontSize: 14.0),
+  //   caption: GoogleFonts.roboto(fontWeight: _bold, fontSize: 8.0),
+  //   overline: GoogleFonts.roboto(fontWeight: _bold, fontSize: 13.0),
+  //   button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
+  // );
+
   static final TextTheme _textTheme = TextTheme(
     headline1: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 52.0),
     headline2: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 45.0),

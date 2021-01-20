@@ -107,7 +107,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                         ),
                         child: Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
+                              const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                           child: ListView(
                             children: [
                               Container(
@@ -178,89 +178,92 @@ class _WeatherDetailState extends State<WeatherDetail> {
                               SizedBox(
                                 height: 45,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '일몰',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        ),
-                                        circle(
-                                            info: state.sunset ?? '0630',
-                                            type: weather_circle_type.sunset),
-                                      ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '일몰',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          circle(
+                                              info: state.sunset ?? '0630',
+                                              type: weather_circle_type.sunset),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '강수확률',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        ),
-                                        circle(
-                                            info: state.prob_of_precip,
-                                            type: weather_circle_type
-                                                .prob_of_precip),
-                                      ],
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '강수확률',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          circle(
+                                              info: state.prob_of_precip,
+                                              type: weather_circle_type
+                                                  .prob_of_precip),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '강수량',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        ),
-                                        circle(
-                                            info: state.precip,
-                                            type: weather_circle_type.precip),
-                                      ],
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '강수량',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          circle(
+                                              info: state.precip,
+                                              type: weather_circle_type.precip),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '습도',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        ),
-                                        circle(
-                                            info: state.humidity,
-                                            type: weather_circle_type.humidity),
-                                      ],
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '습도',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          circle(
+                                              info: state.humidity,
+                                              type: weather_circle_type.humidity),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '바람',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        ),
-                                        circle(
-                                            info: state.windSP,
-                                            windDir: state.windDIR,
-                                            type:
-                                                weather_circle_type.wind_info),
-                                      ],
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '바람',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          circle(
+                                              info: state.windSP,
+                                              windDir: state.windDIR,
+                                              type:
+                                                  weather_circle_type.wind_info),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               Divider(
                                 color: Colors.white,
@@ -282,6 +285,9 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                           if (index == 0) {
                                             return Row(
                                               children: [
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
                                                 horizontal_view(
                                                   time: state.long_temp[index]
                                                       .fcstTime,
@@ -330,123 +336,126 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                 color: Colors.white,
                                 thickness: 0.4,
                               ),
-                              Container(
-                                height: 235,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      vertical_view(
-                                        date: daysOfWeek(index: now.weekday),
-                                        icon: long_sky_list(
-                                            precip_type: state
-                                                .precip_type_byDate[0]
-                                                .fcstValue,
-                                            skyType: state
-                                                .sky_type_byDate[0].fcstValue,
-                                            index: 0),
-                                        info: doubleToInt(
-                                          str: state.max_temp,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                child: Container(
+                                  height: 235,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        vertical_view(
+                                          date: daysOfWeek(index: now.weekday),
+                                          icon: long_sky_list(
+                                              precip_type: state
+                                                  .precip_type_byDate[0]
+                                                  .fcstValue,
+                                              skyType: state
+                                                  .sky_type_byDate[0].fcstValue,
+                                              index: 0),
+                                          info: doubleToInt(
+                                            str: state.max_temp,
+                                          ),
+                                          info2: doubleToInt(
+                                            str: state.min_temp,
+                                          ),
                                         ),
-                                        info2: doubleToInt(
-                                          str: state.min_temp,
+                                        ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          physics: ClampingScrollPhysics(),
+                                          itemCount:
+                                              (state.long_maxTemp.length > 2)
+                                                  ? state.long_maxTemp.length - 1
+                                                  : state.long_maxTemp.length,
+                                          itemBuilder: (context, index) {
+                                            return (state.long_maxTemp.length ==
+                                                    3)
+                                                ? vertical_view(
+                                                    date: daysOfWeek(
+                                                        index: now
+                                                            .add(Duration(
+                                                                days: index + 1))
+                                                            .weekday),
+                                                    icon: long_sky_list(
+                                                        precip_type: state
+                                                            .precip_type_byDate[
+                                                                index + 1]
+                                                            .fcstValue,
+                                                        skyType: state
+                                                            .sky_type_byDate[
+                                                                index + 1]
+                                                            .fcstValue,
+                                                        index: index + 1),
+                                                    info: doubleToInt(
+                                                      str: state
+                                                          .long_maxTemp[index + 1]
+                                                          .fcstValue,
+                                                    ),
+                                                    info2: doubleToInt(
+                                                      str: state
+                                                          .long_minTemp[index]
+                                                          .fcstValue,
+                                                    ),
+                                                  )
+                                                : vertical_view(
+                                                    date: daysOfWeek(
+                                                        index: now
+                                                            .add(Duration(
+                                                                days: index + 1))
+                                                            .weekday),
+                                                    icon: long_sky_list(
+                                                        precip_type: state
+                                                            .precip_type_byDate[
+                                                                index + 1]
+                                                            .fcstValue,
+                                                        skyType: state
+                                                            .sky_type_byDate[
+                                                                index + 1]
+                                                            .fcstValue,
+                                                        index: index + 1),
+                                                    info: doubleToInt(
+                                                      str: state
+                                                          .long_maxTemp[index]
+                                                          .fcstValue,
+                                                    ),
+                                                    info2: doubleToInt(
+                                                      str: state
+                                                          .long_minTemp[index]
+                                                          .fcstValue,
+                                                    ),
+                                                  );
+                                          },
                                         ),
-                                      ),
-                                      ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        physics: ClampingScrollPhysics(),
-                                        itemCount:
-                                            (state.long_maxTemp.length > 2)
-                                                ? state.long_maxTemp.length - 1
-                                                : state.long_maxTemp.length,
-                                        itemBuilder: (context, index) {
-                                          return (state.long_maxTemp.length ==
-                                                  3)
-                                              ? vertical_view(
-                                                  date: daysOfWeek(
-                                                      index: now
-                                                          .add(Duration(
-                                                              days: index + 1))
-                                                          .weekday),
-                                                  icon: long_sky_list(
-                                                      precip_type: state
-                                                          .precip_type_byDate[
-                                                              index + 1]
-                                                          .fcstValue,
-                                                      skyType: state
-                                                          .sky_type_byDate[
-                                                              index + 1]
-                                                          .fcstValue,
-                                                      index: index + 1),
-                                                  info: doubleToInt(
-                                                    str: state
-                                                        .long_maxTemp[index + 1]
-                                                        .fcstValue,
-                                                  ),
-                                                  info2: doubleToInt(
-                                                    str: state
-                                                        .long_minTemp[index]
-                                                        .fcstValue,
-                                                  ),
-                                                )
-                                              : vertical_view(
-                                                  date: daysOfWeek(
-                                                      index: now
-                                                          .add(Duration(
-                                                              days: index + 1))
-                                                          .weekday),
-                                                  icon: long_sky_list(
-                                                      precip_type: state
-                                                          .precip_type_byDate[
-                                                              index + 1]
-                                                          .fcstValue,
-                                                      skyType: state
-                                                          .sky_type_byDate[
-                                                              index + 1]
-                                                          .fcstValue,
-                                                      index: index + 1),
-                                                  info: doubleToInt(
-                                                    str: state
-                                                        .long_maxTemp[index]
-                                                        .fcstValue,
-                                                  ),
-                                                  info2: doubleToInt(
-                                                    str: state
-                                                        .long_minTemp[index]
-                                                        .fcstValue,
-                                                  ),
-                                                );
-                                        },
-                                      ),
-                                      ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        physics: ClampingScrollPhysics(),
-                                        itemCount:
-                                            state.midFcstLandInfoAmList.length,
-                                        itemBuilder: (context, index) {
-                                          var max = state
-                                              .midFcstInfoMaxList.entries
-                                              .toList();
-                                          var min = state
-                                              .midFcstInfoMinList.entries
-                                              .toList();
-                                          var skyList = state
-                                              .midFcstLandInfoAmList.entries
-                                              .toList();
-                                          return vertical_view(
-                                            date: daysOfWeek(
-                                                index: now
-                                                    .add(Duration(
-                                                        days: index + 3))
-                                                    .weekday),
-                                            icon: skyList[index].value,
-                                            info: max[index].value,
-                                            info2: min[index].value,
-                                          );
-                                        },
-                                      ),
-                                    ],
+                                        ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          physics: ClampingScrollPhysics(),
+                                          itemCount:
+                                              state.midFcstLandInfoAmList.length,
+                                          itemBuilder: (context, index) {
+                                            var max = state
+                                                .midFcstInfoMaxList.entries
+                                                .toList();
+                                            var min = state
+                                                .midFcstInfoMinList.entries
+                                                .toList();
+                                            var skyList = state
+                                                .midFcstLandInfoAmList.entries
+                                                .toList();
+                                            return vertical_view(
+                                              date: daysOfWeek(
+                                                  index: now
+                                                      .add(Duration(
+                                                          days: index + 3))
+                                                      .weekday),
+                                              icon: skyList[index].value,
+                                              info: max[index].value,
+                                              info2: min[index].value,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -752,75 +761,6 @@ class _WeatherDetailState extends State<WeatherDetail> {
     );
   }
 
-  // Widget weather_horizontal_list(
-  //     {WeatherState state, String skyType, int now, int index}) {
-  //   switch (state.long_precip_type[index].fcstValue.toString()) {
-  //     case '0':
-  //       {
-  //         if (skyType == '1') {
-  //           return horizontal_view(
-  //             time: state.long_temp[index].fcstTime,
-  //             icon: 'sun',
-  //             temp: state.long_temp[index].fcstValue,
-  //             now: now,
-  //           );
-  //         } else if (skyType == '3') {
-  //           return horizontal_view(
-  //             time: state.long_temp[index].fcstTime,
-  //             icon: 'cloud_sun',
-  //             temp: state.long_temp[index].fcstValue,
-  //             now: now,
-  //           );
-  //         } else if (skyType == '4') {
-  //           return horizontal_view(
-  //             time: state.long_temp[index].fcstTime,
-  //             icon: 'clouds',
-  //             temp: state.long_temp[index].fcstValue,
-  //             now: now,
-  //           );
-  //         } else {
-  //           print('Unknown sky type');
-  //         }
-  //       }
-  //       break;
-  //     case '1':
-  //     case '2':
-  //     case '4':
-  //     case '5':
-  //     case '6':
-  //       {
-  //         return horizontal_view(
-  //           time: state.long_temp[index].fcstTime,
-  //           icon: 'rain',
-  //           temp: state.long_temp[index].fcstValue,
-  //           now: now,
-  //         );
-  //       }
-  //       break;
-  //     case '3':
-  //     case '7':
-  //       {
-  //         return horizontal_view(
-  //           time: state.long_temp[index].fcstTime,
-  //           icon: 'snow_heavy',
-  //           temp: state.long_temp[index].fcstValue,
-  //           now: now,
-  //         );
-  //       }
-  //       break;
-  //     default:
-  //       {
-  //         return horizontal_view(
-  //           time: '--',
-  //           icon: 'all_inclusive',
-  //           temp: '--',
-  //           now: now,
-  //         );
-  //       }
-  //       break;
-  //   }
-  // }
-
   // if now = 1 then now . . . else if now == 0 then not now
   Widget horizontal_view(
       {String time, String precipType, String skyType, String temp, int now}) {
@@ -913,7 +853,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
       case '6':
         {
           return Image.asset(
-            'assets/weather_image/rainny.png',
+            'assets/weather_image/rainy.png',
             width: 24.0,
           );
         }

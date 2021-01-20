@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 // import 'package:BrandFarm/utils/todays_date.dart';
+import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:bloc/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/models/weather/weather_model.dart';
@@ -8,6 +9,7 @@ import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/weather/api_addr.dart';
 import 'package:BrandFarm/utils/weather/convert_grid_gps.dart';
 import 'package:date_format/date_format.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml2json/xml2json.dart';
 
@@ -78,8 +80,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // String lon_min = '12923';
     String lat_min = '3601';
     String lon_min = '12920';
-    String base_date = '20210118';
-    // String baseDate = base_date;
+    // String base_date = '20210118';
+    String baseDate = base_date;
     // String short_base_time = '0630';
     // String long_base_time = '0500';
     String today_short;
@@ -91,7 +93,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       region: '포항',
     );
     // String dt = '202101150600';
-    String dt = '202101180600';
+    String dt;
     String regLnCode = regionLandCode(region: '경상북도');
 
     double num_lat = double.parse(str_lat);
@@ -127,11 +129,18 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     } else {
       requestTime = 3;
     }
+    // print(now.hour);
+    // print(requestTime);
 
     long_base_time =
-        "${(now.subtract(Duration(hours: requestTime)).toIso8601String().substring(0, 16))}";
+        "${(now.subtract(Duration(hours: requestTime + 3)).toIso8601String().substring(0, 16))}";
     today_long = long_base_time.substring(0, 10).replaceAll('-', '');
     long_base_time = long_base_time.substring(11, 16).replaceAll(":", "");
+    // print(long_base_time);
+
+    String time = (now.hour >= 6 && now.hour < 18) ? '0600' : '1800';
+    dt = '$base_date$time';
+    // print(dt);
 
     /******************************************************************************************
      ******************************************************************************************

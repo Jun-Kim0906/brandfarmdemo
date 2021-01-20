@@ -1,3 +1,4 @@
+import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:BrandFarm/widgets/login/create_account_button.dart';
 import 'package:flutter/material.dart';
 
@@ -18,49 +19,69 @@ class _NotificationDialogScreenState extends State<NotificationDialogScreen> {
             borderRadius: BorderRadius.circular(15),
           ),
           child: Container(
-            padding: EdgeInsets.all(15),
-            height: 300,
-            width: 350,
+            padding: EdgeInsets.fromLTRB(24, 17, 11, 20),
+            height: 325,
+            width: 345,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Icon(Icons.notification_important, size: 40, color: Colors.grey,)),
+                Center(
+                    child: Container(
+                        height: 52,
+                        width: 52,
+                        child: Image.asset('assets/megaphone.png'))),
+                // SizedBox(height: 20,),
                 Row(
                   children: [
-                    Container(
-                      color: Color(0xFFFFD231),
-                      child: Text('OM',
-                        style: Theme.of(context).textTheme.overline.copyWith(
-                            fontSize: 15,
-                            color: Theme.of(context).colorScheme.background,
-                        ),
-                      ),
+                    SizedBox(
+                        width: 30,
+                        height: 19,
+                        child: FittedBox(
+                            child: DepartmentBadge(department: 'office'))),
+                    SizedBox(
+                      width: 5,
                     ),
-                    SizedBox(width: 5,),
-                    Center(child: Text('딸기수확 완료여부 파악 요망',
+                    Center(
+                        child: Text(
+                      '딸기수확 완료여부 파악 요망',
                       style: Theme.of(context).textTheme.headline5,
                     )),
                   ],
                 ),
+                // SizedBox(height: 25,),
                 Text(
-                    '2/22 까지 한동이네 딸기농장에서의 목표치 만큼의 딸기수확이 완료되면 일지에서 세부내용을 작성해주시면 됩니다. 감사합니다',
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                  '2/22 까지 한동이네 딸기농장에서의 목표치 만큼의 딸기수확이 완료되면 일지에서 세부내용을 작성해주시면 됩니다. 감사합니다',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .copyWith(fontWeight: FontWeight.normal),
                 ),
-                Text('2시간 전 - 오피스매니저',
-                  style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
+                // SizedBox(height: 19,),
+                Text(
+                  '2시간 전 - 오피스매니저',
+                  style: Theme.of(context)
+                      .textTheme
+                      .overline
+                      .copyWith(fontWeight: FontWeight.normal),
                 ),
+                // SizedBox(height: 32,),
                 Center(
-                  child: RaisedButton(
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                    color: Color(0xFF00DB69),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(11),
-                    ),
-                    child: Text('확인',
-                      style: TextStyle(color: Colors.white),
+                  child: Container(
+                    width: 127,
+                    height: 41,
+                    child: RaisedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      color: Color(0xFF00DB69),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.5),
+                      ),
+                      child: Text(
+                        '확인',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

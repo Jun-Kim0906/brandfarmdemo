@@ -34,6 +34,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
     _isVisible = true;
     selectedDate = DateTime.now();
     _scrollController = widget.scrollController;
+    // _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -69,7 +70,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
       // appBar: _appBar(),
       body: _sliverList(context),
       floatingActionButton: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
+        duration: Duration(milliseconds: 200),
         // height: _isVisible ? 45.0 : 0.0,
         alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
         child: Wrap(
@@ -220,7 +221,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 color: Color(0xFF37949B),
               ),
               onPressed: () {
-                // Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
             title: Row(
