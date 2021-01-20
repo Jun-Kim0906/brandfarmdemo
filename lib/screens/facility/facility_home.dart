@@ -1,6 +1,6 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
-import 'package:BrandFarm/screens/home/sub_home_weather_widget.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
 import 'package:BrandFarm/screens/test/test_screen.dart';
 // import 'package:BrandFarm/screens/test/test_screen.dart';
 import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
