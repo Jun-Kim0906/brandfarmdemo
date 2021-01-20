@@ -1,7 +1,7 @@
 //screens
 import 'dart:io';
 
-import 'package:BrandFarm/screens/home/home_screen.dart';
+import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
 
@@ -93,7 +93,7 @@ class _AppState extends State<App> {
               return BlocProvider<HomeBloc>(
                   create: (BuildContext context) =>
                       HomeBloc(),
-                  child: HomeScreen(name: state.displayName));
+                  child: SubHomeScreen(name: state.displayName));
             } else if(state is AuthenticationInitial && !isDesktop){
               return SplashScreen(duration: 2);
             } else{
