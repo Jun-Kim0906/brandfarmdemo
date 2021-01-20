@@ -1,6 +1,7 @@
 //screens
 import 'dart:io';
 
+import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
@@ -25,8 +26,6 @@ import 'package:firebase_core/firebase_core.dart';
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
@@ -50,18 +49,18 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     _authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    try{
-      if(Platform.isIOS || Platform.isAndroid){
+    try {
+      if (Platform.isIOS || Platform.isAndroid) {
         isDesktop = false;
-      }else{
+      } else {
         isDesktop = true;
       }
-    }catch(e){
+    } catch (e) {
       isDesktop = true;
     }
-    if(isDesktop){
+    if (isDesktop) {
       _authenticationBloc.add(AuthenticationStarted());
-    }else{
+    } else {
       Timer(Duration(seconds: 2), () {
         _authenticationBloc.add(AuthenticationStarted());
       });
@@ -75,7 +74,7 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitDown,
     ]);
     return BlocProvider.value(
-    value: _authenticationBloc,
+      value: _authenticationBloc,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: FarmThemeData.lightThemeData,
@@ -90,17 +89,23 @@ class _AppState extends State<App> {
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is AuthenticationSuccess) {
-              return BlocProvider<HomeBloc>(
-                  create: (BuildContext context) =>
-                      HomeBloc(),
-                  child: SubHomeScreen(name: state.displayName));
-            } else if(state is AuthenticationInitial && !isDesktop){
+              return MultiBlocProvider(providers: [
+                BlocProvider<HomeBloc>(
+                  create: (BuildContext context) => HomeBloc(),
+                ),
+                BlocProvider<WeatherBloc>(
+                  create: (BuildContext context) => WeatherBloc(),
+                )
+              ], child: SubHomeScreen(name: state.displayName));
+            } else if (state is AuthenticationInitial && !isDesktop) {
               return SplashScreen(duration: 2);
-            } else{
+            } else {
               return BlocProvider<LoginBloc>(
-                  create: (BuildContext context) =>
-                      LoginBloc(userRepository: userRepository),
-                child: LoginScreen(userRepository: userRepository,),
+                create: (BuildContext context) =>
+                    LoginBloc(userRepository: userRepository),
+                child: LoginScreen(
+                  userRepository: userRepository,
+                ),
               );
             }
           },

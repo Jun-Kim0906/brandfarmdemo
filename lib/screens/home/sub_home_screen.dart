@@ -1,11 +1,13 @@
 //blocs
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/home/bloc.dart';
+import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 
 //widgets
 import 'package:BrandFarm/widgets/sub_home/sub_home_appbar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
 
 //flutters
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class SubHomeScreen extends StatefulWidget {
 }
 
 class _SubHomeScreenState extends State<SubHomeScreen> {
+  WeatherBloc _weatherBloc;
   HomeBloc _homeBloc;
   String name;
 
@@ -31,6 +34,8 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   void initState() {
     super.initState();
     _homeBloc = BlocProvider.of<HomeBloc>(context);
+    _weatherBloc = BlocProvider.of<WeatherBloc>(context);
+    _weatherBloc.add(GetWeatherInfo());
     name = widget.name;
   }
 
@@ -59,6 +64,10 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
         child: Column(
           children: [
             SubHomeGreetingBar(name: name),
+            BlocProvider.value(
+              value: _weatherBloc,
+              child: SubHomeWeatherWidget(),
+            )
           ],
         ),
       ),
