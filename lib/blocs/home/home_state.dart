@@ -1,30 +1,28 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 
 class HomeState {
   bool isLoading;
-  int monthState;
-  int yearState;
-  int dayState;
-  int currentIndex;
+  int selectedMonth;
+  int selectedYear;
+  int selectedDate;
+  int currentDate;
 
   HomeState({
     @required this.isLoading,
-    @required this.yearState,
-    @required this.monthState,
-    @required this.dayState,
-    @required this.currentIndex,
+    @required this.selectedYear,
+    @required this.selectedMonth,
+    @required this.selectedDate,
+    @required this.currentDate,
   });
 
   factory HomeState.empty() {
     return HomeState(
       isLoading: false,
-      monthState: int.parse('$month'),
-      yearState: int.parse('$year'),
-      dayState: int.parse('$day'),
-      currentIndex: 0,
+      selectedMonth: int.parse('$month'),
+      selectedYear: int.parse('$year'),
+      selectedDate: int.parse('$day'),
+      currentDate: int.parse('$day'),
     );
   }
 
@@ -37,10 +35,10 @@ class HomeState {
   }) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
-      monthState: monthState ?? this.monthState,
-      yearState: yearState ?? this.yearState,
-      dayState: dayState ?? this.dayState,
-      currentIndex: currentIndex ?? this.currentIndex,
+      selectedMonth: monthState ?? this.selectedMonth,
+      selectedYear: yearState ?? this.selectedYear,
+      selectedDate: dayState ?? this.selectedDate,
+      currentDate: currentIndex ?? this.currentDate,
     );
   }
 
@@ -64,10 +62,10 @@ class HomeState {
   String toString() {
     return '''HomeState{
     isLoading: $isLoading,
-    monthState: $monthState,
-    yearState: $yearState,
-    dayState: $dayState,
-    currentIndex: $currentIndex,
+    monthState: $selectedMonth,
+    yearState: $selectedYear,
+    dayState: $selectedDate,
+    currentIndex: $currentDate,
     }
     ''';
   }

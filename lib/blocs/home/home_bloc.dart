@@ -18,11 +18,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
   }
 
   Stream<HomeState> _mapNextMonthClickedToState() async*{
-    yield state.update(monthState: state.monthState+1);
+    if(state.selectedMonth==12){
+      yield state.update(monthState: 1, yearState: state.selectedYear+1, dayState: 1);
+    }else{
+      yield state.update(monthState: state.selectedMonth+1, dayState: 1);
+    }
   }
 
   Stream<HomeState> _mapPrevMonthClickedToState() async*{
-    yield state.update(monthState: state.monthState-1);
+    if(state.selectedMonth==1){
+      yield state.update(monthState: 12, yearState: state.selectedYear-1, dayState: 1);
+    }else{
+      yield state.update(monthState: state.selectedMonth-1, dayState: 1);
+    }
   }
 
   Stream<HomeState> _mapDateClickedToState(int SelectedDay) async*{

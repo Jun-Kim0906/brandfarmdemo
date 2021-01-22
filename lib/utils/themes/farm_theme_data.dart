@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FarmThemeData {
-  static const _lightFillColor = Color(0xff343434);
+  static const _lightFillColor = Color(0xffffffff);
   static const _darkFillColor = Colors.white;
 
   static final Color _lightFocusColor = Colors.black.withOpacity(0.12);
@@ -29,7 +29,7 @@ class FarmThemeData {
         iconTheme: IconThemeData(color: colorScheme.primary),
         brightness: colorScheme.brightness,
       ),
-      iconTheme: IconThemeData(color: colorScheme.onPrimary),
+      iconTheme: IconThemeData(color: colorScheme.onPrimary,),
       canvasColor: colorScheme.background,
       scaffoldBackgroundColor: colorScheme.background,
       highlightColor: Colors.transparent,
@@ -38,13 +38,14 @@ class FarmThemeData {
       buttonTheme: ButtonThemeData(
         disabledColor: Color(0xfd888888),
       ),
-      dividerColor: Color(0xffd4d4d4),
+      disabledColor: Colors.white,
+      dividerColor: Color(0xffdbdbdb),
       dividerTheme: DividerThemeData(
         thickness: 1.0,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: colorScheme.primary
-      )
+      ),
     );
   }
 
@@ -60,7 +61,7 @@ class FarmThemeData {
     onError: _lightFillColor,
     onPrimary: _lightFillColor,
     onSecondary: Color(0xFF322942),
-    onSurface: Color(0xFF241E30),
+    onSurface: Color(0xFF414141),
     brightness: Brightness.light,
   );
 
@@ -85,23 +86,6 @@ class FarmThemeData {
   static const _medium = FontWeight.w500;
   static const _bold = FontWeight.w700;
   // static const _extraBold = FontWeight.w800;
-
-
-  // static final TextTheme _textTheme = TextTheme(
-  //   headline1: GoogleFonts.roboto(fontWeight: _bold, fontSize: 52.0),
-  //   headline2: GoogleFonts.roboto(fontWeight: _bold, fontSize: 45.0),
-  //   headline3: GoogleFonts.roboto(fontWeight: _bold, fontSize: 24.0),
-  //   headline4: GoogleFonts.roboto(fontWeight: _bold, fontSize: 20.0),
-  //   headline5: GoogleFonts.roboto(fontWeight: _bold, fontSize: 18.0),
-  //   headline6: GoogleFonts.roboto(fontWeight: _bold, fontSize: 16.0),
-  //   subtitle1: GoogleFonts.roboto(fontWeight: _medium, fontSize: 20.0),
-  //   subtitle2: GoogleFonts.roboto(fontWeight: _medium, fontSize: 14.0),
-  //   bodyText1: GoogleFonts.roboto(fontWeight: _regular, fontSize: 16.0),
-  //   bodyText2: GoogleFonts.roboto(fontWeight: _regular, fontSize: 14.0),
-  //   caption: GoogleFonts.roboto(fontWeight: _bold, fontSize: 8.0),
-  //   overline: GoogleFonts.roboto(fontWeight: _bold, fontSize: 13.0),
-  //   button: GoogleFonts.roboto(fontWeight: _semiBold, fontSize: 14.0),
-  // );
 
   static final TextTheme _textTheme = TextTheme(
     headline1: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 52.0),

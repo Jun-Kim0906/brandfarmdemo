@@ -39,6 +39,7 @@ class SubHomeAppBar extends StatelessWidget implements PreferredSizeWidget{
                   iconSize: 40.0,
                   icon: Icon(
                     Icons.notifications_none_sharp,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   onPressed: notificationPressed,
                 ),
@@ -48,6 +49,7 @@ class SubHomeAppBar extends StatelessWidget implements PreferredSizeWidget{
                   iconSize: 35.0,
                   icon: Icon(
                     BrandFarmIcons.settings,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   onPressed: settingPressed)
             ],
