@@ -24,7 +24,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   bool _isVisible;
   int index = 2;
   String fieldListOptions = '최신순';
-  double scrollOffset;
+  double scrollOffset = 0.0;
 
   ScrollController _scrollController;
 
@@ -192,8 +192,8 @@ class _JournalListScreenState extends State<JournalListScreen> {
         itemBuilder: (context, index) {
           String weekNumBefore;
           String weekNumNow;
+          weekNumNow = _weekOfMonth(date: state.items[index]);
           if (index == 0) {
-            weekNumNow = _weekOfMonth(date: state.items[index]);
             return Column(
               children: [
                 Column(
@@ -215,8 +215,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
             );
           } else {
             weekNumBefore = _weekOfMonth(date: state.items[index - 1]);
-            weekNumNow = _weekOfMonth(date: state.items[index]);
             if(weekNumNow != weekNumBefore) {
+              if(index*77 <= scrollOffset.toInt()) {
+                _journalBloc.add(ChangeDate(month: weekNumNow.substring(0,2)));
+              }
               // WidgetsBinding.instance.addPostFrameCallback(_afterLayout(state: state, index: 0));
               return Column(
                 children: [
@@ -317,85 +319,88 @@ class _JournalListScreenState extends State<JournalListScreen> {
       height: 77,
       child: InkWell(
         onTap: () {},
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.all(0.0),
-              padding: EdgeInsets.all(0),
-              height: 93,
-              child: Row(
-                children: [
-                  Container(
-                    height: 75,
-                    width: 1.0,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      leadingIcon(date: date, week: week),
-                    ],
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 240,
-                        child: Text(
-                          '2022년 2월 21일의 일지',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              .copyWith(fontWeight: FontWeight.normal),
+        child: Container(
+          margin: EdgeInsets.all(0.0),
+          padding: EdgeInsets.all(0),
+          height: 77,
+          child: Row(
+            children: [
+              Container(
+                height: 77,
+                width: 1.0,
+                color: Colors.black,
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
                         ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Container(
-                        // height: 36,
-                        width: 240,
-                        child: Column(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .copyWith(fontWeight: FontWeight.normal),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                            leadingIcon(date: date, week: week),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 240,
+                              child: Text(
+                                '2022년 2월 21일의 일지',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Container(
+                              // height: 36,
+                              width: 240,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        .copyWith(fontWeight: FontWeight.normal),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        trailingIcon(),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              trailingIcon(),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
+                    Divider(height: 1, indent: 10, endIndent: 10,),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              height: 2,
-              color: Color(0xFFF1F1F1),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

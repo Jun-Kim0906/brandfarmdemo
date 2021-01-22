@@ -12,6 +12,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapLoadJournalToState();
     } else if (event is GetInitialList) {
       yield* _mapGetInitialListToState();
+    } else if (event is ChangeDate) {
+      yield* _mapChangeDateToState(event.month);
     } else if (event is LoadMore) {
       yield* _mapLoadMoretToState();
     } else if (event is LoadPrevious) {
@@ -60,6 +62,10 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       year: _year,
       month: _month,
     );
+  }
+
+  Stream<JournalState> _mapChangeDateToState(String month) async* {
+    yield state.update(month: month);
   }
 
   Stream<JournalState> _mapLoadMoretToState() async* {
