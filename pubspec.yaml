@@ -30,6 +30,7 @@ dependencies:
   date_format: ^1.0.9
   animations: ^1.1.2
   scrollable_positioned_list: ^0.1.8
+  flutter_speed_dial: ^1.2.5
   flutter_svg: ^0.19.2+1
 
 
@@ -43,8 +44,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
-    - assets/svg_icon/
     - assets/weather_image/
+    - assets/svg_icon/
   uses-material-design: true
 
   fonts:
