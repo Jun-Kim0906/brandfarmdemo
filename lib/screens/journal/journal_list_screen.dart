@@ -326,7 +326,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
               child: Row(
                 children: [
                   Container(
-                    height: 93,
+                    height: 75,
                     width: 1.0,
                     color: Colors.black,
                   ),

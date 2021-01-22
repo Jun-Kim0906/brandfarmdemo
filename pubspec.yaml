@@ -44,14 +44,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
-    - assets/default_card_bg_image.png
-    - assets/strawberry_farm.png
-    - assets/strawberry.png
-    - assets/megaphone.png
-    - assets/weather_image/cloudy.png
-    - assets/weather_image/rainy.png
-    - assets/weather_image/snowy.png
-    - assets/weather_image/sunny.png
+    - assets/weather_image/
+    - assets/svg_icon/
   uses-material-design: true
 
   fonts:
