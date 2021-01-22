@@ -1,49 +1,56 @@
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/widgets/brandfarm_icons.dart';
+import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class JournalListScreen extends StatefulWidget {
-  final ScrollController scrollController;
-
-  const JournalListScreen({this.scrollController});
+  JournalListScreen({Key key}) : super(key: key);
 
   @override
   _JournalListScreenState createState() => _JournalListScreenState();
 }
 
 class _JournalListScreenState extends State<JournalListScreen> {
-  DateTime now = DateTime.now();
+  JournalBloc _journalBloc;
   DateTime selectedDate;
   bool _isVisible;
-  double _elevation = 0;
-  List items;
-  DateTime _chosenDateTime;
+  int index = 2;
+  String fieldListOptions = '최신순';
+  double scrollOffset;
 
   ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    items = List<int>.generate(21, (i) => 21 - i);
+    _journalBloc = BlocProvider.of<JournalBloc>(context);
+    _journalBloc.add(GetInitialList());
+
     _isVisible = true;
+
     selectedDate = DateTime.now();
-    _scrollController = widget.scrollController;
-    // _scrollController = ScrollController();
+
+    _scrollController = ScrollController();
     _scrollController.addListener(() {
+      setState(() {
+        scrollOffset = _scrollController.offset;
+      });
+      print('offset = ${_scrollController.offset}');
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
         if (_isVisible == true) {
-          print("**** ${_isVisible} up");
+          // print("**** ${_isVisible} up");
           if (this.mounted) {
             setState(() {
               _isVisible = false;
-              _elevation = 3.0;
             });
           }
         }
@@ -51,249 +58,345 @@ class _JournalListScreenState extends State<JournalListScreen> {
         if (_scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           if (_isVisible == false) {
-            print("**** ${_isVisible} down");
+            // print("**** ${_isVisible} down");
             if (this.mounted) {
               setState(() {
                 _isVisible = true;
-                _elevation = 0.0;
               });
             }
           }
         }
       }
+      if (_scrollController.offset >=
+              _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        // scroll bottom
+        if (this.mounted) {
+          print('reach the bottom');
+          setState(() {});
+        } else {
+          print('load more');
+        }
+      }
+      if (_scrollController.offset <=
+              _scrollController.position.minScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        // scroll top
+
+        if (this.mounted) {
+          print('reach the top');
+          setState(() {});
+        } else {
+          print('load previous');
+        }
+      }
     });
+  }
+
+  _afterLayout({JournalState state, int index}) {
+    _getPosition(state: state);
+  }
+
+  _getPosition({JournalState state, int index}) async {
+    RenderBox box = state.globalKey[index].currentContext.findRenderObject();
+    Offset position = box.localToGlobal(Offset.zero);
+    double y = position.dy;
+    print(y);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: _appBar(),
-      body: _sliverList(context),
-      floatingActionButton: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        // height: _isVisible ? 45.0 : 0.0,
-        alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
-        child: Wrap(
-          children: [
-            FloatingActionButton.extended(
-              heroTag: 'journal',
-              icon: Icon(Icons.edit),
-              label: Text('일지쓰기'),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    return BlocBuilder<JournalBloc, JournalState>(
+      builder: (context, state) {
+        return (state.isLoading)
+            ? Loading()
+            : Scaffold(
+                appBar: _appBar(state: state),
+                body: _ListView(state: state),
+                floatingActionButton: AnimatedContainer(
+                  duration: Duration(milliseconds: 500),
+                  alignment: _isVisible ? Alignment(1, 1) : Alignment(1, 1.5),
+                  child: Wrap(
+                    children: [
+                      FloatingActionButton(
+                        heroTag: 'journal',
+                        child: Icon(Icons.edit),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              );
+      },
     );
   }
 
-  Widget _appBar() {
-    return AppBar(
-      // elevation: _elevation,
-      leading: IconButton(
-        iconSize: 60.0,
-        icon: Image.asset('assets/brandfarm.png'),
-        onPressed: () {
-          BlocProvider.of<AuthenticationBloc>(context).add(
-            AuthenticationLoggedOut(),
-          );
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        },
-      ),
-      // title: Text('journal list'),
-      actions: [
-        Badge(
-          position: BadgePosition.topEnd(top: 2, end: 8),
-          badgeContent: Text(
-            '2',
-            style: TextStyle(color: Colors.white, fontSize: 14.0),
-          ),
-          child: IconButton(
-            iconSize: 40.0,
-            icon: Icon(
-              Icons.notifications_none_sharp,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationListScreen(),
-                ),
-              );
-            },
-          ),
-          padding: EdgeInsets.all(4.5),
+  Widget _appBar({JournalState state}) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(220),
+      child: AppBar(
+        leading: IconButton(
+          padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+          iconSize: 19.0,
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        IconButton(
-            iconSize: 35.0,
-            icon: Icon(
-              BrandFarmIcons.settings,
-              color: Colors.black,
+        flexibleSpace: FlexibleSpaceBar(
+          centerTitle: true,
+          title: _currentMonth(state: state),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 20, 20),
+            child: SizedBox(
+              width: 71,
+              child: OutlineButton(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: FittedBox(
+                  child: Row(
+                    children: [
+                      Text(
+                        fieldListOptions,
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                      Icon(Icons.keyboard_arrow_down),
+                    ],
+                  ),
+                ),
+                onPressed: () {
+                  _settingModalBottomSheet(context);
+                },
+              ),
             ),
-            onPressed: () {})
-      ],
-    );
-  }
-
-  Widget _defaultListView() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(22, 0, 22, 0),
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FlatButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Text(
-                      '2021년 2월',
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle2
-                          .copyWith(fontSize: 18),
-                    ),
-                    Icon(Icons.keyboard_arrow_down),
-                  ],
-                ),
-              ),
-              Container(
-                height: 23,
-                width: 65,
-                color: Colors.white,
-                child: RaisedButton(
-                  elevation: 0.0,
-                  color: Colors.white,
-                  padding: EdgeInsets.all(2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(color: Color(0xFFD6D6D6)),
-                  ),
-                  child: FittedBox(
-                    child: Row(
-                      children: [
-                        Text('최신순'),
-                        Icon(Icons.keyboard_arrow_down),
-                      ],
-                    ),
-                  ),
-                  onPressed: () {
-                    // _settingModalBottomSheet(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-          ListView.builder(
-            physics: ClampingScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 21,
-            itemBuilder: (context, index) {
-              int date = 21;
-              return list_tile(
-                date: 21 - index,
-                week: daysOfWeek(
-                    index: now.subtract(Duration(days: index + 1)).weekday),
-              );
-            },
           ),
         ],
       ),
     );
   }
 
-  Widget _sliverList(BuildContext context) {
-    return NestedScrollView(
-      controller: _scrollController,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[
-          SliverAppBar(
-            elevation: 0.0,
-            backgroundColor: Theme.of(context).colorScheme.background,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Color(0xFF37949B),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            title: Row(
+  Widget _ListView({JournalState state}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      child: ListView.builder(
+        controller: _scrollController,
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: state.items.length,
+        itemBuilder: (context, index) {
+          String weekNumBefore;
+          String weekNumNow;
+          if (index == 0) {
+            weekNumNow = _weekOfMonth(date: state.items[index]);
+            return Column(
               children: [
-                Text(
-                  '한동이네 딸기 농장',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(fontWeight: FontWeight.bold),
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 43,
+                    ),
+                    _weekOfMonthWidget(weekOfMonth: weekNumNow, state: state, index: index),
+                    SizedBox(
+                      height: 21,
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(
-                    CupertinoIcons.calendar,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {},
+                _customListTile(
+                  date: int.parse(DateFormat('dd').format(state.items[index])),
+                  week: daysOfWeek(index: state.items[index].weekday),
                 ),
               ],
-            ),
-            floating: true,
-            // flexibleSpace: Placeholder(),
-            expandedHeight: 30,
-          ),
-          SliverPersistentHeader(
-            delegate: _Delegate(_isVisible),
-            pinned: true,
-            floating: true,
-          ),
-        ];
-      },
-      // body: Container(),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          int item = items[index];
-          return Dismissible(
-            background: Container(
-              padding: EdgeInsets.only(left: 15),
-              color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+            );
+          } else {
+            weekNumBefore = _weekOfMonth(date: state.items[index - 1]);
+            weekNumNow = _weekOfMonth(date: state.items[index]);
+            if(weekNumNow != weekNumBefore) {
+              // WidgetsBinding.instance.addPostFrameCallback(_afterLayout(state: state, index: 0));
+              return Column(
                 children: [
-                  Icon(Icons.delete),
+                  (weekNumNow != weekNumBefore)
+                      ? Column(
+                    children: [
+                      SizedBox(
+                        height: 43,
+                      ),
+                      _weekOfMonthWidget(weekOfMonth: weekNumNow, state: state, index: index),
+                      SizedBox(
+                        height: 21,
+                      ),
+                    ],
+                  )
+                      : Container(),
+                  _customListTile(
+                    date: int.parse(DateFormat('dd').format(state.items[index])),
+                    week: daysOfWeek(index: state.items[index].weekday),
+                  ),
                 ],
-              ),
-            ),
-            secondaryBackground: Container(
-              padding: EdgeInsets.only(right: 15),
-              color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.delete),
-                ],
-              ),
-            ),
-            key: Key(item.toString()),
-            onDismissed: (direction) {
-              setState(() {
-                items.removeAt(index);
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: list_tile(
-                  date: items[index],
-                  week: daysOfWeek(
-                      index: now.subtract(Duration(days: index + 1)).weekday)),
-            ),
-          );
+              );
+            } else {
+              return _customListTile(
+                date: int.parse(DateFormat('dd').format(state.items[index])),
+                week: daysOfWeek(index: state.items[index].weekday),
+              );
+            }
+          }
         },
+      ),
+    );
+  }
+
+  Widget _currentMonth({JournalState state}) {
+    return Container(
+      // height: 214,
+      // width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 110,
+          ),
+          Text(
+            state.year,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            state.month,
+            style: TextStyle(
+              fontSize: 50,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Icon(CupertinoIcons.camera_circle),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _weekOfMonthWidget({String weekOfMonth, JournalState state, int index}) {
+    return Container(
+      // key: state.globalKey[index],
+      height: 30,
+      width: 87,
+      child: Center(
+        child: Text(
+          weekOfMonth,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+      ),
+      decoration: BoxDecoration(
+        color: Color(0x10000000),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(15),
+      ),
+    );
+  }
+
+  Widget _customListTile({int date, String week}) {
+    return Container(
+      height: 77,
+      child: InkWell(
+        onTap: () {},
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(0.0),
+              padding: EdgeInsets.all(0),
+              height: 93,
+              child: Row(
+                children: [
+                  Container(
+                    height: 93,
+                    width: 1.0,
+                    color: Colors.black,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      leadingIcon(date: date, week: week),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 240,
+                        child: Text(
+                          '2022년 2월 21일의 일지',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        // height: 36,
+                        width: 240,
+                        child: Column(
+                          children: [
+                            Text(
+                              '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(fontWeight: FontWeight.normal),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        trailingIcon(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 2,
+              color: Color(0xFFF1F1F1),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -371,96 +474,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
       ),
     );
   }
-}
-
-class _Delegate extends SliverPersistentHeaderDelegate {
-  _Delegate(this._isVisible);
-
-  int index = 2;
-  bool _isVisible;
-
-  // @override
-  // double get minExtent => _row.preferredSize.height;
-
-  // @override
-  // double get maxExtent => _row.preferredSize.height;
-
-  @override
-  double get minExtent => 48;
-
-  @override
-  double get maxExtent => 48;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      // color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      decoration: (_isVisible)
-          ? BoxDecoration(
-              color: Colors.white,
-            )
-          : BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: Offset(0.0, 1.0), //(x,y)
-                  blurRadius: 6.0,
-                ),
-              ],
-            ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          FlatButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              // _showDatePicker(context);
-            },
-            child: Row(
-              children: [
-                Text(
-                  '2021년 2월',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2
-                      .copyWith(fontSize: 18),
-                ),
-                Icon(Icons.keyboard_arrow_down),
-              ],
-            ),
-          ),
-          Container(
-            height: 23,
-            width: 65,
-            color: Colors.white,
-            child: RaisedButton(
-              elevation: 0.0,
-              color: Colors.white,
-              padding: EdgeInsets.all(2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-                side: BorderSide(color: Color(0xFFD6D6D6)),
-              ),
-              child: FittedBox(
-                child: Row(
-                  children: [
-                    Text('최신순'),
-                    Icon(Icons.keyboard_arrow_down),
-                  ],
-                ),
-              ),
-              onPressed: () {
-                _settingModalBottomSheet(context);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _settingModalBottomSheet(context) {
     showModalBottomSheet(
@@ -486,10 +499,10 @@ class _Delegate extends SliverPersistentHeaderDelegate {
                         ),
                   onTap: () => {
                         Navigator.pop(context),
-                        // setState(() {
-                        //   fieldListOptions = '가나다순';
-                        //   index = 1;
-                        // }),
+                        setState(() {
+                          fieldListOptions = '가나다순';
+                          index = 1;
+                        }),
                       }),
               Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
               ListTile(
@@ -503,10 +516,10 @@ class _Delegate extends SliverPersistentHeaderDelegate {
                       ),
                 onTap: () => {
                   Navigator.pop(context),
-                  // setState(() {
-                  //   fieldListOptions = '거리순';
-                  //   index = 2;
-                  // }),
+                  setState(() {
+                    fieldListOptions = '거리순';
+                    index = 2;
+                  }),
                 },
               ),
               Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
@@ -521,10 +534,10 @@ class _Delegate extends SliverPersistentHeaderDelegate {
                       ),
                 onTap: () => {
                   Navigator.pop(context),
-                  // setState(() {
-                  //   fieldListOptions = '최근 열람순';
-                  //   index = 3;
-                  // }),
+                  setState(() {
+                    fieldListOptions = '최근 열람순';
+                    index = 3;
+                  }),
                 },
               ),
               Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
@@ -539,10 +552,10 @@ class _Delegate extends SliverPersistentHeaderDelegate {
                       ),
                 onTap: () => {
                   Navigator.pop(context),
-                  // setState(() {
-                  //   fieldListOptions = '잘생긴순';
-                  //   index = 4;
-                  // }),
+                  setState(() {
+                    fieldListOptions = '잘생긴순';
+                    index = 4;
+                  }),
                 },
               ),
               Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
@@ -551,58 +564,56 @@ class _Delegate extends SliverPersistentHeaderDelegate {
         });
   }
 
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-}
+  String _weekOfMonth({DateTime date}) {
+    // get today's date
+    var now = date;
+    var month = DateFormat('MM').format(date);
+    var year = DateFormat('yyyy').format(date);
 
-class showDatePicker extends StatefulWidget {
-  showDatePicker({Key key}) : super(key: key);
+    // set it to feb 10th for testing
+    //now = now.add(new Duration(days:7));
 
-  @override
-  _showDatePickerState createState() => _showDatePickerState();
-}
+    int today = now.weekday;
 
-class _showDatePickerState extends State<showDatePicker> {
-  @override
-  void initState() {
-    super.initState();
-  }
+    // ISO week date weeks start on monday
+    // so correct the day number
+    var dayNr = (today + 6) % 7;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        // child: _showDatePicker(context),
-        );
-  }
+    // ISO 8601 states that week 1 is the week
+    // with the first thursday of that year.
+    // Set the target date to the thursday in the target week
+    var thisMonday = now.subtract(new Duration(days: (dayNr)));
+    var thisThursday = thisMonday.add(new Duration(days: 3));
 
-  void _showDatePicker(BuildContext context) {
-    showCupertinoModalPopup(
-        context: context,
-        builder: (_) => Container(
-              height: 500,
-              color: Color.fromARGB(255, 255, 255, 255),
-              child: Column(
-                children: [
-                  Container(
-                    height: 400,
-                    child: CupertinoDatePicker(
-                        initialDateTime: DateTime.now(),
-                        onDateTimeChanged: (val) {
-                          setState(() {
-                            // _chosenDateTime = val;
-                          });
-                        }),
-                  ),
+    // Set the target to the first thursday of the year
+    // First set the target to january first
+    var firstThursday = new DateTime(now.year, DateTime.january, 1);
 
-                  // Close the modal
-                  CupertinoButton(
-                    child: Text('OK'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              ),
-            ));
+    if (firstThursday.weekday != (DateTime.thursday)) {
+      firstThursday = new DateTime(now.year, DateTime.january,
+          1 + ((4 - firstThursday.weekday) + 7) % 7);
+    }
+
+    // The weeknumber is the number of weeks between the
+    // first thursday of the year and the thursday in the target week
+    var x = thisThursday.millisecondsSinceEpoch -
+        firstThursday.millisecondsSinceEpoch;
+    var weekNumber = x.ceil() / 604800000; // 604800000 = 7 * 24 * 3600 * 1000
+
+    // print("Todays date: ${now}");
+    // print("Monday of this week: ${thisMonday}");
+    // print("Thursday of this week: ${thisThursday}");
+    // print("First Thursday of this year: ${firstThursday}");
+    // print("This week is week #${weekNumber.ceil()}");
+
+    if (weekNumber.ceil() > 4) {
+      int tmp = weekNumber.ceil() % 4;
+      if (tmp == 0) {
+        return '${month}월 4주차';
+      }
+      return '${month}월 ${tmp}주차';
+    } else {
+      return '${month}월 ${weekNumber.ceil()}주차';
+    }
   }
 }

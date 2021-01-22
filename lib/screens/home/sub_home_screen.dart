@@ -2,10 +2,12 @@
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/screens/journal/journal_screen.dart';
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 
 //widgets
 import 'package:BrandFarm/widgets/sub_home/sub_home_appbar.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_fab_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
 
@@ -70,6 +72,17 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => JournalScreen(),
+            ),
+          );
+        },
+        child: Icon(Icons.menu),
       ),
     );
   }
