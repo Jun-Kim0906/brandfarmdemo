@@ -138,8 +138,24 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     long_base_time = long_base_time.substring(11, 16).replaceAll(":", "");
     // print(long_base_time);
 
-    String time = (now.hour >= 6 && now.hour < 18) ? '0600' : '1800';
-    dt = '$base_date$time';
+    String time;
+    String date;
+    if(now.hour >= 6 && now.hour < 18) {
+      time = '0600';
+      dt = '$base_date$time';
+    } else if(now.hour >= 18 && now.hour < 24) {
+      time = '1800';
+      dt = '$base_date$time';
+    } else {
+      time = '1800';
+      date =
+      "${(now.subtract(Duration(days: 1)).toIso8601String().substring(0, 16))}";
+      date = date.substring(0, 10).replaceAll('-', '');
+      dt = '$date$time';
+    }
+
+    // String time = (now.hour >= 6 && now.hour < 18) ? '0600' : '1800';
+    // dt = '$base_date$time';
     // print(dt);
 
     /******************************************************************************************
