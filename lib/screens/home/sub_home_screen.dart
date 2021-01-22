@@ -15,14 +15,12 @@ import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_to_do_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
-import 'package:BrandFarm/widgets/speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/cupertino.dart';
 
 //flutters
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SubHomeScreen extends StatefulWidget {
   const SubHomeScreen({
