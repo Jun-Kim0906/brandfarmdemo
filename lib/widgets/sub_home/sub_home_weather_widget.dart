@@ -1,6 +1,7 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,6 @@ class SubHomeWeatherWidget extends StatefulWidget {
 }
 
 class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
-  double width = 191;
   double height = 149;
   String addr = '경북 포항시';
   WeatherBloc _weatherBloc;
@@ -27,52 +27,51 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<WeatherBloc, WeatherState>(
       builder: (context, state) {
-        return Card(
-          // margin: EdgeInsets.all(0),
-          elevation: 3.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BlocProvider.value(
-                      value: _weatherBloc,
-                      child: WeatherDetail(),
-                    )),
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.fromLTRB(0, 14, 0, 4),
-              width: width,
-              height: height,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [
-                    0.0,
-                    1.0,
-                  ],
-                  colors: [
-                    Color(0xFF3195DE),
-                    Color(0xFF9AECFE),
-                  ],
-                ),
-              ),
-              child: Column(
-                children: [
-                  _upperHalf(state: state),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Divider(thickness: 1, color: Colors.white,),
-                  ),
-                  _lowerHalf(state: state),
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BlocProvider.value(
+                    value: _weatherBloc,
+                    child: WeatherDetail(),
+                  )),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.fromLTRB(0, 14, 0, 4),
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: shadowColor,
+                  offset: Offset(0, 4),
+                  blurRadius: 4.0,
+                )
+              ],
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [
+                  0.0,
+                  1.0,
+                ],
+                colors: [
+                  Color(0xFF3195DE),
+                  Color(0xFF9AECFE),
                 ],
               ),
+            ),
+            child: Column(
+              children: [
+                _upperHalf(state: state),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Divider(thickness: 1, color: Colors.white,),
+                ),
+                _lowerHalf(state: state),
+              ],
             ),
           ),
         );

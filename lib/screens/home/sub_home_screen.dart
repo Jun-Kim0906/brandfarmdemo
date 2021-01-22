@@ -2,16 +2,27 @@
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
+import 'package:BrandFarm/testpage.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
 
 //widgets
 import 'package:BrandFarm/widgets/sub_home/sub_home_appbar.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_calendar.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_fab.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_to_do_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
+import 'package:BrandFarm/widgets/speed_dial/flutter_speed_dial.dart';
+import 'package:flutter/cupertino.dart';
 
 //flutters
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SubHomeScreen extends StatefulWidget {
   const SubHomeScreen({
@@ -29,6 +40,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   WeatherBloc _weatherBloc;
   HomeBloc _homeBloc;
   String name;
+  int initialIndex;
 
   @override
   void initState() {
@@ -41,40 +53,99 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SubHomeAppBar(
-        iconPressed: () {
-          BlocProvider.of<AuthenticationBloc>(context).add(
-            AuthenticationLoggedOut(),
-          );
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        },
-        notificationPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NotificationListScreen(),
-            ),
-          );
-        },
-        settingPressed: () {},
-      ),
-      body: SingleChildScrollView(
-        physics: ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            SubHomeGreetingBar(name: name),
-            BlocProvider.value(
+    return BlocListener(
+        cubit: _homeBloc,
+        listener: (BuildContext context, HomeState state) {},
+        child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+          if (state.selectedDate < 3) {
+            initialIndex = 0;
+          } else {
+            initialIndex = state.selectedDate - 4;
+          }
+          return Scaffold(
+              appBar: SubHomeAppBar(
+                iconPressed: () {
+                  BlocProvider.of<AuthenticationBloc>(context).add(
+                    AuthenticationLoggedOut(),
+                  );
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+                notificationPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NotificationListScreen(),
+                    ),
+                  );
+                },
+                settingPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => TestPage()));
+                },
+              ),
+              body: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  children: [
+                    SubHomeGreetingBar(name: name),
+                    SizedBox(height: 38.0),
+                    SubHomeAnnounceBar(),
+                    SizedBox(height: 17.0),
+                    SubHomeCalendar(
+                      homeBloc: _homeBloc,
+                      initialIndex: initialIndex,
+                      state: state,
+                    ),
+                    WeatherToDoWidgetBar(
+                      weatherBloc: _weatherBloc,
+                      state: state,
+                    ),
+                  ],
+                ),
+              ),
+              floatingActionButton: SubHomeFAB());
+        }));
+  }
+}
+
+
+class WeatherToDoWidgetBar extends StatelessWidget {
+  const WeatherToDoWidgetBar({
+    Key key,
+    @required WeatherBloc weatherBloc,
+    @required this.state,
+  })  : _weatherBloc = weatherBloc,
+        super(key: key);
+
+  final WeatherBloc _weatherBloc;
+  final HomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 187,
+            child: BlocProvider.value(
               value: _weatherBloc,
               child: SubHomeWeatherWidget(),
-            )
-          ],
-        ),
+            ),
+          ),
+          SizedBox(
+            width: 10.0,
+          ),
+          Expanded(
+              flex: 146,
+              child: SubHomeToDoWidget(
+                state: state,
+              ))
+        ],
       ),
     );
   }
 }
-
 
 // //bloc
 // import 'package:BrandFarm/blocs/home/bloc.dart';
