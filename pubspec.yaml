@@ -30,8 +30,7 @@ dependencies:
   date_format: ^1.0.9
   animations: ^1.1.2
   scrollable_positioned_list: ^0.1.8
-
-
+  flutter_svg: ^0.19.2+1
 
 
 dev_dependencies:
@@ -44,14 +43,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
-    - assets/default_card_bg_image.png
-    - assets/strawberry_farm.png
-    - assets/strawberry.png
-    - assets/megaphone.png
-    - assets/weather_image/cloudy.png
-    - assets/weather_image/rainy.png
-    - assets/weather_image/snowy.png
-    - assets/weather_image/sunny.png
+    - assets/svg_icon/
+    - assets/weather_image/
   uses-material-design: true
 
   fonts:

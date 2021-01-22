@@ -11,7 +11,7 @@ class SubHomeGreetingBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 20.0),
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 20.0, bottom: 10.0),
       child: Row(
         children: [
           RichText(
