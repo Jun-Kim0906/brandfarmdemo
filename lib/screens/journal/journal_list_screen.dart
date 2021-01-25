@@ -1,14 +1,12 @@
-import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
-import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
+import 'package:BrandFarm/screens/journal/sub_journal_detail_screen.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
-import 'package:BrandFarm/widgets/brandfarm_icons.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class JournalListScreen extends StatefulWidget {
@@ -21,6 +19,7 @@ class JournalListScreen extends StatefulWidget {
 class _JournalListScreenState extends State<JournalListScreen> {
   JournalBloc _journalBloc;
   DateTime selectedDate;
+  DateTime _chosenDateTime;
   bool _isVisible;
   int index = 2;
   String fieldListOptions = '최신순';
@@ -43,7 +42,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
       setState(() {
         scrollOffset = _scrollController.offset;
       });
-      print('offset = ${_scrollController.offset}');
+      // print('offset = ${_scrollController.offset}');
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
         if (_isVisible == true) {
@@ -93,17 +92,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
     });
   }
 
-  _afterLayout({JournalState state, int index}) {
-    _getPosition(state: state);
-  }
-
-  _getPosition({JournalState state, int index}) async {
-    RenderBox box = state.globalKey[index].currentContext.findRenderObject();
-    Offset position = box.localToGlobal(Offset.zero);
-    double y = position.dy;
-    print(y);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<JournalBloc, JournalState>(
@@ -111,30 +99,38 @@ class _JournalListScreenState extends State<JournalListScreen> {
         return (state.isLoading)
             ? Loading()
             : Scaffold(
-                appBar: _appBar(state: state),
+                appBar: _appBar(state: state, context: context),
                 body: _ListView(state: state),
                 floatingActionButton: AnimatedContainer(
                   duration: Duration(milliseconds: 500),
-                  alignment: _isVisible ? Alignment(1, 1) : Alignment(1, 1.5),
+                  alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
                   child: Wrap(
                     children: [
-                      FloatingActionButton(
+                      FloatingActionButton.extended(
                         heroTag: 'journal',
-                        child: Icon(Icons.edit),
-                        onPressed: () {},
+                        label: Text('일지쓰기'),
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => SubJournalDetailScreen()),
+                          );
+                        },
                       ),
                     ],
                   ),
                 ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
               );
       },
     );
   }
 
-  Widget _appBar({JournalState state}) {
+  Widget _appBar({JournalState state, BuildContext context}) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(220),
+      preferredSize: Size.fromHeight(224),
       child: AppBar(
+        backgroundColor: Colors.red,
         leading: IconButton(
           padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
           iconSize: 19.0,
@@ -145,7 +141,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
         ),
         flexibleSpace: FlexibleSpaceBar(
           centerTitle: true,
-          title: _currentMonth(state: state),
+          title: _currentMonth(state: state, context: context),
         ),
         actions: [
           Padding(
@@ -166,7 +162,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           fontSize: 14,
                         ),
                       ),
-                      Icon(Icons.keyboard_arrow_down),
+                      Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.black,
+                      ),
                     ],
                   ),
                 ),
@@ -184,76 +183,116 @@ class _JournalListScreenState extends State<JournalListScreen> {
   Widget _ListView({JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.items.length,
-        itemBuilder: (context, index) {
-          String weekNumBefore;
-          String weekNumNow;
-          weekNumNow = _weekOfMonth(date: state.items[index]);
-          if (index == 0) {
-            return Column(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 43,
-                    ),
-                    _weekOfMonthWidget(weekOfMonth: weekNumNow, state: state, index: index),
-                    SizedBox(
-                      height: 21,
-                    ),
-                  ],
-                ),
-                _customListTile(
-                  date: int.parse(DateFormat('dd').format(state.items[index])),
-                  week: daysOfWeek(index: state.items[index].weekday),
-                ),
-              ],
-            );
-          } else {
-            weekNumBefore = _weekOfMonth(date: state.items[index - 1]);
-            if(weekNumNow != weekNumBefore) {
-              if(index*77 <= scrollOffset.toInt()) {
-                _journalBloc.add(ChangeDate(month: weekNumNow.substring(0,2)));
-              }
-              // WidgetsBinding.instance.addPostFrameCallback(_afterLayout(state: state, index: 0));
+      child: Scrollbar(
+        child: ListView.builder(
+          controller: _scrollController,
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: state.items.length,
+          itemBuilder: (context, index) {
+            String weekNumBefore;
+            String weekNumNow;
+            String weekNumAfter;
+            weekNumNow = _weekOfMonth(date: state.items[index]);
+            if (index == 0) {
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  (weekNumNow != weekNumBefore)
-                      ? Column(
+                  Column(
                     children: [
                       SizedBox(
                         height: 43,
                       ),
-                      _weekOfMonthWidget(weekOfMonth: weekNumNow, state: state, index: index),
+                      _weekOfMonthWidget(
+                          month: DateFormat('MM').format(state.items[index]),
+                          weekOfMonth: weekNumNow,
+                          state: state,
+                          index: index),
                       SizedBox(
                         height: 21,
                       ),
                     ],
-                  )
-                      : Container(),
+                  ),
                   _customListTile(
-                    date: int.parse(DateFormat('dd').format(state.items[index])),
+                    date:
+                        int.parse(DateFormat('dd').format(state.items[index])),
                     week: daysOfWeek(index: state.items[index].weekday),
+                    end: 1,
                   ),
                 ],
               );
             } else {
-              return _customListTile(
-                date: int.parse(DateFormat('dd').format(state.items[index])),
-                week: daysOfWeek(index: state.items[index].weekday),
-              );
+              weekNumBefore = _weekOfMonth(date: state.items[index - 1]);
+              if (index + 1 < state.items.length) {
+                weekNumAfter = _weekOfMonth(date: state.items[index + 1]);
+              }
+              String month_before =
+                  DateFormat('MM').format(state.items[index - 1]);
+              String month_now = DateFormat('MM').format(state.items[index]);
+              String _month;
+              int end;
+              if (weekNumNow != weekNumBefore && month_before != month_now) {
+                _month = month_now;
+              } else if (weekNumNow != weekNumBefore &&
+                  int.parse(DateFormat('dd').format(state.items[index])) > 25) {
+                DateTime curr = state.items[index].add(Duration(days: 7));
+                _month = DateFormat('MM').format(curr);
+              } else {
+                _month = month_before;
+              }
+              if (weekNumNow != weekNumAfter) {
+                end = 0;
+              } else {
+                end = 1;
+              }
+              if (weekNumNow != weekNumBefore) {
+                // if(index*77+94 <= scrollOffset.toInt()) {
+                //   _journalBloc.add(ChangeDate(month: _month));
+                // }
+                // WidgetsBinding.instance.addPostFrameCallback(_afterLayout(state: state, index: 0));
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    (weekNumNow != weekNumBefore)
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: 43,
+                              ),
+                              _weekOfMonthWidget(
+                                  month: _month,
+                                  weekOfMonth: weekNumNow,
+                                  state: state,
+                                  index: index),
+                              SizedBox(
+                                height: 21,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    _customListTile(
+                      date: int.parse(
+                          DateFormat('dd').format(state.items[index])),
+                      week: daysOfWeek(index: state.items[index].weekday),
+                      end: 1,
+                    ),
+                  ],
+                );
+              } else {
+                return _customListTile(
+                  date: int.parse(DateFormat('dd').format(state.items[index])),
+                  week: daysOfWeek(index: state.items[index].weekday),
+                  end: end,
+                );
+              }
             }
-          }
-        },
+          },
+        ),
       ),
     );
   }
 
-  Widget _currentMonth({JournalState state}) {
+  Widget _currentMonth({JournalState state, BuildContext context}) {
     return Container(
       // height: 214,
       // width: MediaQuery.of(context).size.width,
@@ -263,28 +302,57 @@ class _JournalListScreenState extends State<JournalListScreen> {
           SizedBox(
             height: 110,
           ),
-          Text(
-            state.year,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                state.year,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  print('sdfsfd');
+                },
+                child: Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: 15,
           ),
-          Text(
-            state.month,
-            style: TextStyle(
-              fontSize: 50,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                state.month,
+                style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              InkWell(
+                onTap: () => _showDatePicker(context),
+                child: Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                Icon(CupertinoIcons.camera_circle),
+                Icon(
+                  CupertinoIcons.camera_circle,
+                  color: Colors.black,
+                ),
               ],
             ),
           ),
@@ -293,28 +361,29 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget _weekOfMonthWidget({String weekOfMonth, JournalState state, int index}) {
+  Widget _weekOfMonthWidget(
+      {String month, String weekOfMonth, JournalState state, int index}) {
     return Container(
       // key: state.globalKey[index],
       height: 30,
       width: 87,
       child: Center(
         child: Text(
-          weekOfMonth,
+          '${month}월 ${weekOfMonth}주차',
           style: TextStyle(
             fontSize: 16,
           ),
         ),
       ),
-      decoration: BoxDecoration(
-        color: Color(0x10000000),
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(15),
-      ),
+      // decoration: BoxDecoration(
+      //   color: Color(0x10000000),
+      //   shape: BoxShape.rectangle,
+      //   borderRadius: BorderRadius.circular(15),
+      // ),
     );
   }
 
-  Widget _customListTile({int date, String week}) {
+  Widget _customListTile({int date, String week, int end}) {
     return Container(
       height: 77,
       child: InkWell(
@@ -325,11 +394,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
           height: 77,
           child: Row(
             children: [
-              Container(
-                height: 77,
-                width: 1.0,
-                color: Colors.black,
-              ),
+              // Container(
+              //   height: 77,
+              //   width: 2.0,
+              //   color: Colors.black,
+              // ),
               Expanded(
                 child: Column(
                   children: [
@@ -345,49 +414,16 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           ],
                         ),
                         SizedBox(
-                          width: 15,
+                          width: 19,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 240,
-                              child: Text(
-                                '2022년 2월 21일의 일지',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(fontWeight: FontWeight.normal),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Container(
-                              // height: 36,
-                              width: 240,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(fontWeight: FontWeight.normal),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                        titleNSubtitle(),
                         SizedBox(
-                          width: 8,
+                          width: 25,
                         ),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               trailingIcon(),
                             ],
@@ -395,7 +431,13 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         ),
                       ],
                     ),
-                    Divider(height: 1, indent: 10, endIndent: 10,),
+                    (end == 1)
+                        ? Divider(
+                            height: 14,
+                            // indent: 10,
+                            // endIndent: 10,
+                          )
+                        : Container(),
                   ],
                 ),
               ),
@@ -438,20 +480,64 @@ class _JournalListScreenState extends State<JournalListScreen> {
           children: [
             Text(
               '$date',
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 36,
-                  ),
+              style: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 36,
+                ),
+              ),
             ),
             Text(
               week,
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14,
-                  ),
+              style: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                ),
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget titleNSubtitle() {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 207,
+            child: Text(
+              '2022년 2월 21일의 일지',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(fontWeight: FontWeight.normal),
+            ),
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          Container(
+            // height: 36,
+            width: 207,
+            child: Column(
+              children: [
+                Text(
+                  '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      .copyWith(fontWeight: FontWeight.normal),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -569,11 +655,39 @@ class _JournalListScreenState extends State<JournalListScreen> {
         });
   }
 
+  void _showDatePicker(context) {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (_) => Container(
+              height: 500,
+              color: Color.fromARGB(255, 255, 255, 255),
+              child: Column(
+                children: [
+                  Container(
+                    height: 400,
+                    child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        initialDateTime: DateTime.now(),
+                        onDateTimeChanged: (val) {
+                          setState(() {
+                            _chosenDateTime = val;
+                          });
+                        }),
+                  ),
+
+                  // Close the modal
+                  CupertinoButton(
+                    child: Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ),
+            ));
+  }
+
   String _weekOfMonth({DateTime date}) {
     // get today's date
     var now = date;
-    var month = DateFormat('MM').format(date);
-    var year = DateFormat('yyyy').format(date);
 
     // set it to feb 10th for testing
     //now = now.add(new Duration(days:7));
@@ -614,11 +728,49 @@ class _JournalListScreenState extends State<JournalListScreen> {
     if (weekNumber.ceil() > 4) {
       int tmp = weekNumber.ceil() % 4;
       if (tmp == 0) {
-        return '${month}월 4주차';
+        return '4';
       }
-      return '${month}월 ${tmp}주차';
+      return '${tmp}';
     } else {
-      return '${month}월 ${weekNumber.ceil()}주차';
+      return '${weekNumber.ceil()}';
     }
+    // return '${weekNumber.ceil()}';
+  }
+}
+
+class DatePicker {
+  BuildContext context;
+  final ValueChanged<DateTime> onDateTimeChanged;
+
+  DatePicker(this.context, {@required this.onDateTimeChanged});
+
+  void show() {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 300,
+            child: Stack(
+              children: <Widget>[
+                CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  onDateTimeChanged: (date) {
+                    onDateTimeChanged(date);
+                  },
+                  initialDateTime: DateTime.now(),
+                  minimumDate: DateTime(DateTime.now().year - 1),
+                  maximumDate: DateTime(DateTime.now().year + 3),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: CupertinoButton(
+                    child: Text('Done'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
