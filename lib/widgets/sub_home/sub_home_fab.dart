@@ -1,7 +1,10 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/screens/journal/journal_list_screen.dart';
+import 'package:BrandFarm/screens/journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/widgets/speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -13,6 +16,22 @@ class SubHomeFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
+      onOpen: () {
+        SystemChrome.setSystemUIOverlayStyle(
+            SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.black,
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+        ));
+      },
+      onClose: () {
+        SystemChrome.setSystemUIOverlayStyle(
+            SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: null,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+        ));
+      },
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme:
           IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
@@ -31,11 +50,13 @@ class SubHomeFAB extends StatelessWidget {
                 .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
           ),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (BuildContext context) => JournalBloc(),
-                  child: JournalListScreen(),
-                )),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                        create: (BuildContext context) => JournalBloc(),
+                        child: JournalListScreen(),
+                      )),
             );
           },
         ),
@@ -53,7 +74,15 @@ class SubHomeFAB extends StatelessWidget {
                 .bodyText2
                 .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                          create: (BuildContext context) => JournalCreateBloc(),
+                          child: SubJournalCreateScreen(),
+                        )));
+          },
         ),
         SpeedDialChild(
           child: SvgPicture.asset('assets/svg_icon/issue_icon.svg',

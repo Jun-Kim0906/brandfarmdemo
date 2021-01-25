@@ -50,7 +50,7 @@ class FarmThemeData {
   }
 
   static const ColorScheme lightColorScheme = ColorScheme(
-    primary: Color(0xff00db69),
+    primary: Color(0xff15b85b),
     primaryVariant: Color(0xff7ACE96),
     secondary: Color(0xFF37949B),
     secondaryVariant: Color(0xFF018786),
