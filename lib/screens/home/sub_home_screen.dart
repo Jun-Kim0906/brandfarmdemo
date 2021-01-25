@@ -62,12 +62,6 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
           }
           return Scaffold(
               appBar: SubHomeAppBar(
-                iconPressed: () {
-                  BlocProvider.of<AuthenticationBloc>(context).add(
-                    AuthenticationLoggedOut(),
-                  );
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
                 notificationPressed: () {
                   Navigator.push(
                     context,
