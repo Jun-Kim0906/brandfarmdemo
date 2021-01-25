@@ -1,7 +1,7 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
-import 'package:BrandFarm/screens/journal/journal_list_screen.dart';
-import 'package:BrandFarm/screens/journal/sub_journal_create_screen.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_list_screen.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/widgets/speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
