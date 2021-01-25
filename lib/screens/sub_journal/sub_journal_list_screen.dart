@@ -1,5 +1,5 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
-import 'package:BrandFarm/screens/journal/sub_journal_detail_screen.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:flutter/cupertino.dart';

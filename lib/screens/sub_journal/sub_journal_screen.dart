@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'journal_list_screen.dart';
+import 'sub_journal_list_screen.dart';
 
 class JournalScreen extends StatefulWidget {
   @override
