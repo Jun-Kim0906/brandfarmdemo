@@ -1,13 +1,13 @@
+import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/brandfarm_icons.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 
 class SubHomeAppBar extends StatelessWidget implements PreferredSizeWidget{
   const SubHomeAppBar({
-    Key key, this.iconPressed, this.notificationPressed, this.settingPressed,
+    Key key, this.notificationPressed, this.settingPressed,
   }) : super(key: key);
   
-  final Function iconPressed;
   final Function notificationPressed;
   final Function settingPressed;
 
@@ -20,14 +20,10 @@ class SubHomeAppBar extends StatelessWidget implements PreferredSizeWidget{
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: defaultPadding),
           child: Row(
             children: [
-              IconButton(
-                iconSize: 60.0,
-                icon: Image.asset('assets/brandfarm.png'),
-                onPressed: iconPressed,
-              ),
+              Image.asset('assets/home_logo.png'),
               Spacer(),
               Badge(
                 position: BadgePosition.topEnd(top: 2, end: 8),
