@@ -1,7 +1,9 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -66,9 +68,9 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
                 ],
               ),
               body: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: defaultPadding),
                 physics: ClampingScrollPhysics(),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       height: 20.0,
@@ -78,16 +80,43 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
                       height: 10.0,
                     ),
                     InputTitleBar(),
-                    Row(
-                      children: [
-                        Text('일일 활동내역 입력',
-                            style: Theme.of(context).textTheme.headline5),
-                        Spacer(),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text('편집'),
-                        )
-                      ],
+                    SizedBox(height: 15.0,),
+                    InputActivityBar(),
+                    SizedBox(height: 15.0,),
+                    AddPictureBar(),
+                    SizedBox(height: 15.0,),
+                    Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: defaultPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('과정 기록', style: Theme.of(context).textTheme.headline5),
+                          SizedBox(height: 8.0,),
+                          Scrollbar(
+                            child: TextField(
+                              scrollPhysics: RangeMaintainingScrollPhysics(),
+                              minLines: null,
+                              maxLines: 8,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                hintText: '내용을 입력해주세요',
+                                hintStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(),
+                                )
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -98,6 +127,84 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
   }
 }
 
+class AddPictureBar extends StatelessWidget {
+  const AddPictureBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: Text('사진첨부', style: Theme.of(context).textTheme.headline5),
+        ),
+        SizedBox(height: 5.0,),
+        Container(
+          height: 100.0,
+          child: ListView.builder(
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: 1,
+            itemBuilder: (BuildContext context, int index){
+              return index == 0
+                  ? Row(
+                    children: [
+                      SizedBox(width: defaultPadding,),
+                      Center(
+                        child: InkWell(
+                onTap: (){},
+                        child: Container(
+                          height: 74.0,
+                          width: 74.0,
+                          decoration: BoxDecoration(
+                            color: Color(0x1a000000)
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.add,
+                              size: 34.0,
+                            ),
+                          ),
+                        )),
+                      ),
+                    ],
+                  )
+                  : Container();
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class InputActivityBar extends StatelessWidget {
+  const InputActivityBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Row(
+        children: [
+          Text('일일 활동내역 입력',
+              style: Theme.of(context).textTheme.headline5),
+          Spacer(),
+          TextButton(
+            onPressed: () {},
+            child: Text('편집', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0, color: Color(0xb3000000)),),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class InputTitleBar extends StatelessWidget {
   const InputTitleBar({
     Key key,
@@ -105,24 +212,31 @@ class InputTitleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text('제목', style: Theme.of(context).textTheme.headline5),
-        SizedBox(width: 8.0),
-        Expanded(
-            child: TextField(
-          decoration: InputDecoration(
-              hintText: '2021_0405_한동이네딸기농장',
-              hintStyle: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
-              isDense: true,
-              contentPadding: EdgeInsets.all(5.0)),
-        ))
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('제목', style: Theme.of(context).textTheme.headline5),
+          SizedBox(width: 8.0),
+          Expanded(
+              child: TextField(
+                style:
+          Theme.of(context).textTheme
+          .bodyText1
+          .copyWith(fontSize: 18.0),
+            decoration: InputDecoration(
+                hintText: '2021_0405_한동이네딸기농장',
+                hintStyle: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
+                isDense: true,
+                contentPadding: EdgeInsets.all(5.0)),
+          ))
+        ],
+      ),
     );
   }
 }
@@ -134,17 +248,20 @@ class DateBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('$year년 $month월 $day일 $weekday',
-            style: Theme.of(context).textTheme.subtitle2.copyWith(
-                fontSize: 16.0, color: Theme.of(context).primaryColor)),
-        Spacer(),
-        SvgPicture.asset(
-          'assets/svg_icon/calendar_icon.svg',
-          color: Color(0xb3000000),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Row(
+        children: [
+          Text('$year년 $month월 $day일 $weekday',
+              style: Theme.of(context).textTheme.subtitle2.copyWith(
+                  fontSize: 16.0, color: Theme.of(context).primaryColor)),
+          Spacer(),
+          SvgPicture.asset(
+            'assets/svg_icon/calendar_icon.svg',
+            color: Color(0xb3000000),
+          ),
+        ],
+      ),
     );
   }
 }
