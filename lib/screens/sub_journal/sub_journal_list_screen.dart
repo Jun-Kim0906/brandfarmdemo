@@ -17,6 +17,15 @@ class JournalListScreen extends StatefulWidget {
 }
 
 class _JournalListScreenState extends State<JournalListScreen> {
+  static final _containerHeight = 100.0;
+
+  // var _fromTop = -_containerHeight;
+  var _fromTop = 0.0;
+  var _allowReverse = true, _allowForward = true;
+  var _prevOffset = 0.0;
+  var _prevForwardOffset = -_containerHeight;
+  var _prevReverseOffset = 0.0;
+
   JournalBloc _journalBloc;
   DateTime selectedDate;
   DateTime _chosenDateTime;
@@ -24,6 +33,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   int index = 2;
   String fieldListOptions = '최신순';
   double scrollOffset = 0.0;
+  int _tab;
 
   ScrollController _scrollController;
 
@@ -34,8 +44,8 @@ class _JournalListScreenState extends State<JournalListScreen> {
     _journalBloc.add(GetInitialList());
 
     _isVisible = true;
-
     selectedDate = DateTime.now();
+    _tab = 0;
 
     _scrollController = ScrollController();
     _scrollController.addListener(() {
@@ -43,54 +53,99 @@ class _JournalListScreenState extends State<JournalListScreen> {
         scrollOffset = _scrollController.offset;
       });
       // print('offset = ${_scrollController.offset}');
+      _manageFab();
+      _listenForScrollPosition();
+      _manageTopContainer();
+    });
+  }
+
+  void _manageFab() {
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      if (_isVisible == true) {
+        // print("**** ${_isVisible} up");
+        if (this.mounted) {
+          setState(() {
+            _isVisible = false;
+          });
+        }
+      }
+    } else {
       if (_scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        if (_isVisible == true) {
-          // print("**** ${_isVisible} up");
+          ScrollDirection.forward) {
+        if (_isVisible == false) {
+          // print("**** ${_isVisible} down");
           if (this.mounted) {
             setState(() {
-              _isVisible = false;
+              _isVisible = true;
             });
           }
         }
-      } else {
-        if (_scrollController.position.userScrollDirection ==
-            ScrollDirection.forward) {
-          if (_isVisible == false) {
-            // print("**** ${_isVisible} down");
-            if (this.mounted) {
-              setState(() {
-                _isVisible = true;
-              });
-            }
-          }
-        }
       }
-      if (_scrollController.offset >=
-              _scrollController.position.maxScrollExtent &&
-          !_scrollController.position.outOfRange) {
-        // scroll bottom
-        if (this.mounted) {
-          print('reach the bottom');
-          setState(() {});
-        } else {
-          print('load more');
-        }
-      }
-      if (_scrollController.offset <=
-              _scrollController.position.minScrollExtent &&
-          !_scrollController.position.outOfRange) {
-        // scroll top
-
-        if (this.mounted) {
-          print('reach the top');
-          setState(() {});
-        } else {
-          print('load previous');
-        }
-      }
-    });
+    }
   }
+
+  void _listenForScrollPosition() {
+    if (_scrollController.offset >=
+        _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      // scroll bottom
+      if (this.mounted) {
+        print('reach the bottom');
+        setState(() {});
+      } else {
+        print('load more');
+      }
+    }
+    if (_scrollController.offset <=
+        _scrollController.position.minScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      // scroll top
+
+      if (this.mounted) {
+        print('reach the top');
+        setState(() {});
+      } else {
+        print('load previous');
+      }
+    }
+  }
+
+  // entire logic is inside this listener for ListView
+  void _manageTopContainer() {
+    double offset = _scrollController.offset;
+    var direction = _scrollController.position.userScrollDirection;
+
+    if (direction == ScrollDirection.reverse) {
+      _allowForward = true;
+      if (_allowReverse) {
+        _allowReverse = false;
+        _prevOffset = offset;
+        _prevForwardOffset = _fromTop;
+      }
+
+      var difference = offset - _prevOffset;
+      _fromTop = _prevForwardOffset + difference;
+      if (_fromTop > 0) _fromTop = 0;
+    } else if (direction == ScrollDirection.forward) {
+      _allowReverse = true;
+      if (_allowForward) {
+        _allowForward = false;
+        _prevOffset = offset;
+        _prevReverseOffset = _fromTop;
+      }
+
+      var difference = offset - _prevOffset;
+      _fromTop = _prevReverseOffset + difference;
+      if (_fromTop < -_containerHeight) _fromTop = -_containerHeight;
+    }
+    setState(() {}); // for simplicity I'm calling setState here, you can put bool values to only call setState when there is a genuine change in _fromTop
+  }
+  // @override
+  // void dispose() {
+  //   _tabController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,89 +153,219 @@ class _JournalListScreenState extends State<JournalListScreen> {
       builder: (context, state) {
         return (state.isLoading)
             ? Loading()
-            : Scaffold(
-                appBar: _appBar(state: state, context: context),
-                body: _ListView(state: state),
-                floatingActionButton: AnimatedContainer(
-                  duration: Duration(milliseconds: 500),
-                  alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
-                  child: Wrap(
+            : DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: _appBar(state: state, context: context),
+                  body: TabBarView(
                     children: [
-                      FloatingActionButton.extended(
-                        heroTag: 'journal',
-                        label: Text('일지쓰기'),
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => SubJournalDetailScreen()),
-                          );
-                        },
+                      Stack(
+                        children: [
+                          _ListViewByMonth(state: state),
+                          Positioned(
+                            top: _fromTop,
+                            left: 0,
+                            right: 0,
+                            child: _yourContainer(),
+                          ),
+                        ],
                       ),
+                      Center(
+                          child: Text(
+                        '이슈일지',
+                        style: TextStyle(color: Colors.black),
+                      )),
                     ],
                   ),
+                  floatingActionButton: AnimatedContainer(
+                    duration: Duration(milliseconds: 500),
+                    alignment: _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
+                    child: Wrap(
+                      children: [
+                        FloatingActionButton.extended(
+                          heroTag: 'journal',
+                          label: Text('일지쓰기', style: TextStyle(color: Colors.white),),
+                          icon: Image.asset('assets/Journal/memo.png', height: 20, width: 20, color: Colors.white,),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SubJournalDetailScreen()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
                 ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
               );
       },
     );
   }
 
   Widget _appBar({JournalState state, BuildContext context}) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(224),
-      child: AppBar(
-        backgroundColor: Colors.red,
-        leading: IconButton(
-          padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-          iconSize: 19.0,
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        flexibleSpace: FlexibleSpaceBar(
-          centerTitle: true,
-          title: _currentMonth(state: state, context: context),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 20, 20),
-            child: SizedBox(
-              width: 71,
-              child: OutlineButton(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: FittedBox(
-                  child: Row(
-                    children: [
-                      Text(
-                        fieldListOptions,
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                ),
-                onPressed: () {
-                  _settingModalBottomSheet(context);
-                },
-              ),
+    return AppBar(
+      // elevation: 3.0,
+      leading: IconButton(
+        padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+        iconSize: 19.0,
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      centerTitle: true,
+      title: Text(
+        '일지목록',
+        style: Theme.of(context).textTheme.bodyText1,
+      ),
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(72),
+        child: Container(
+          // color: Colors.yellow,
+          // margin: EdgeInsets.only(bottom: 2),
+          decoration: BoxDecoration(
+            color: Color(0x04000000),
+            border: Border(
+              top: BorderSide(width: 1, color: Colors.grey),
             ),
           ),
-        ],
+          child: TabBar(
+            // indicatorPadding: EdgeInsets.zero,
+            labelPadding: EdgeInsets.zero,
+            onTap: (index){
+              setState(() {
+                _tab = index;
+              });
+              // print(_tab);
+            },
+            indicator: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(
+                  width: 2,
+                  color: Color(0xFF15B833),
+                ),
+              ),
+            ),
+            // labelColor: Colors.yellow,
+            labelColor: Color(0xFF15B833),
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Color(0xFF15B833),
+            tabs: [
+              Tab(
+                  icon: Image.asset(
+                    'assets/Journal/sprout.png',
+                    width: 28,
+                    height: 22,
+                    color: (_tab == 0) ? Color(0xFF15B833) : Colors.grey,
+                  ),
+                  text: '성장일지'),
+              Tab(
+                  icon: Image.asset(
+                    'assets/Journal/community.png',
+                    width: 28,
+                    height: 22,
+                    color: (_tab == 1) ? Color(0xFF15B833) : Colors.grey,
+                  ),
+                  text: '이슈일지'),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _ListView({JournalState state}) {
+  Widget _yourContainer() {
+    return Opacity(
+      opacity: 1 - (-_fromTop / _containerHeight),
+      child: Container(
+        height: _containerHeight,
+        color: Colors.red,
+        alignment: Alignment.center,
+        child: Text("Your Container", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+      ),
+    );
+  }
+
+  Widget _ListViewByMonth({JournalState state}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      child: ListView.builder(
+        controller: _scrollController,
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: state.items.length,
+        itemBuilder: (context, index) {
+          int end;
+          String monthBefore;
+          String currentMonth;
+          String monthAfter;
+          currentMonth = DateFormat('MM').format(state.items[index]);
+          if (index == 0) {
+            return _firstOfList(
+                currentMonth: currentMonth, state: state, index: index);
+          } else {
+            monthBefore = DateFormat('MM').format(state.items[index - 1]);
+
+            if (index + 1 < state.items.length) {
+              monthAfter = DateFormat('MM').format(state.items[index + 1]);
+            }
+
+            if (currentMonth != monthAfter) {
+              end = 0;
+            } else {
+              end = 1;
+            }
+
+            if (currentMonth != monthBefore) {
+              return _firstOfList(
+                  currentMonth: currentMonth, state: state, index: index);
+            } else {
+              return _customListTile(
+                date: int.parse(DateFormat('dd').format(state.items[index])),
+                week: daysOfWeek(index: state.items[index].weekday),
+                end: end,
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _firstOfList({String currentMonth, JournalState state, int index}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            SizedBox(
+              height: 43,
+            ),
+            _monthWidget(
+                month: currentMonth,
+                year: DateFormat('yyyy').format(state.items[index]),
+                state: state,
+                index: index),
+            SizedBox(
+              height: 21,
+            ),
+          ],
+        ),
+        _customListTile(
+          date: int.parse(DateFormat('dd').format(state.items[index])),
+          week: daysOfWeek(index: state.items[index].weekday),
+          end: 1,
+        ),
+      ],
+    );
+  }
+
+  Widget _ListViewByWeekNum({JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: Scrollbar(
@@ -361,6 +546,37 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
+  Widget _monthWidget(
+      {String month, String year, JournalState state, int index}) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        // key: state.globalKey[index],
+        height: 30,
+        width: 112,
+        child: Row(
+          children: [
+            Text(
+              '${year}년 ${month}월',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.black,
+            ),
+          ],
+        ),
+        // decoration: BoxDecoration(
+        //   color: Color(0x10000000),
+        //   shape: BoxShape.rectangle,
+        //   borderRadius: BorderRadius.circular(15),
+        // ),
+      ),
+    );
+  }
+
   Widget _weekOfMonthWidget(
       {String month, String weekOfMonth, JournalState state, int index}) {
     return Container(
@@ -387,7 +603,12 @@ class _JournalListScreenState extends State<JournalListScreen> {
     return Container(
       height: 77,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SubJournalDetailScreen()),
+          );
+        },
         child: Container(
           margin: EdgeInsets.all(0.0),
           padding: EdgeInsets.all(0),
@@ -451,7 +672,12 @@ class _JournalListScreenState extends State<JournalListScreen> {
   Widget list_tile({int date, String week}) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SubJournalDetailScreen()),
+        );
+      },
       leading: leadingIcon(date: date, week: week),
       title: Text(
         '2022년 2월 21일의 일지',
