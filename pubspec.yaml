@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # Add this line
+    sdk: flutter         # Add this line
   cupertino_icons: ^1.0.0
   flutter_bloc: ^6.1.1
   bloc: ^6.1.1
@@ -39,10 +41,15 @@ dependencies:
   firebase_storage: ^7.0.0
 
 
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   pedantic: ^1.9.2
+
+
 
 
 
