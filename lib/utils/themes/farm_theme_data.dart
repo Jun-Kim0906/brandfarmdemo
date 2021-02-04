@@ -10,16 +10,21 @@ class FarmThemeData {
   static const _darkFillColor = Colors.white;
 
   static final Color _lightFocusColor = Colors.black.withOpacity(0.12);
+
   // static final Color _darkFocusColor = Colors.white.withOpacity(0.12);
 
   static ThemeData lightThemeData =
   themeData(lightColorScheme, _lightFocusColor);
+
   // static ThemeData darkThemeData = themeData(darkColorScheme, _darkFocusColor);
 
   static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
     return ThemeData(
       colorScheme: colorScheme,
-      textTheme: _textTheme.apply(displayColor: Color(0xff343434), fontFamily: GoogleFonts.roboto().fontFamily),
+      textTheme: _textTheme.apply(
+          displayColor: Color(0xff343434), fontFamily: GoogleFonts
+          .roboto()
+          .fontFamily),
       // Matches manifest.json colors and background color.
       primaryColor: colorScheme.primary,
       appBarTheme: AppBarTheme(
@@ -44,7 +49,7 @@ class FarmThemeData {
         thickness: 1.0,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: colorScheme.primary
+          backgroundColor: colorScheme.primary
       ),
     );
   }
@@ -85,21 +90,51 @@ class FarmThemeData {
   static const _regular = FontWeight.w400;
   static const _medium = FontWeight.w500;
   static const _bold = FontWeight.w700;
+
   // static const _extraBold = FontWeight.w800;
 
   static final TextTheme _textTheme = TextTheme(
-    headline1: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 52.0),
-    headline2: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 45.0),
-    headline3: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 24.0),
-    headline4: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 20.0),
-    headline5: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 18.0),
-    headline6: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 16.0),
-    subtitle1: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _medium, fontSize: 20.0),
-    subtitle2: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _medium, fontSize: 14.0),
-    bodyText1: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _regular, fontSize: 16.0),
-    bodyText2: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _regular, fontSize: 14.0),
-    caption: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 8.0),
-    overline: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 13.0),
-    button: TextStyle(fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 14.0),
+    headline1: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 52.0),
+    headline2: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 45.0),
+    headline3: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 24.0),
+    headline4: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 20.0),
+    headline5: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 18.0),
+    headline6: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 16.0),
+    subtitle1: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _medium, fontSize: 20.0),
+    subtitle2: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _medium, fontSize: 14.0),
+    bodyText1: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _regular, fontSize: 16.0),
+    bodyText2: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _regular, fontSize: 14.0),
+    caption: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 8.0),
+    overline: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 13.0),
+    button: TextStyle(
+        fontFamily: 'AppleSDGothicNeo', fontWeight: _bold, fontSize: 14.0),
+  );
+}
+
+extension CustomStyles on TextTheme {
+  TextStyle get infoContainerTitleTextTheme => TextStyle(
+    fontFamily: 'AppleSDGothicNeo',
+    fontSize: 14.0,
+    color: Colors.black,
+    fontWeight: FontWeight.w600,
+  );
+
+  TextStyle get infoContainerBodyTextTheme => TextStyle(
+    fontFamily: 'AppleSDGothicNeo',
+    fontSize: 16,
+    color: Color(0xFF219653),
+    fontWeight: FontWeight.normal,
   );
 }

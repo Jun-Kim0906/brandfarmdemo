@@ -169,7 +169,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     shortWeatherInfo = await http.get(
         '$ultraSrtFcstHeader&base_date=$today_short&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
 
-    // print('$ultraSrtFcstHeader&base_date=$base_date&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
+    // print('$ultraSrtFcstHeader&base_date=$today_short&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
 
     if (shortWeatherInfo.statusCode == 200) {
       json

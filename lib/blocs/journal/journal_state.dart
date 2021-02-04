@@ -4,73 +4,81 @@ import 'package:flutter/material.dart';
 
 class JournalState {
   bool isLoading;
-  List currentList;
-  List previousList;
-  List items;
-  List<GlobalKey> globalKey;
+  bool isLoadingToGetMore;
 
-  String year;
-  String month;
+  List orderByOldest;
+  List orderByRecent;
+  List listBySelection;
+
+  List issueList;
+  List issueListByCategorySelection;
+  List reverseIssueList;
 
   JournalState({
     @required this.isLoading,
-    @required this.currentList,
-    @required this.previousList,
-    @required this.items,
-    @required this.globalKey,
-    @required this.year,
-    @required this.month,
+    @required this.isLoadingToGetMore,
+    @required this.orderByOldest,
+    @required this.orderByRecent,
+    @required this.listBySelection,
+    @required this.issueList,
+    @required this.issueListByCategorySelection,
+    @required this.reverseIssueList,
   });
 
   factory JournalState.empty() {
     return JournalState(
       isLoading: false,
-      currentList: [],
-      previousList: [],
-      items: [],
-      globalKey: [],
-      year: '',
-      month: '',
+      isLoadingToGetMore: false,
+      orderByOldest: [],
+      orderByRecent: [],
+      listBySelection: [],
+      issueList: [],
+      issueListByCategorySelection: [],
+      reverseIssueList: [],
     );
   }
 
   JournalState copyWith({
     bool isLoading,
-    List currentList,
-    List previousList,
-    List items,
-    List<GlobalKey> globalKey,
-    String year,
-    String month,
+    bool isLoadingToGetMore,
+    List orderByOldest,
+    List orderByRecent,
+    List listBySelection,
+    List issueList,
+    List issueListByCategorySelection,
+    List reverseIssueList,
   }) {
     return JournalState(
       isLoading: isLoading ?? this.isLoading,
-      currentList: currentList ?? this.currentList,
-      previousList: previousList ?? this.previousList,
-      items: items ?? this.items,
-      globalKey: globalKey ?? this.globalKey,
-      year: year ?? this.year,
-      month: month ?? this.month,
+      isLoadingToGetMore: isLoadingToGetMore ?? this.isLoadingToGetMore,
+      orderByOldest: orderByOldest ?? this.orderByOldest,
+      orderByRecent: orderByRecent ?? this.orderByRecent,
+      listBySelection: listBySelection ?? this.listBySelection,
+      issueList: issueList ?? this.issueList,
+      issueListByCategorySelection: issueListByCategorySelection ?? this.issueListByCategorySelection,
+      reverseIssueList: reverseIssueList ?? this.reverseIssueList,
     );
   }
 
   JournalState update({
     bool isLoading,
-    List currentList,
-    List previousList,
-    List items,
-    List<GlobalKey> globalKey,
-    String year,
-    String month,
+    bool isLoadingToGetMore,
+    List orderByOldest,
+    List orderByRecent,
+    List listBySelection,
+    List issueList,
+    List issueListByCategorySelection,
+    List reverseIssueList,
   }) {
     return copyWith(
       isLoading: isLoading,
-      currentList: currentList,
-      previousList: previousList,
-      items: items,
-      globalKey: globalKey,
-      year: year,
-      month: month,
+      isLoadingToGetMore: isLoadingToGetMore,
+      orderByOldest: orderByOldest,
+      orderByRecent: orderByRecent,
+      listBySelection: listBySelection,
+      issueList: issueList,
+      issueListByCategorySelection: issueListByCategorySelection,
+      reverseIssueList: reverseIssueList,
     );
   }
 
@@ -78,12 +86,13 @@ class JournalState {
   String toString() {
     return '''JournalState{
     isLoading: $isLoading,
-    currentList: ${currentList.length},
-    previousList: ${previousList.length},
-    items: ${items.length},
-    globalKey: ${globalKey.length},
-    year: ${year},
-    month: ${month},
+    isLoadingToGetMore: $isLoadingToGetMore,
+    orderByOldest: ${orderByOldest.length},
+    orderByRecent: ${orderByRecent.length},
+    listBySelection: ${listBySelection.length},
+    issueList: ${issueList.length},
+    issueListByCategorySelection: ${issueListByCategorySelection.length},
+    reverseIssueList: ${reverseIssueList.length},
     }
     ''';
   }
