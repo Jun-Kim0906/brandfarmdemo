@@ -22,6 +22,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
@@ -81,6 +82,17 @@ class _AppState extends State<App> {
     return BlocProvider.value(
       value: _authenticationBloc,
       child: MaterialApp(
+           localizationsDelegates: [
+             // ... app-specific localization delegate[s] here
+             GlobalMaterialLocalizations.delegate,
+             GlobalWidgetsLocalizations.delegate,
+           ],
+           supportedLocales: [
+             const Locale('en', 'EN'), // English
+             const Locale('ko', 'KO'), // Korean
+             // ... other locales the app supports
+           ],
+
         debugShowCheckedModeBanner: false,
         theme: FarmThemeData.lightThemeData,
         // darkTheme: FarmThemeData.darkThemeData,
