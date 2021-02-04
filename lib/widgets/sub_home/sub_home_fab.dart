@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
+import 'package:BrandFarm/blocs/journal_issue_create/journal_issue_create_bloc.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_create_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_list_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/widgets/speed_dial/flutter_speed_dial.dart';
@@ -95,7 +97,15 @@ class SubHomeFAB extends StatelessWidget {
                 .bodyText2
                 .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (BuildContext context) => JournalIssueCreateBloc(),
+                      child: SubJournalIssueCreateScreen(),
+                    )));
+          },
         ),
       ],
     );

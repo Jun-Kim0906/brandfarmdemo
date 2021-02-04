@@ -94,7 +94,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
                           SizedBox(height: 8.0,),
                           Scrollbar(
                             child: TextField(
-                              scrollPhysics: RangeMaintainingScrollPhysics(),
+                              scrollPhysics: ClampingScrollPhysics(),
                               minLines: null,
                               maxLines: 8,
                               style: Theme.of(context)

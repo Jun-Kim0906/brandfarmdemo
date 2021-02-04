@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-abstract class JournalEvent extends Equatable{
+abstract class JournalEvent extends Equatable {
   const JournalEvent();
 
   @override
@@ -12,14 +12,63 @@ class LoadJournal extends JournalEvent {}
 
 class GetInitialList extends JournalEvent {}
 
-class ChangeDate extends JournalEvent {
+class GetListBySelectedDate extends JournalEvent {
+  final String year;
   final String month;
-  const ChangeDate({@required this.month});
+
+  const GetListBySelectedDate({
+    @required this.year,
+    @required this.month,
+  });
 
   @override
-  String toString() => 'ChangeDate { month: $month}';
+  List<Object> get props => [year, month];
+
+  @override
+  String toString() => 'GetListBySelectedDate { month: $month, year: $year }';
 }
 
-class LoadMore extends JournalEvent {}
+class GetIssueListByTimeOrder extends JournalEvent {
+  final String issueListOption;
+  final String issueListOrderOption;
 
-class LoadPrevious extends JournalEvent {}
+  const GetIssueListByTimeOrder(
+      {@required this.issueListOption, @required this.issueListOrderOption});
+
+  @override
+  List<Object> get props => [issueListOption, issueListOrderOption];
+
+  @override
+  String toString() =>
+      'GetIssueListByTimeOrder { issueListOption: $issueListOption, issueListOrderOption: $issueListOrderOption }';
+}
+
+class GetIssueListByCategory extends JournalEvent {
+  final int issueState;
+
+  const GetIssueListByCategory(
+      {@required this.issueState,});
+
+  @override
+  List<Object> get props => [issueState];
+
+  @override
+  String toString() =>
+      'GetIssueListByCategory { issueState: $issueState, }';
+}
+
+class WaitForLoadMore extends JournalEvent {}
+
+class LoadMore extends JournalEvent {
+  final int tab;
+
+  const LoadMore(
+      {@required this.tab,});
+
+  @override
+  List<Object> get props => [tab];
+
+  @override
+  String toString() =>
+      'LoadMore { tab: $tab, }';
+}
