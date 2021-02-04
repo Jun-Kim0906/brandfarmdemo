@@ -36,7 +36,7 @@ class FarmThemeData {
       accentColor: colorScheme.primary,
       focusColor: focusColor,
       buttonTheme: ButtonThemeData(
-        disabledColor: Color(0xfd888888),
+        disabledColor: Color(0x33000000),
       ),
       disabledColor: Colors.white,
       dividerColor: Color(0xffdbdbdb),
