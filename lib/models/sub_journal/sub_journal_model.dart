@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
@@ -37,47 +39,51 @@ class SubJournal {
 // sub journal - issue information
 class SubJournalIssue {
   final Timestamp date;
+  final String fid;
   final String sfmid;
+  final String issid;
   final String uid;
   final String title;
   final int category; // 작물 1 / 시설 2 / 기타 3
   final int issueState; // 예상 1 / 진행 2 / 완료 3
-  final List imgUrl;
   final String contents;
 
   SubJournalIssue({
     @required this.date,
+    @required this.fid,
     @required this.sfmid,
+    @required this.issid,
     @required this.uid,
     @required this.title,
     @required this.category,
     @required this.issueState,
-    @required this.imgUrl,
     @required this.contents,
   });
 
   factory SubJournalIssue.fromSnapshot(DocumentSnapshot ds) {
     return SubJournalIssue(
       date: ds['date'],
+      fid: ds['fid'],
       sfmid: ds['sfmid'],
+      issid: ds['issid'],
       uid: ds['uid'],
       title: ds['title'],
       category: ds['category'],
       issueState: ds['issueState'],
-      imgUrl: List.from(ds['imgUrl']),
       contents: ds['contents'],
     );
   }
 
-  Map<String, Object> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'date': date,
+      'fid': fid,
       'sfmid': sfmid,
+      'issid': issid,
       'uid': uid,
       'title': title,
       'category': category,
       'issueState': issueState,
-      'imgUrl': imgUrl,
       'contents': contents,
     };
   }

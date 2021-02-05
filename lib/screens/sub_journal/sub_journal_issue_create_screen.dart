@@ -14,6 +14,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../blocs/journal_issue_create/bloc.dart';
+import '../../blocs/journal_issue_create/bloc.dart';
+import '../../utils/user/user_util.dart';
+
 // import 'package:multi_image_picker/multi_image_picker.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -58,84 +62,83 @@ class _SubJournalIssueCreateScreenState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
-        cubit: _journalIssueCreateBloc,
-        listener: (BuildContext context, JournalIssueCreateState state) {
-          if (state.isComplete == true && state.isUploaded == false) {
-            LoadingDialog.onLoading(context);
-            _journalIssueCreateBloc.add(UploadJournal(
-              fid: 'test',
-              category: category,
-              sfmid: 'test',
-              imgUrl: state.imageList,
-              contents: contents,
-              title: title,
-              uid: 'test',
-              issueState: issueState,
-            ));
-          } else if (state.isComplete == true && state.isUploaded == true) {
-            LoadingDialog.dismiss(context, () {
-              Navigator.pop(context, true);
-            });
-          }
-        },
-        child: BlocBuilder<JournalIssueCreateBloc, JournalIssueCreateState>(
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back_ios_rounded),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+    return BlocConsumer<JournalIssueCreateBloc, JournalIssueCreateState>(
+      listener: (context, state) {
+        if (state.isComplete == true && state.isUploaded == false) {
+          print('isUpload false');
+          LoadingDialog.onLoading(context);
+          _journalIssueCreateBloc.add(UploadJournal(
+            fid: '--',
+            category: category,
+            sfmid: '--',
+            contents: contents,
+            title: title,
+            uid: UserUtil.getUser().uid,
+            issueState: issueState,
+          ));
+        } else if (state.isComplete == true && state.isUploaded == true) {
+          print('isUpload true');
+          LoadingDialog.dismiss(context, () {
+            Navigator.pop(context);
+          });
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_rounded),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            title: Text(
+              '이슈일지 작성',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 24.0,
                 ),
-                title: Text(
-                  '이슈일지 작성',
-                  style: Theme.of(context).textTheme.bodyText1,
+                _dateBar(),
+                SizedBox(
+                  height: 37.0,
                 ),
-                centerTitle: true,
-              ),
-              body: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 24.0,
-                    ),
-                    _dateBar(),
-                    SizedBox(
-                      height: 37.0,
-                    ),
-                    _inputTitleBar(),
-                    SizedBox(
-                      height: 51.0,
-                    ),
-                    _chooseCategory(),
-                    SizedBox(
-                      height: 45.0,
-                    ),
-                    _chooseIssueState(),
-                    SizedBox(
-                      height: 48.0,
-                    ),
-                    _addPictureBar(context: context, state: state),
-                    SizedBox(
-                      height: 43.0,
-                    ),
-                    _inputIssueContents(),
-                  ],
+                _inputTitleBar(),
+                SizedBox(
+                  height: 51.0,
                 ),
-              ),
-              bottomNavigationBar: BottomNavigationButton(
-                title: '완료',
-                onPressed: () {
-                  _journalIssueCreateBloc.add(PressComplete());
-                },
-              ),
-            );
-          },
-        ));
+                _chooseCategory(),
+                SizedBox(
+                  height: 45.0,
+                ),
+                _chooseIssueState(),
+                SizedBox(
+                  height: 48.0,
+                ),
+                _addPictureBar(context: context, state: state),
+                SizedBox(
+                  height: 43.0,
+                ),
+                _inputIssueContents(),
+              ],
+            ),
+          ),
+          bottomNavigationBar: BottomNavigationButton(
+            title: '완료',
+            onPressed: () {
+              _journalIssueCreateBloc.add(PressComplete());
+            },
+          ),
+        );
+      },
+    );
   }
 
   Widget _dateBar() {
@@ -459,33 +462,6 @@ class _SubJournalIssueCreateScreenState
     );
   }
 
-  Widget _imageTest({BuildContext context, JournalIssueCreateState state}) {
-    return Badge(
-      // padding: EdgeInsets.zero,
-      toAnimate: false,
-      badgeContent: InkResponse(
-        onTap: () {
-          print('badge tapped');
-        },
-        child: Icon(
-          Icons.close,
-          color: Colors.white,
-          size: 11,
-        ),
-      ),
-      badgeColor: Colors.black,
-      shape: BadgeShape.circle,
-      child: Container(
-        height: 74.0,
-        width: 74.0,
-        decoration: BoxDecoration(color: Color(0x1a000000)),
-        child: FittedBox(
-          child: Image.asset('assets/strawberry.png'),
-        ),
-      ),
-    );
-  }
-
   Widget _inputIssueContents() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: defaultPadding),
@@ -568,45 +544,4 @@ class _SubJournalIssueCreateScreenState
           );
         });
   }
-
-// Future<File> writeToFile(ByteData data, int i) async {
-//   final buffer = data.buffer;
-//   final String dttm = Timestamp.now().millisecondsSinceEpoch.toString();
-//
-//   Directory tempDir = await getTemporaryDirectory();
-//   String tempPath = tempDir.path;
-//   var filePath = tempPath +
-//       '/file_0${dttm}.tmp'; // file_01.tmp is dump file, can be anything
-//   return File(filePath).writeAsBytes(
-//       buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
-// }
-//
-// void getImage({JournalIssueCreateState state}) async {
-//   List<Asset> resultList = [];
-//   resultList =
-//       await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
-//
-//   try {
-//     if (resultList.isNotEmpty) {
-//       _journalIssueCreateBloc.add(SelectImage(assetList: resultList));
-//       for (int i = 0; i < resultList.length; i++) {
-//         ByteData a = await resultList[i].getByteData();
-//         File file = await writeToFile(a, i);
-//         _journalIssueCreateBloc.add(AddImageFile(imageFile: file, index: i));
-//       }
-//     }
-//   } catch (e) {
-//     print(e);
-//   }
-// }
-//
-// void getCameraImage({JournalIssueCreateState state}) async {
-//   ImagePicker _picker = ImagePicker();
-//   PickedFile pickedFile = await _picker.getImage(source: ImageSource.camera);
-//   File imageFile = File(pickedFile.path);
-//
-//   if (imageFile != null) {
-//     _journalIssueCreateBloc.add(AddImageFile(imageFile: imageFile));
-//   }
-// }
 }

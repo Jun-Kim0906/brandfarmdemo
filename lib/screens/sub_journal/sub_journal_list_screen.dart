@@ -1,8 +1,11 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_create_screen.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -91,7 +94,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
   //////////////////////////////////////////////////////////////////////////////
   ScrollController _scrollController;
   double scrollOffset = 0.0;
-  int count = 0;
+  int down = 0;
+  int up = 0;
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -142,21 +147,49 @@ class _JournalListScreenState extends State<JournalListScreen> {
 
   void _listenForScrollPosition() {
     if (_scrollController.offset >=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       if (this.mounted) {
-        if(count > 0) {
-          if((issueState == 1 && _tab == 1) || (isDateSelected == false && _tab == 0)) {
+        if (down > 0) {
+          if ((issueState == 1 && _tab == 1) ||
+              (isDateSelected == false && _tab == 0)) {
             print('load more');
             _journalBloc.add(WaitForLoadMore());
             _journalBloc.add(LoadMore(tab: _tab));
-            setState(() {count = 0;});
+            setState(() {
+              down = 0;
+            });
           } else {
             print('전체 보기에서만 가능');
           }
         } else {
           setState(() {
-            count = 1;
+            down = 1;
+          });
+        }
+      } else {
+        print('state object is not in the tree');
+      }
+    }
+    if (_scrollController.offset <=
+        _scrollController.position.minScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      if (this.mounted) {
+        if (up > 0) {
+          if ((issueState == 1 && _tab == 1) ||
+              (isDateSelected == false && _tab == 0)) {
+            print('refresh');
+            _journalBloc.add(LoadJournal());
+            _journalBloc.add(GetInitialList());
+            setState(() {
+              up = 0;
+            });
+          } else {
+            print('전체 보기에서만 가능');
+          }
+        } else {
+          setState(() {
+            up = 1;
           });
         }
       } else {
@@ -267,27 +300,33 @@ class _JournalListScreenState extends State<JournalListScreen> {
                               children: [
                                 (order == 1)
                                     ? Column(
-                                      children: [
-                                        Expanded(
-                                          child: _listByRecent(
-                                              context: context, state: state),
-                                        ),
-                                        (state.isLoadingToGetMore)
-                                            ? Container(child: CircularProgressIndicator(),)
-                                            : Container(),
-                                      ],
-                                    )
+                                        children: [
+                                          Expanded(
+                                            child: _listByRecent(
+                                                context: context, state: state),
+                                          ),
+                                          (state.isLoadingToGetMore)
+                                              ? Container(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                              : Container(),
+                                        ],
+                                      )
                                     : Column(
-                                      children: [
-                                        Expanded(
-                                          child: _listByOldest(
-                                              context: context, state: state),
-                                        ),
-                                        (state.isLoadingToGetMore)
-                                            ? Container(child: CircularProgressIndicator(),)
-                                            : Container(),
-                                      ],
-                                    ),
+                                        children: [
+                                          Expanded(
+                                            child: _listByOldest(
+                                                context: context, state: state),
+                                          ),
+                                          (state.isLoadingToGetMore)
+                                              ? Container(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
                                 Positioned(
                                   top: _fromTop,
                                   left: 0,
@@ -298,49 +337,59 @@ class _JournalListScreenState extends State<JournalListScreen> {
                             ),
                       (issueState == 1)
                           ? Stack(
-                        children: [
-                          (issueOrder == 1)
-                              ? Column(
-                                children: [
-                                  Expanded(child: _issueList(context: context, state: state)),
-                                  (state.isLoadingToGetMore)
-                                      ? Container(child: CircularProgressIndicator(),)
-                                      : Container(),
-                                ],
-                              )
-                              : Column(
-                                children: [
-                                  Expanded(
-                                    child: _reverseIssueList(
-                                        context: context, state: state),
-                                  ),
-                                  (state.isLoadingToGetMore)
-                                      ? Container(child: CircularProgressIndicator(),)
-                                      : Container(),
-                                ],
-                              ),
-                          Positioned(
-                            top: _fromTop,
-                            left: 0,
-                            right: 0,
-                            child: _optionContainer2(context: context),
-                          ),
-                        ],
-                      )
+                              children: [
+                                (issueOrder == 1)
+                                    ? Column(
+                                        children: [
+                                          Expanded(
+                                              child: _issueList(
+                                                  context: context,
+                                                  state: state)),
+                                          (state.isLoadingToGetMore)
+                                              ? Container(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                              : Container(),
+                                        ],
+                                      )
+                                    : Column(
+                                        children: [
+                                          Expanded(
+                                            child: _reverseIssueList(
+                                                context: context, state: state),
+                                          ),
+                                          (state.isLoadingToGetMore)
+                                              ? Container(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
+                                Positioned(
+                                  top: _fromTop,
+                                  left: 0,
+                                  right: 0,
+                                  child: _optionContainer2(context: context),
+                                ),
+                              ],
+                            )
                           : Stack(
-                        children: [
-                          (issueOrder == 1)
-                              ? _issueListByCategory(context: context, state: state)
-                              : _reverseIssueList(
-                              context: context, state: state),
-                          Positioned(
-                            top: _fromTop,
-                            left: 0,
-                            right: 0,
-                            child: _optionContainer2(context: context),
-                          ),
-                        ],
-                      ),
+                              children: [
+                                (issueOrder == 1)
+                                    ? _issueListByCategory(
+                                        context: context, state: state)
+                                    : _reverseIssueList(
+                                        context: context, state: state),
+                                Positioned(
+                                  top: _fromTop,
+                                  left: 0,
+                                  right: 0,
+                                  child: _optionContainer2(context: context),
+                                ),
+                              ],
+                            ),
                     ],
                   ),
                   floatingActionButton: AnimatedContainer(
@@ -368,12 +417,22 @@ class _JournalListScreenState extends State<JournalListScreen> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      SubJournalDetailScreen()),
-                            );
+                            if(_tab == 0) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SubJournalDetailScreen()),
+                              );
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (BuildContext context) => JournalIssueCreateBloc(),
+                                        child: SubJournalIssueCreateScreen(),
+                                      )));
+                            }
                           },
                         ),
                       ],
@@ -813,74 +872,148 @@ class _JournalListScreenState extends State<JournalListScreen> {
   Widget _issueList({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.issueList.length,
-        itemBuilder: (context, index) {
-          String year = DateFormat('yyyy').format(state.issueList[index].date);
-          String month = DateFormat('MM').format(state.issueList[index].date);
-          String day = DateFormat('dd').format(state.issueList[index].date);
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 85,
-                ),
-                _issueListTile(
-                  date: '${year}. ${month}. ${day}',
-                  end: 1,
-                  issueState: state.issueList[index].issueState,
-                ),
-              ],
-            );
-          } else {
-            return _issueListTile(
-              date: '${year}. ${month}. ${day}',
-              end: 1,
-              issueState: state.issueList[index].issueState,
-            );
-          }
-        },
-      ),
+      child: (state.issueList.isEmpty)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.doc_text,
+                    color: Color(0xFFAEAEAE),
+                    size: 86,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '기록이 없습니다',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 15,
+                          color: Color(0xFFAEAEAE),
+                        ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: state.issueList.length,
+              itemBuilder: (context, index) {
+                String year = DateFormat('yyyy').format(
+                    DateTime.fromMicrosecondsSinceEpoch(
+                        state.issueList[index].date.microsecondsSinceEpoch));
+                String month = DateFormat('MM').format(
+                    DateTime.fromMicrosecondsSinceEpoch(
+                        state.issueList[index].date.microsecondsSinceEpoch));
+                String day = DateFormat('dd').format(
+                    DateTime.fromMicrosecondsSinceEpoch(
+                        state.issueList[index].date.microsecondsSinceEpoch));
+                if (index == 0) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 85,
+                      ),
+                      _issueListTile(
+                        date: '${year}. ${month}. ${day}',
+                        issueState: state.issueList[index].issueState,
+                        list: state.issueList,
+                        index: index,
+                        pic: state.issueImageList,
+                      ),
+                    ],
+                  );
+                } else {
+                  return _issueListTile(
+                    date: '${year}. ${month}. ${day}',
+                    issueState: state.issueList[index].issueState,
+                    list: state.issueList,
+                    index: index,
+                    pic: state.issueImageList,
+                  );
+                }
+              },
+            ),
     );
   }
 
   Widget _issueListByCategory({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.issueListByCategorySelection.length,
-        itemBuilder: (context, index) {
-          String year = DateFormat('yyyy').format(state.issueListByCategorySelection[index].date);
-          String month = DateFormat('MM').format(state.issueListByCategorySelection[index].date);
-          String day = DateFormat('dd').format(state.issueListByCategorySelection[index].date);
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 85,
-                ),
-                _issueListTile(
-                  date: '${year}. ${month}. ${day}',
-                  end: 1,
-                  issueState: state.issueListByCategorySelection[index].issueState,
-                ),
-              ],
-            );
-          } else {
-            return _issueListTile(
-              date: '${year}. ${month}. ${day}',
-              end: 1,
-              issueState: state.issueListByCategorySelection[index].issueState,
-            );
-          }
-        },
-      ),
+      child: (state.issueListByCategorySelection.isEmpty)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.doc_text,
+                    color: Color(0xFFAEAEAE),
+                    size: 86,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '기록이 없습니다',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 15,
+                          color: Color(0xFFAEAEAE),
+                        ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: state.issueListByCategorySelection.length,
+              itemBuilder: (context, index) {
+                String year = DateFormat('yyyy').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .issueListByCategorySelection[index]
+                        .date
+                        .microsecondsSinceEpoch));
+                String month = DateFormat('MM').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .issueListByCategorySelection[index]
+                        .date
+                        .microsecondsSinceEpoch));
+                String day = DateFormat('dd').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .issueListByCategorySelection[index]
+                        .date
+                        .microsecondsSinceEpoch));
+                if (index == 0) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 85,
+                      ),
+                      _issueListTile(
+                        date: '${year}. ${month}. ${day}',
+                        issueState: state
+                            .issueListByCategorySelection[index].issueState,
+                        list: state.issueListByCategorySelection,
+                        index: index,
+                        pic: state.issueImageList,
+                      ),
+                    ],
+                  );
+                } else {
+                  return _issueListTile(
+                    date: '${year}. ${month}. ${day}',
+                    issueState:
+                        state.issueListByCategorySelection[index].issueState,
+                    list: state.issueListByCategorySelection,
+                    index: index,
+                    pic: state.issueImageList,
+                  );
+                }
+              },
+            ),
     );
   }
 
@@ -893,10 +1026,15 @@ class _JournalListScreenState extends State<JournalListScreen> {
         shrinkWrap: true,
         itemCount: state.reverseIssueList.length,
         itemBuilder: (context, index) {
-          String year =
-              DateFormat('yyyy').format(state.reverseIssueList[index].date);
-          String month = DateFormat('MM').format(state.reverseIssueList[index].date);
-          String day = DateFormat('dd').format(state.reverseIssueList[index].date);
+          String year = DateFormat('yyyy').format(
+              DateTime.fromMicrosecondsSinceEpoch(
+                  state.reverseIssueList[index].date.microsecondsSinceEpoch));
+          String month = DateFormat('MM').format(
+              DateTime.fromMicrosecondsSinceEpoch(
+                  state.reverseIssueList[index].date.microsecondsSinceEpoch));
+          String day = DateFormat('dd').format(
+              DateTime.fromMicrosecondsSinceEpoch(
+                  state.reverseIssueList[index].date.microsecondsSinceEpoch));
           if (index == 0) {
             return Column(
               children: [
@@ -905,16 +1043,20 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 ),
                 _issueListTile(
                   date: '${year}. ${month}. ${day}',
-                  end: 1,
                   issueState: state.reverseIssueList[index].issueState,
+                  list: state.reverseIssueList,
+                  index: index,
+                  pic: state.issueImageList,
                 ),
               ],
             );
           } else {
             return _issueListTile(
               date: '${year}. ${month}. ${day}',
-              end: 1,
               issueState: state.reverseIssueList[index].issueState,
+              list: state.issueList,
+              index: index,
+              pic: state.issueImageList,
             );
           }
         },
@@ -923,43 +1065,56 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   String getIssueState({int state}) {
-    switch(state) {
-      case 1 : {
-        return 'todo';
-      }
-      break;
-      case 2 : {
-        return 'doing';
-      }
-      break;
-      case 3 : {
-        return 'done';
-      }
-      break;
-      default : {
-        return '--';
-      }
-      break;
+    switch (state) {
+      case 1:
+        {
+          return 'todo';
+        }
+        break;
+      case 2:
+        {
+          return 'doing';
+        }
+        break;
+      case 3:
+        {
+          return 'done';
+        }
+        break;
+      default:
+        {
+          return '--';
+        }
+        break;
     }
   }
 
-  Widget _issueListTile({String date, int end, int issueState}) {
+  Widget _issueListTile(
+      {String date, int issueState, List list, int index, List pic}) {
     String _issueState = getIssueState(state: issueState);
+    List _pic =
+        pic.where((element) => element.issid == list[index].issid).toList();
     return Container(
       height: 96,
       child: InkWell(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SubJournalDetailScreen()),
+            MaterialPageRoute(builder: (context) => BlocProvider.value(
+              value: _journalBloc,
+              child: SubJournalDetailScreen(from: 'issue', index: index, list: list,),
+            )),
           );
         },
         child: Column(
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 278,
+                  width: (_pic.isNotEmpty)
+                      ? 278
+                      : MediaQuery.of(context).size.width - 32,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -970,19 +1125,25 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           SizedBox(
                             width: 5,
                           ),
-                          Text('2021_0405_작물영양이슈',
+                          Text(list[index].title,
                               style: Theme.of(context).textTheme.bodyText1),
-                          SizedBox(width: 5,),
-                          Text('[2]', style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: Color(0xFF15B85B),
-                          ),),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '[5]',
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      color: Color(0xFF15B85B),
+                                    ),
+                          ),
                         ],
                       ),
                       SizedBox(
                         height: 8,
                       ),
                       Text(
-                        '얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩 얄라리 얄량셩',
+                        list[index].contents,
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w200,
                               color: Color(0x70000000),
@@ -1003,31 +1164,33 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 9,
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      trailingIcon(),
-                    ],
-                  ),
-                ),
+                (_pic.isNotEmpty)
+                    ? SizedBox(
+                        width: 9,
+                      )
+                    : Container(),
+                (_pic.isNotEmpty)
+                    ? Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            trailingIcon(pic: _pic),
+                          ],
+                        ),
+                      )
+                    : Container(),
               ],
             ),
             SizedBox(
               height: 10,
             ),
-            (end == 1)
-                ? Divider(
-                    height: 0,
-                    thickness: 1,
-                    // indent: 10,
-                    // endIndent: 10,
-                  )
-                : Container(),
+            Divider(
+              height: 0,
+              thickness: 1,
+              // indent: 10,
+              // endIndent: 10,
+            ),
           ],
         ),
       ),
@@ -1122,7 +1285,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            trailingIcon(),
+                            trailingIcon(pic: [0]),
                           ],
                         ),
                       ),
@@ -1301,13 +1464,16 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget trailingIcon() {
+  Widget trailingIcon({List pic}) {
+    bool isNull = pic[0] == 0;
     return Container(
       height: 55,
       width: 55,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("assets/strawberry.png"),
+          image: isNull
+              ? AssetImage('assets/strawberry.png')
+              : CachedNetworkImageProvider(pic[0].url),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.5), BlendMode.srcATop),
@@ -1315,7 +1481,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
       ),
       child: Center(
         child: Text(
-          '+2',
+          '+${pic.length}',
           style: Theme.of(context).textTheme.headline3.copyWith(
                 fontWeight: FontWeight.normal,
                 color: Theme.of(context).colorScheme.background,
@@ -1464,7 +1630,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           issueListOrderOptions = '최신순';
                           issueOrder = 1;
                         }),
-                    Navigator.pop(context),
+                        Navigator.pop(context),
                       }),
               Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
               ListTile(

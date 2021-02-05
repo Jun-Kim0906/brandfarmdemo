@@ -51,7 +51,7 @@ class JournalIssueCreateState {
     bool isComplete,
     bool isUploaded,
   }) {
-    return JournalIssueCreateState(
+    return copyWith(
         title: title,
       imageList: imageList,
       assetList: assetList,

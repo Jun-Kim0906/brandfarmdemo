@@ -52,7 +52,6 @@ class UploadJournal extends JournalIssueCreateEvent {
   final String title;
   final int category; // 작물 1 / 시설 2 / 기타 3
   final int issueState; // 예상 1 / 진행 2 / 완료 3
-  final List imgUrl;
   final String contents;
 
   const UploadJournal({
@@ -62,7 +61,6 @@ class UploadJournal extends JournalIssueCreateEvent {
     @required this.title,
     @required this.category,
     @required this.issueState,
-    @required this.imgUrl,
     @required this.contents,
   });
 
@@ -75,7 +73,6 @@ class UploadJournal extends JournalIssueCreateEvent {
       title: $title,
       category: $category,
       issueState: $issueState,
-      imgUrl: $imgUrl,
       contents: $contents,
     }''';
   }
