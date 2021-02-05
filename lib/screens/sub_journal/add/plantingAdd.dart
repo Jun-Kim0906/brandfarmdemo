@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/planting_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,42 +68,56 @@ class _PlantingAdd extends State<PlantingAdd> {
     return planting();
   }
 
-  Widget plantingUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '%',
-            child: Text(
-              '%',
-              
+  void areaPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(PlantingAreaUnitChanged(areaUnit: '%'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '%',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.plantingAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(PlantingAreaUnitChanged(areaUnit: 'm^2'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'm^2',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.plantingAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(PlantingAreaUnitChanged(areaUnit: '평'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '평',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.plantingAreaUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: 'm^2',
-            child: Text(
-              'm^2',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '평',
-            child: Text(
-              '평',
-              
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(PlantingAreaUnitChanged(areaUnit: value));
-        },
-        value: _journalCreateBloc.state.plantingAreaUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
   Widget planting() {
@@ -110,126 +126,33 @@ class _PlantingAdd extends State<PlantingAdd> {
         builder: (context, state) {
           return Column(
             children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider()),
-              Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      child: Text(
-                        '면적',
-                      ),
-                      padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                      width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        margin: EdgeInsets.only(right: 20),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            validate();
-                            _journalCreateBloc.add(
-                                PlantingAreaChanged(area: double.parse(value)));
-                          },
-                          controller: area,
-                          decoration: InputDecoration(
-                            errorText: validatePassword(area.text),
-                            hintText: '내용을 입력해주세요',
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white)),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Expanded(
-                        flex: 2,
-                        child: Container(
-                          child: plantingUnit(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider()),
-              Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                      child: Text(
-                        '주수',
-                      ),
-                      padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) {
-                          _journalCreateBloc
-                              .add(PlantingCountChanged(count: value));
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: count,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        '주',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider()),
-              Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                      child: Text(
-                        '주당가격',
-                      ),
-                      padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) {
-                          _journalCreateBloc.add(
-                              PlantingPriceChanged(price: int.parse(value)));
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: countPrice,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        '원',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider()),
+              InputForm2(
+                  textEditingController: area,
+                  changed: (value) {
+                    validate();
+                    _journalCreateBloc
+                        .add(PlantingAreaChanged(area: double.parse(value)));
+                  },
+                  unitPickPressed: () {
+                    areaPickBottomSheet(context);
+                  },
+                  unitString: _journalCreateBloc.state.plantingAreaUnit,
+                  title: '면적'),
+              InputForm4(
+                  title: '주수',
+                  changed: (value) {
+                    _journalCreateBloc.add(PlantingCountChanged(count: value));
+                  },
+                  unit: '주',
+                  textEditingController: count),
+              InputForm4(
+                  title: '주당가격',
+                  changed: (value) {
+                    _journalCreateBloc
+                        .add(PlantingPriceChanged(price: int.parse(value)));
+                  },
+                  unit: '원',
+                  textEditingController: countPrice),
             ],
           );
         });

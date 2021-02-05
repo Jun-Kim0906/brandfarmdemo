@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/weeding_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +61,50 @@ class _WeedingAdd extends State<WeedingAdd> {
     return seeding();
   }
 
+  void unitPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  child: Text('Kg'),
+                  onPressed: () {
+                    _journalCreateBloc
+                        .add(ShipmentUnitSelectChanged(unitSelect: 'Kg'));
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: Text('박스'),
+                  onPressed: () {
+                    _journalCreateBloc
+                        .add(ShipmentUnitSelectChanged(unitSelect: '박스'));
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: Text('콘티'),
+                  onPressed: () {
+                    _journalCreateBloc
+                        .add(ShipmentUnitSelectChanged(unitSelect: '콘티'));
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+
   Widget areaUnit() {
     return Container(
       child: DropdownButton(
@@ -68,7 +114,6 @@ class _WeedingAdd extends State<WeedingAdd> {
             value: '%',
             child: Text(
               '%',
-              
             ),
           ),
         ],
@@ -76,7 +121,7 @@ class _WeedingAdd extends State<WeedingAdd> {
           _journalCreateBloc.add(WeedingUnitChanged(weedingUnit: value));
         },
         value: _journalCreateBloc.state.weedingUnit,
-        style: TextStyle(fontSize: 16),
+        style: BottomSheetStyle,
         elevation: 3,
         isExpanded: true,
       ),
@@ -89,58 +134,11 @@ class _WeedingAdd extends State<WeedingAdd> {
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '제초 작업 진행율',
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (v) {
-                          validate();
-                          _journalCreateBloc.add(WeedingProgressChanged(
-                              progress: double.parse(v)));
-                        },
-                        controller: progress,
-                        decoration: InputDecoration(
-                          errorText: validatePassword(progress.text),
-                          hintText: '내용을 입력해주세요',
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: areaUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm4(title: '제초 작업 \n진행율', changed: (v) {
+              validate();
+              _journalCreateBloc.add(WeedingProgressChanged(
+                  progress: double.parse(v)));
+            }, unit: '%', textEditingController: progress),
           ],
         );
       },
@@ -149,10 +147,8 @@ class _WeedingAdd extends State<WeedingAdd> {
 
   String validatePassword(String value) {
     if (value.isEmpty) {
-      ///      _journalCreateBloc.add(DataCheck(check: true));
       return "필수 데이터 입니다.";
     } else {
-      ///      _journalCreateBloc.add(DataCheck(check: false));
       return null;
     }
   }

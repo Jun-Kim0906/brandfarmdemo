@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/farming_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ class FarmingAdd extends StatefulWidget {
   final Farming farming;
 
   const FarmingAdd({this.farming});
+
   State<FarmingAdd> createState() => _FarmingAdd();
 }
 
@@ -56,87 +59,111 @@ class _FarmingAdd extends State<FarmingAdd> {
     }
   }
 
-  Widget farmingUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '%',
-            child: Text(
-              '%',
-              // style: blackColor,
+  void farmingPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(FarmingAreaUnitChanged(areaUnit: '%'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '%',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.farmingAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(FarmingAreaUnitChanged(areaUnit: 'm^2'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'm^2',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.farmingAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(FarmingAreaUnitChanged(areaUnit: '평'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '평',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.farmingAreaUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: 'm^2',
-            child: Text(
-              'm^2',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '평',
-            child: Text(
-              '평',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(FarmingAreaUnitChanged(areaUnit: value));
-        },
-        value: _journalCreateBloc.state.farmingAreaUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
-  Widget methodUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '로터리',
-            child: Text(
-              '로터리',
-              // style: blackColor,
+  void methodPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FarmingMethodUnitChanged(methodUnit: '로터리'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '로터리',
+                  selectedColumnContent: _journalCreateBloc.state.farmingMethodUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FarmingMethodUnitChanged(methodUnit: '쟁기'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '쟁기',
+                  selectedColumnContent: _journalCreateBloc.state.farmingMethodUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FarmingMethodUnitChanged(methodUnit: '심토파쇄'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '심토파쇄',
+                  selectedColumnContent: _journalCreateBloc.state.farmingMethodUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FarmingMethodUnitChanged(methodUnit: '배토작업'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '배토작업',
+                  selectedColumnContent: _journalCreateBloc.state.farmingMethodUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '쟁기',
-            child: Text(
-              '쟁기',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '심토파쇄',
-            child: Text(
-              '심토파쇄',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '배토작업',
-            child: Text(
-              '배토작업',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(FarmingMethodUnitChanged(methodUnit: value));
-        },
-        value: _journalCreateBloc.state.farmingMethodUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
   Widget farming() {
@@ -145,99 +172,28 @@ class _FarmingAdd extends State<FarmingAdd> {
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    child: Text(
-                      '면적',
-                      // style: subTitle3,
-                    ),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      child: TextField(
-                        onChanged: (v) {
-                          validate();
-                          _journalCreateBloc
-                              .add(FarmingAreaChanged(area: double.parse(v)));
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: area,
-                        decoration: InputDecoration(
-                          errorText: validatePassword(area.text),
-                          hintText: '내용을 입력해주세요',
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: farmingUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text(
-                      '경운방법',
-                      // style: subTitle3,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      child: TextField(
-                        onChanged: (v) {
-                          _journalCreateBloc
-                              .add(FarmingMethodChanged(method: v));
-                        },
-//                        keyboardType: TextInputType.number,
-                        controller: method,
-                        // decoration: inputContent,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: methodUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm2(
+                textEditingController: area,
+                changed: (v) {
+                  validate();
+                  _journalCreateBloc
+                      .add(FarmingAreaChanged(area: double.parse(v)));
+                },
+                unitPickPressed: () {
+                  farmingPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.farmingAreaUnit,
+                title: '면적'),
+            InputForm2(
+                textEditingController: method,
+                changed: (v) {
+                  _journalCreateBloc.add(FarmingMethodChanged(method: v));
+                },
+                unitPickPressed: () {
+                  methodPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.farmingMethodUnit,
+                title: '경운방법'),
           ],
         );
       },

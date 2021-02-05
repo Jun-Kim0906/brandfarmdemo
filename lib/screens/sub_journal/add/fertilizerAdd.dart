@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/fertilize_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,157 +62,202 @@ class _FertilizerAdd extends State<FertilizerAdd> {
     }
   }
 
-  Widget methodUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '엽면살포',
-            child: Text(
-              '엽면살포',
-              // style: blackColor,
+  void methodPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc.add(FertilizerMethod(method: '옆면살포'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '옆면살포',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerMethod,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc.add(FertilizerMethod(method: '관주'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '관주',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerMethod,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc.add(FertilizerMethod(method: '전충살포'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '전충살포',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerMethod,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc.add(FertilizerMethod(method: '기타'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '기타',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerMethod,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '관주',
-            child: Text(
-              '관주',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '전충살포',
-            child: Text(
-              '전충살포',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '기타',
-            child: Text(
-              '기타',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(FertilizerMethod(method: value));
-        },
-        value: _journalCreateBloc.state.fertilizerMethod,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
-  Widget areaUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '%',
-            child: Text(
-              '%',
-              // style: blackColor,
+  void areaPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(FertilizerAreaUnitChanged(areaUnit: '%'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '%',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(FertilizerAreaUnitChanged(areaUnit: 'm^2'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'm^2',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(FertilizerAreaUnitChanged(areaUnit: '평'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '평',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerAreaUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: 'm^2',
-            child: Text(
-              'm^2',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '평',
-            child: Text(
-              '평',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(FertilizerAreaUnitChanged(areaUnit: value));
-        },
-        value: _journalCreateBloc.state.fertilizerAreaUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
-  Widget materialUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: 'g(ml)',
-            child: Text(
-              'g(ml)',
-              // style: blackColor,
+  void materialPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc.add(
+                        FertilizerMaterialUnitChanged(materialUnit: 'g(ml)'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'g(ml)',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.fertilizerMaterialUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc.add(
+                        FertilizerMaterialUnitChanged(materialUnit: 'Kg(L)'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'Kg(L)',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.fertilizerMaterialUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: 'Kg(L)',
-            child: Text(
-              'Kg(L)',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc
-              .add(FertilizerMaterialUnitChanged(materialUnit: value));
-        },
-        value: _journalCreateBloc.state.fertilizerMaterialUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
-  Widget waterUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '리터',
-            child: Text(
-              '리터',
-              // style: blackColor,
+  void waterPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: '리터'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '리터',
+                  selectedColumnContent: _journalCreateBloc.state.fertilizerWaterUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: '말'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '말',
+                  selectedColumnContent: _journalCreateBloc.state.fertilizerWaterUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: '톤'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '톤',
+                  selectedColumnContent: _journalCreateBloc.state.fertilizerWaterUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '말',
-            child: Text(
-              '말',
-              // style: blackColor,
-            ),
-          ),
-          DropdownMenuItem(
-            value: '톤',
-            child: Text(
-              '톤',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: value));
-        },
-        value: _journalCreateBloc.state.fertilizerWaterUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
   Widget fertilizerWrite() {
@@ -219,188 +266,55 @@ class _FertilizerAdd extends State<FertilizerAdd> {
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text(
-                      '살포방식',
-                      // style: subTitle3,
-                    ),
-                  ),
-                  Expanded(
-                    child: methodUnit(),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('면적'),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          validate();
-                          _journalCreateBloc.add(
-                              FertilizerAreaChanged(area: double.parse(value)));
-                        },
-                        controller: area,
-                        decoration: InputDecoration(
-                          errorText: validatePassword(area.text),
-                          hintText: '내용을 입력해주세요',
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: areaUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('자재이름'),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        _journalCreateBloc
-                            .add(FertilizerMaterialChanged(material: value));
-                        validate();
-                      },
-                      controller: material,
-                      decoration: InputDecoration(
-                        errorText: validatePassword(material.text),
-                        hintText: '내용을 입력해주세요',
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('자재 사용량'),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          _journalCreateBloc.add(FertilizerMaterialUseChanged(
-                              materialUse: double.parse(value)));
-                        },
-                        controller: mUsing,
-                        // decoration: inputContent,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: materialUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('물 사용량'),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          _journalCreateBloc.add(FertilizerWaterUseChanged(
-                              waterUse: double.parse(value)));
-                        },
-                        controller: wUsing,
-                        // decoration: inputContent,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: waterUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm3(
+                title: '살포방식',
+                buttonPressed: () {
+                  methodPickBottomSheet(context);
+                },
+                selected: _journalCreateBloc.state.fertilizerMethod),
+            InputForm2(
+                textEditingController: area,
+                changed: (value) {
+                  validate();
+                  _journalCreateBloc
+                      .add(FertilizerAreaChanged(area: double.parse(value)));
+                },
+                unitPickPressed: () {
+                  areaPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.fertilizerAreaUnit,
+                title: '면적'),
+            InputForm1(
+                textEditingController: material,
+                changed: (value) {
+                  _journalCreateBloc
+                      .add(FertilizerMaterialChanged(material: value));
+                  validate();
+                },
+                title: '자재이름',
+                validatePassword: validatePassword(material.text)),
+            InputForm2(
+                textEditingController: mUsing,
+                changed: (value) {
+                  _journalCreateBloc.add(FertilizerMaterialUseChanged(
+                      materialUse: double.parse(value)));
+                },
+                unitPickPressed: () {
+                  materialPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.fertilizerMaterialUnit,
+                title: '자재 사용량'),
+            InputForm2(
+                textEditingController: wUsing,
+                changed: (value) {
+                  _journalCreateBloc.add(
+                      FertilizerWaterUseChanged(waterUse: double.parse(value)));
+                },
+                unitPickPressed: () {
+                  waterPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.fertilizerWaterUnit,
+                title: '물 사용량'),
           ],
         );
       },
