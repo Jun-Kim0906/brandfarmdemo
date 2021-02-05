@@ -13,6 +13,7 @@ class JournalState {
   List issueList;
   List issueListByCategorySelection;
   List reverseIssueList;
+  List issueImageList;
 
   JournalState({
     @required this.isLoading,
@@ -23,6 +24,7 @@ class JournalState {
     @required this.issueList,
     @required this.issueListByCategorySelection,
     @required this.reverseIssueList,
+    @required this.issueImageList,
   });
 
   factory JournalState.empty() {
@@ -35,6 +37,7 @@ class JournalState {
       issueList: [],
       issueListByCategorySelection: [],
       reverseIssueList: [],
+      issueImageList: [],
     );
   }
 
@@ -47,6 +50,7 @@ class JournalState {
     List issueList,
     List issueListByCategorySelection,
     List reverseIssueList,
+    List issueImageList,
   }) {
     return JournalState(
       isLoading: isLoading ?? this.isLoading,
@@ -57,6 +61,7 @@ class JournalState {
       issueList: issueList ?? this.issueList,
       issueListByCategorySelection: issueListByCategorySelection ?? this.issueListByCategorySelection,
       reverseIssueList: reverseIssueList ?? this.reverseIssueList,
+      issueImageList: issueImageList ?? this.issueImageList,
     );
   }
 
@@ -69,6 +74,7 @@ class JournalState {
     List issueList,
     List issueListByCategorySelection,
     List reverseIssueList,
+    List issueImageList,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -79,6 +85,7 @@ class JournalState {
       issueList: issueList,
       issueListByCategorySelection: issueListByCategorySelection,
       reverseIssueList: reverseIssueList,
+      issueImageList: issueImageList,
     );
   }
 
@@ -93,6 +100,7 @@ class JournalState {
     issueList: ${issueList.length},
     issueListByCategorySelection: ${issueListByCategorySelection.length},
     reverseIssueList: ${reverseIssueList.length},
+    issueImageList: ${issueImageList.length},
     }
     ''';
   }

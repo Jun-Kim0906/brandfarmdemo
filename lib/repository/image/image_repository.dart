@@ -4,6 +4,8 @@ import 'package:BrandFarm/models/image/image_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../utils/user/user_util.dart';
+
 class ImageRepository{
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   DocumentReference reference;
@@ -17,20 +19,18 @@ class ImageRepository{
 
   Future<String> uploadImageFile(File file, String pid) async {
     FirebaseStorage storage = FirebaseStorage.instance;
-    String url = '';
-
+    var url;
     final Reference ref = storage
         .ref()
-        .child('journal_pictures')
-        .child('tester')
+        .child('issue')
+        .child(UserUtil.getUser().uid)
         .child('$pid.jpg');
-    // final UploadTask uploadTask = ref.putFile(file);
+    final UploadTask uploadTask = ref.putFile(file);
 
-    await ref.getDownloadURL().then((value) => url = value);
-    // await (await uploadTask.onComplete)
-    //     .ref
-    //     .getDownloadURL()
-    //     .then((value) => url = value);
+    await (await uploadTask)
+        .ref
+        .getDownloadURL()
+        .then((value) => url = value);
 
     return url;
   }

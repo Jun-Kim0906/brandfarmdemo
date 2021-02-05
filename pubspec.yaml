@@ -39,6 +39,8 @@ dependencies:
   multi_image_picker: 4.7.14
   image_picker: 0.6.7+22
   firebase_storage: ^7.0.0
+  firebase_core: ^0.7.0
+  cached_network_image: ^2.5.0
 
 
 dependency_overrides:
@@ -48,10 +50,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   pedantic: ^1.9.2
-
-
-
-
 
 flutter:
   assets:

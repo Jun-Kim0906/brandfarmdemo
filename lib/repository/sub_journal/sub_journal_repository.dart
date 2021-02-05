@@ -4,13 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SubJournalRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  DocumentReference reference;
 
   Future<void> uploadJournal({
     SubJournalIssue subJournalIssue,
   }) async {
     DocumentReference reference =
-    _firestore.collection('Issue').doc(subJournalIssue.sfmid);
+    _firestore.collection('Issue').doc(subJournalIssue.issid);
     await reference.set(subJournalIssue.toMap());
   }
 
@@ -18,7 +17,7 @@ class SubJournalRepository {
     SubJournalIssue subJournalIssue,
   }) async {
     DocumentReference reference =
-    _firestore.collection('Issue').doc(subJournalIssue.sfmid);
+    _firestore.collection('Issue').doc(subJournalIssue.issid);
     await reference.update(subJournalIssue.toMap());
   }
 }

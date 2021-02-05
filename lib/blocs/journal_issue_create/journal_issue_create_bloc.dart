@@ -5,6 +5,7 @@ import 'package:BrandFarm/models/image/image_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -34,7 +35,6 @@ class JournalIssueCreateBloc
         title: event.title,
         category: event.category,
         issueState: event.issueState,
-        imgUrl: event.imgUrl,
         contents: event.contents,
       );
     }
@@ -69,7 +69,6 @@ class JournalIssueCreateBloc
   Stream<JournalIssueCreateState> _mapPressCompleteToState() async* {
     yield state.update(
         isComplete: true,
-      imageList: state.imageList,
     );
   }
 
@@ -90,21 +89,23 @@ class JournalIssueCreateBloc
       String title,
       int category,
       int issueState,
-      List imgUrl,
       String contents}) async* {
-    SubJournalIssue _subJournalIssue = SubJournalIssue(
+    String issid = '';
+    issid = FirebaseFirestore.instance.collection('Issue').doc().id;
+    SubJournalIssue subJournalIssue = SubJournalIssue(
       date: Timestamp.now(),
-      sfmid: sfmid,
-      uid: uid,
+      fid: fid ?? '--',
+      sfmid: sfmid ?? '--',
+      issid: issid ?? '--',
+      uid: uid ?? '--',
       title: title,
       category: category,
       issueState: issueState,
-      imgUrl: imgUrl,
       contents: contents,
     );
 
     await SubJournalRepository()
-        .uploadJournal(subJournalIssue: _subJournalIssue);
+        .uploadJournal(subJournalIssue: subJournalIssue);
 
     List<File> imageList = state.imageList;
     String pid = '';
@@ -113,8 +114,10 @@ class JournalIssueCreateBloc
       await Future.forEach(imageList, (File file) async {
         pid = FirebaseFirestore.instance.collection('Picture').doc().id;
         Image _picture = Image(
-          fid: fid,
-          jid: _subJournalIssue.sfmid,
+          fid: subJournalIssue.fid,
+          jid: subJournalIssue.sfmid,
+          uid: UserUtil.getUser().uid,
+          issid: subJournalIssue.issid,
           pid: pid,
           url: (await ImageRepository().uploadImageFile(file, pid)),
           dttm: Timestamp.now(),
@@ -128,7 +131,6 @@ class JournalIssueCreateBloc
 
     yield state.update(
       isUploaded: true,
-      imageList: state.imageList,
     );
   }
 }
