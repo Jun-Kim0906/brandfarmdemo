@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/watering_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,80 +59,102 @@ class _WateringAdd extends State<WateringAdd> {
     }
   }
 
-  Widget areaUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '%',
-            child: Text(
-              '%',
-              
+  void areaPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(WateringAreaUnitChanged(areaUnit: '%'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '%',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.wateringAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(WateringAreaUnitChanged(areaUnit: 'm^2'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'm^2',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.wateringAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(WateringAreaUnitChanged(areaUnit: '평'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '평',
+                  selectedColumnContent:
+                  _journalCreateBloc.state.wateringAreaUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: 'm^2',
-            child: Text(
-              'm^2',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '평',
-            child: Text(
-              '평',
-              
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(WateringAreaUnitChanged(areaUnit: value));
-        },
-        value: _journalCreateBloc.state.wateringAreaUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
-  Widget totalUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '리터',
-            child: Text(
-              '리터',
-              
+  void totalPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(WateringAmountUnitChanged(amountUnit: '리터'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '리터',
+                  selectedColumnContent: _journalCreateBloc.state.wateringAmountUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(WateringAmountUnitChanged(amountUnit: '말'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '말',
+                  selectedColumnContent: _journalCreateBloc.state.wateringAmountUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(WateringAmountUnitChanged(amountUnit: '톤'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '톤',
+                  selectedColumnContent: _journalCreateBloc.state.wateringAmountUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '말',
-            child: Text(
-              '말',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '톤',
-            child: Text(
-              '톤',
-              
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(WateringAmountUnitChanged(amountUnit: value));
-        },
-        value: _journalCreateBloc.state.wateringAmountUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
   Widget watering() {
@@ -139,98 +163,29 @@ class _WateringAdd extends State<WateringAdd> {
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '면적',
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextFormField(
-                        onChanged: (v) {
-                          validate();
-                          _journalCreateBloc
-                              .add(WateringAreaChanged(area: double.parse(v)));
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: area,
-                        decoration: InputDecoration(
-                          errorText: validatePassword(area.text),
-                          hintText: '내용을 입력해주세요',
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: areaUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text(
-                      '총관수량',
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (v) {
-                          _journalCreateBloc.add(
-                              WateringAmountChanged(amount: double.parse(v)));
-                        },
-                        controller: total,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: totalUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm2(
+                textEditingController: area,
+                changed: (v) {
+                  validate();
+                  _journalCreateBloc
+                      .add(WateringAreaChanged(area: double.parse(v)));
+                },
+                unitPickPressed: () {
+                  areaPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.wateringAreaUnit,
+                title: '면적'),
+            InputForm2(
+                textEditingController: total,
+                changed: (v) {
+                  _journalCreateBloc
+                      .add(WateringAmountChanged(amount: double.parse(v)));
+                },
+                unitPickPressed: () {
+                  totalPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.wateringAmountUnit,
+                title: '총관수량'),
           ],
         );
       },

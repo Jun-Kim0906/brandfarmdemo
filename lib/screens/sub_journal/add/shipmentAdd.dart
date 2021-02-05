@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/shipment_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,11 +20,6 @@ class ShipmentAdd extends State<ShipmentAdding> {
   JournalCreateBloc _journalCreateBloc;
   Shipment _shipment;
   bool expansion;
-
-  Widget tIcon = Icon(
-    Icons.add,
-    color: Colors.black,
-  );
 
   TextEditingController name;
   TextEditingController path;
@@ -60,10 +57,6 @@ class ShipmentAdd extends State<ShipmentAdding> {
       _journalCreateBloc.add(DataCheck(check: false));
 
       expansion = true;
-      tIcon = Icon(
-        Icons.close,
-        color: Colors.black,
-      );
 
       _journalCreateBloc
           .add(ShipmentPlantChanged(plant: _shipment.shipmentPlant));
@@ -82,99 +75,123 @@ class ShipmentAdd extends State<ShipmentAdding> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return shipmentAddPanel();
   }
 
-  Widget unitPick() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: 'Kg',
-            child: Text(
-              'Kg',
-              
+  void unitPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc
+                        .add(ShipmentUnitSelectChanged(unitSelect: 'Kg'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'Kg',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentUnitSelect,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc
+                        .add(ShipmentUnitSelectChanged(unitSelect: '박스'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '박스',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentUnitSelect,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc
+                        .add(ShipmentUnitSelectChanged(unitSelect: '콘티'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '콘티',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentUnitSelect,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '박스',
-            child: Text(
-              '박스',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '콘티',
-            child: Text(
-              '콘티',
-              
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(ShipmentUnitSelectChanged(unitSelect: value));
-        },
-        value: _journalCreateBloc.state.shipmentUnitSelect,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
-  Widget gradePick() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '특',
-            child: Text(
-              '특',
-              
+  void gradePickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(ShipmentGradeChanged(grade: '특'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '특',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentGrade,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(ShipmentGradeChanged(grade: '상'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '상',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentGrade,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(ShipmentGradeChanged(grade: '중'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '중',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentGrade,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(ShipmentGradeChanged(grade: '하'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '하',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentGrade,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(ShipmentGradeChanged(grade: '그외'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '그외',
+                  selectedColumnContent: _journalCreateBloc.state.shipmentGrade,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '상',
-            child: Text(
-              '상',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '중',
-            child: Text(
-              '중',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '하',
-            child: Text(
-              '하',
-              
-            ),
-          ),
-          DropdownMenuItem(
-            value: '그외',
-            child: Text(
-              '그외',
-              
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(ShipmentGradeChanged(grade: value));
-        },
-        value: _journalCreateBloc.state.shipmentGrade,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
+
 
   Widget shipmentAddPanel() {
     return BlocBuilder<JournalCreateBloc, JournalCreateState>(
@@ -182,197 +199,56 @@ class ShipmentAdd extends State<ShipmentAdding> {
       builder: (BuildContext context, JournalCreateState state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    child: Text(
-                      '출하작물',
-                    ),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      style: TextStyle(fontSize: 16.0),
-                      textInputAction: TextInputAction.done,
-                      onChanged: (value) {
-                        validate(value);
-                        _journalCreateBloc
-                            .add(ShipmentPlantChanged(plant: value));
-                      },
-                      controller: name,
-                      decoration: InputDecoration(
-                        errorText: validatePassword(name.text),
-                        hintText: '내용을 입력해주세요',
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+            InputForm1(
+              textEditingController: name,
+              changed: (value) {
+                validate(value);
+                _journalCreateBloc.add(ShipmentPlantChanged(plant: value));
+              },
+              validatePassword: validatePassword(name.text),
+              title: '출하작물',
             ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text(
-                      '출하경로',
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      onChanged: (value) {
-                        validate(value);
-                        _journalCreateBloc.add(ShipmentPathChanged(path: value));
-                      },
-                      controller: path,
-                      decoration: InputDecoration(
-                        errorText: validatePassword(path.text),
-                        hintText: '내용을 입력해주세요',
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+            InputForm1(
+                textEditingController: path,
+                changed: (value) {
+                  validate(value);
+                  _journalCreateBloc.add(ShipmentPathChanged(path: value));
+                },
+                validatePassword: validatePassword(path.text),
+                title: '출하경로  '),
+            InputForm2(
+                textEditingController: unit,
+                changed: (value) {
+                  _journalCreateBloc
+                      .add(ShipmentUnitChanged(unit: double.parse(value)));
+                },
+                unitPickPressed: () {
+                  unitPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.shipmentUnitSelect,
+                title: '출하단위'),
+            InputForm1(
+              textEditingController: count,
+              changed: (value) {
+                _journalCreateBloc
+                    .add(ShipmentAmountChanged(amount: value.toString()));
+              },
+              title: '출하숫자',
             ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('출하단위'),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 3,
-                      child: Container(
-                        margin: EdgeInsets.only(right: 20),
-                        child: TextField(
-                          onChanged: (value) {
-                            _journalCreateBloc.add(
-                                ShipmentUnitChanged(unit: double.parse(value)));
-                          },
-                          controller: unit,
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: unitPick(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('출하숫자'),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        _journalCreateBloc.add(
-                            ShipmentAmountChanged(amount: value.toString()));
-                      },
-                      controller: count,
-                      keyboardType: TextInputType.number,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('등급'),
-                  ),
-                  Expanded(
-                    child: gradePick(),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text('단위가격'),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        _journalCreateBloc
-                            .add(ShipmentPriceChanged(price: int.parse(value)));
-                      },
-                      controller: price,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    child: Text('원',),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm3(
+                title: '등급',
+                buttonPressed: () {
+                  gradePickBottomSheet(context);
+                },
+                selected: _journalCreateBloc.state.shipmentGrade),
+            InputForm4(
+                title: '단위가격',
+                changed: (value) {
+                  _journalCreateBloc
+                      .add(ShipmentPriceChanged(price: int.parse(value)));
+                },
+                unit: '원',
+                textEditingController: price),
           ],
         );
       },
@@ -390,12 +266,11 @@ class ShipmentAdd extends State<ShipmentAdding> {
   }
 
   validate(String value) {
-    if (
-    name.text.isEmpty ||
-        path.text.isEmpty) {
+    if (name.text.isEmpty || path.text.isEmpty) {
       _journalCreateBloc.add(DataCheck(check: true));
     } else {
       _journalCreateBloc.add(DataCheck(check: false));
     }
   }
 }
+

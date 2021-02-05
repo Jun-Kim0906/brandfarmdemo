@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/workforce_model.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,89 +67,16 @@ class _WorkForceAdd extends State<WorkForceAdd> {
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Divider(),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '참여인원',
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      onChanged: (v) {
-                        validate();
-                        _journalCreateBloc.add(
-                            WorkforceNumChanged(workforceNum: int.parse(v)));
-                      },
-                      keyboardType: TextInputType.number,
-                      controller: number,
-                      decoration: InputDecoration(
-                        errorText: validatePassword(number.text),
-                        hintText: '내용을 입력해주세요',
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text(
-                      '명',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Divider(),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '인건비(1인당)',
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      onChanged: (v) {
-                        _journalCreateBloc.add(WorkforcePriceChanged(
-                            workforcePrice: int.parse(v)));
-                      },
-                      keyboardType: TextInputType.number,
-                      controller: price,
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text(
-                      '원',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Divider(),
-            ),
+            InputForm4(title: '참여인원',
+                changed: (v) {
+                  validate();
+                  _journalCreateBloc.add(
+                      WorkforceNumChanged(workforceNum: int.parse(v)));
+                }, unit: '명', textEditingController: number),
+            InputForm4(title: '인건비(1인당)', changed: (v) {
+              _journalCreateBloc.add(WorkforcePriceChanged(
+                  workforcePrice: int.parse(v)));
+            }, unit: '원', textEditingController: price),
           ],
         );
       },

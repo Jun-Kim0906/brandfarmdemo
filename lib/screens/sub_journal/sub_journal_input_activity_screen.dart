@@ -32,6 +32,10 @@ class _SubJournalInputActivityScreenState
     extends State<SubJournalInputActivityScreen> {
   JournalCreateBloc _journalCreateBloc;
 
+  TextTheme textTheme;
+  ColorScheme colorScheme;
+
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,8 @@ class _SubJournalInputActivityScreenState
 
   @override
   Widget build(BuildContext context) {
+    textTheme = Theme.of(context).textTheme;
+    colorScheme = Theme.of(context).colorScheme;
     return BlocListener<JournalCreateBloc, JournalCreateState>(
       cubit: _journalCreateBloc,
       listener: (BuildContext context, JournalCreateState state) async {},
@@ -51,28 +57,25 @@ class _SubJournalInputActivityScreenState
               appBar: AppBar(
                 elevation: 2.0,
                 centerTitle: true,
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  color: Colors.black,
-                  onPressed: () => Navigator.pop(context),
+                leading: TextButton(
+                  child: Text('취소', style: textTheme.subtitle1,),
+                  onPressed: ()=> Navigator.of(context).pop(),
                 ),
                 backgroundColor: Colors.white,
                 automaticallyImplyLeading: false,
                 title: _selectedCategory(context, state),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text(
-                      "완료",
+                      "완료", style: textTheme.subtitle1,
                     ),
                     onPressed: state.checkData == true ? () {} : completeValid,
                   )
                 ],
               ),
               body: ListView(
+                physics: ClampingScrollPhysics(),
                 children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.all(20),
-                      child: _selectCategory(context, state)),
                   if (state.category == 8)
                     WorkForceAdd(
                         workforce: state.isNewWrite == true
@@ -228,101 +231,56 @@ class _SubJournalInputActivityScreenState
   }
 
   Widget _selectedCategory(BuildContext context, JournalCreateState state){
+    TextStyle _titleStyle = textTheme.bodyText1.copyWith(fontSize: 18.0);
     if (state.category == 0)
       return Text(
         '출하정보',
+        style: _titleStyle,
       );
     else if (state.category == 1)
       return Text(
         '비료정보',
-        style: TextStyle(color: Colors.black),
+        style: _titleStyle,
       );
     else if (state.category == 2)
       return Text(
         '농약정보',
+        style: _titleStyle,
       );
     else if (state.category == 3)
       return Text(
         '병,해충정보',
+        style: _titleStyle,
       );
     else if (state.category == 4)
       return Text(
         '정식정보',
+        style: _titleStyle,
       );
     else if (state.category == 5)
       return Text(
         '파종정보',
+        style: _titleStyle,
       );
     else if (state.category == 6)
       return Text(
         '제초정보',
+        style: _titleStyle,
       );
     else if (state.category == 7)
       return Text(
         '관수정보',
+        style: _titleStyle,
       );
     else if (state.category == 8)
       return Text(
         '인력투입정보',
+        style: _titleStyle,
       );
-    else if (state.category == 9)
+    else
       return Text(
         '경운정보',
+        style: _titleStyle,
       );
-  }
-
-  Widget _selectCategory(BuildContext context, JournalCreateState state) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: InkWell(
-          onTap: () {
-            // _journalCreateBloc.add(ChangeCategoryPressed());
-          },
-          child: Row(
-            children: <Widget>[
-              if (state.category == 0)
-                Text(
-                  '출하정보',
-                )
-              else if (state.category == 1)
-                Text(
-                  '비료정보',
-                )
-              else if (state.category == 2)
-                Text(
-                  '농약정보',
-                )
-              else if (state.category == 3)
-                Text(
-                  '병,해충정보',
-                )
-              else if (state.category == 4)
-                Text(
-                  '정식정보',
-                )
-              else if (state.category == 5)
-                Text(
-                  '파종정보',
-                )
-              else if (state.category == 6)
-                Text(
-                  '제초정보',
-                )
-              else if (state.category == 7)
-                Text(
-                  '관수정보',
-                )
-              else if (state.category == 8)
-                Text(
-                  '인력투입정보',
-                )
-              else if (state.category == 9)
-                Text(
-                  '경운정보',
-                ),
-              Icon(Icons.arrow_drop_down),
-            ],
-          )),
-    );
   }
 }

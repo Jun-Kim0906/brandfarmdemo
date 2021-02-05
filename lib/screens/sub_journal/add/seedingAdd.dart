@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/seeding_model.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,42 +56,102 @@ class _SeedingAdd extends State<SeedingAdd> {
     }
   }
 
-  Widget areaUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: '%',
-            child: Text(
-              '%',
-              
+  void areaPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(SeedingAreaUnitChanged(areaUnit: '%'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '%',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.seedingAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(SeedingAreaUnitChanged(areaUnit: 'm^2'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'm^2',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.seedingAreaUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: () {
+                    _journalCreateBloc
+                        .add(SeedingAreaUnitChanged(areaUnit: '평'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '평',
+                  selectedColumnContent:
+                      _journalCreateBloc.state.seedingAreaUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: 'm^2',
-            child: Text(
-              'm^2',
-              
+          );
+        });
+  }
+
+  void amountPickBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(SeedingAmountUnitChanged(amountUnit: 'kg'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'kg',
+                  selectedColumnContent: _journalCreateBloc.state.seedingAmountUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(SeedingAmountUnitChanged(amountUnit: 'g'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: 'g',
+                  selectedColumnContent: _journalCreateBloc.state.seedingAmountUnit,
+                ),
+                Divider(),
+                InputModalSheetColumn(
+                  onTap: (){
+                    _journalCreateBloc.add(SeedingAmountUnitChanged(amountUnit: '개'));
+                    Navigator.pop(context);
+                  },
+                  thisColumnContent: '개',
+                  selectedColumnContent: _journalCreateBloc.state.seedingAmountUnit,
+                ),
+                Divider(),
+              ],
             ),
-          ),
-          DropdownMenuItem(
-            value: '평',
-            child: Text(
-              '평',
-              
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(SeedingAreaUnitChanged(areaUnit: value));
-        },
-        value: _journalCreateBloc.state.seedingAreaUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
+          );
+        });
   }
 
   Widget amountUnit() {
@@ -101,21 +163,18 @@ class _SeedingAdd extends State<SeedingAdd> {
             value: 'kg',
             child: Text(
               'kg',
-              
             ),
           ),
           DropdownMenuItem(
             value: 'g',
             child: Text(
               'g',
-              
             ),
           ),
           DropdownMenuItem(
             value: '개',
             child: Text(
               '개',
-              
             ),
           ),
         ],
@@ -136,98 +195,29 @@ class _SeedingAdd extends State<SeedingAdd> {
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '파종면적',
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          validate();
-                          _journalCreateBloc.add(
-                              SeedingAreaChanged(area: double.parse(value)));
-                        },
-                        controller: area,
-                        decoration: InputDecoration(
-                          errorText: validatePassword(area.text),
-                          hintText: '내용을 입력해주세요',
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: areaUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '파종량',
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextField(
-                        onChanged: (value) {
-                          _journalCreateBloc.add(SeedingAmountChanged(
-                              amount: double.parse(value)));
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: amount,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: amountUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm2(
+                textEditingController: area,
+                changed: (value) {
+                  validate();
+                  _journalCreateBloc
+                      .add(SeedingAreaChanged(area: double.parse(value)));
+                },
+                unitPickPressed: () {
+                  areaPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.seedingAreaUnit,
+                title: '파종면적'),
+            InputForm2(
+                textEditingController: amount,
+                changed: (value) {
+                  _journalCreateBloc
+                      .add(SeedingAmountChanged(amount: double.parse(value)));
+                },
+                unitPickPressed: () {
+                  amountPickBottomSheet(context);
+                },
+                unitString: _journalCreateBloc.state.seedingAmountUnit,
+                title: '파종량'),
           ],
         );
       },

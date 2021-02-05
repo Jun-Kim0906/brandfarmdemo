@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/journal/pest_model.dart';
+import 'package:BrandFarm/widgets/sub_journal_create/input_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,117 +54,27 @@ class _PestAdd extends State<PestAdd> {
     }
   }
 
-  Widget diffusionUnit() {
-    return Container(
-      child: DropdownButton(
-        underline: SizedBox(),
-        items: [
-          DropdownMenuItem(
-            value: _journalCreateBloc.state.spreadDegreeUnit,
-            child: Text(
-              '%',
-              // style: blackColor,
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          _journalCreateBloc.add(SpreadDegreeUnitChanged(degreeUnit: value));
-        },
-        value: _journalCreateBloc.state.spreadDegreeUnit,
-        style: TextStyle(fontSize: 16),
-        elevation: 3,
-        isExpanded: true,
-      ),
-    );
-  }
-
   Widget watering() {
     return BlocBuilder<JournalCreateBloc, JournalCreateState>(
       cubit: _journalCreateBloc,
       builder: (context, state) {
         return Column(
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      '종류',
-                      // style: subTitle3,
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      onChanged: (value) {
-                        validate();
-                        _journalCreateBloc.add(PestKindChanged(kind: value));
-                      },
-                      controller: species,
-                      decoration: InputDecoration(
-                        errorText: validatePassword(species.text),
-                        hintText: '내용을 입력해주세요',
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    width: (MediaQuery.of(context).size.width - 40) * 0.3,
-                    child: Text(
-                      '확산정도',
-                      // style: subTitle3,
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 26, 0, 26),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          _journalCreateBloc.add(
-                              SpreadDegreeChanged(degree: double.parse(value)));
-                        },
-                        controller: diffusion,
-                        // decoration: inputContent,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: diffusionUnit(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Divider()),
+            InputForm1(
+                textEditingController: species,
+                changed: (value) {
+                  validate();
+                  _journalCreateBloc.add(PestKindChanged(kind: value));
+                },
+                title: '종류'),
+            InputForm4(
+                title: '확산정도',
+                changed: (value) {
+                  _journalCreateBloc
+                      .add(SpreadDegreeChanged(degree: double.parse(value)));
+                },
+                unit: '%',
+                textEditingController: diffusion),
           ],
         );
       },
