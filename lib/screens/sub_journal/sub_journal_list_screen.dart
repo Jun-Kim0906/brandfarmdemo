@@ -1,3 +1,5 @@
+import 'package:BrandFarm/blocs/comment/bloc.dart';
+import 'package:BrandFarm/blocs/comment/comment_bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
@@ -171,31 +173,31 @@ class _JournalListScreenState extends State<JournalListScreen> {
         print('state object is not in the tree');
       }
     }
-    if (_scrollController.offset <=
-        _scrollController.position.minScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      if (this.mounted) {
-        if (up > 0) {
-          if ((issueState == 1 && _tab == 1) ||
-              (isDateSelected == false && _tab == 0)) {
-            print('refresh');
-            _journalBloc.add(LoadJournal());
-            _journalBloc.add(GetInitialList());
-            setState(() {
-              up = 0;
-            });
-          } else {
-            print('전체 보기에서만 가능');
-          }
-        } else {
-          setState(() {
-            up = 1;
-          });
-        }
-      } else {
-        print('state object is not in the tree');
-      }
-    }
+    // if (_scrollController.offset <=
+    //     _scrollController.position.minScrollExtent &&
+    //     !_scrollController.position.outOfRange) {
+    //   if (this.mounted) {
+    //     if (up > 0) {
+    //       if ((issueState == 1 && _tab == 1) ||
+    //           (isDateSelected == false && _tab == 0)) {
+    //         print('refresh');
+    //         _journalBloc.add(LoadJournal());
+    //         _journalBloc.add(GetInitialList());
+    //         setState(() {
+    //           up = 0;
+    //         });
+    //       } else {
+    //         print('전체 보기에서만 가능');
+    //       }
+    //     } else {
+    //       setState(() {
+    //         up = 1;
+    //       });
+    //     }
+    //   } else {
+    //     print('state object is not in the tree');
+    //   }
+    // }
     // if (_scrollController.offset >=
     //         _scrollController.position.maxScrollExtent &&
     //     !_scrollController.position.outOfRange) {
@@ -294,6 +296,22 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   right: 0,
                                   child: _optionContainer1(context: context),
                                 ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    height: 1,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.white.withOpacity(0.5),
+                                          spreadRadius: 80,
+                                          blurRadius: 50,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             )
                           : Stack(
@@ -332,6 +350,22 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   left: 0,
                                   right: 0,
                                   child: _optionContainer1(context: context),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    height: 1,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.white.withOpacity(0.5),
+                                          spreadRadius: 80,
+                                          blurRadius: 50,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -373,6 +407,22 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   right: 0,
                                   child: _optionContainer2(context: context),
                                 ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    height: 1,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.white.withOpacity(0.5),
+                                          spreadRadius: 80,
+                                          blurRadius: 50,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             )
                           : Stack(
@@ -387,6 +437,22 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   left: 0,
                                   right: 0,
                                   child: _optionContainer2(context: context),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    height: 1,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.white.withOpacity(0.5),
+                                          spreadRadius: 80,
+                                          blurRadius: 50,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -1054,7 +1120,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
             return _issueListTile(
               date: '${year}. ${month}. ${day}',
               issueState: state.reverseIssueList[index].issueState,
-              list: state.issueList,
+              list: state.reverseIssueList,
               index: index,
               pic: state.issueImageList,
             );
@@ -1100,9 +1166,21 @@ class _JournalListScreenState extends State<JournalListScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => BlocProvider.value(
-              value: _journalBloc,
-              child: SubJournalDetailScreen(from: 'issue', index: index, list: list,),
+            MaterialPageRoute(builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: _journalBloc,
+                ),
+                BlocProvider<CommentBloc>(
+                  create: (BuildContext context) => CommentBloc()..add(LoadComment()),
+                ),
+              ],
+            child: SubJournalDetailScreen(
+              from: 'issue',
+              index: index,
+              list: list,
+              issueListOptions: issueListOptions,
+              issueOrder: issueOrder,),
             )),
           );
         },
@@ -1131,7 +1209,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                             width: 5,
                           ),
                           Text(
-                            '[5]',
+                            '[${list[index].comments}]',
                             style:
                                 Theme.of(context).textTheme.bodyText1.copyWith(
                                       color: Color(0xFF15B85B),

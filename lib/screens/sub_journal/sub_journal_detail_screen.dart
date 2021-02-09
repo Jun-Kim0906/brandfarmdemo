@@ -1,11 +1,17 @@
+import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
+import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +20,8 @@ class SubJournalDetailScreen extends StatefulWidget {
   String from;
   int index;
   List list;
+  String issueListOptions;
+  int issueOrder;
 
   SubJournalDetailScreen({
     Key key,
@@ -21,9 +29,13 @@ class SubJournalDetailScreen extends StatefulWidget {
     int state,
     int index,
     List list,
+    String issueListOptions,
+    int issueOrder,
   })  : from = from ?? 'journal',
         index = index ?? 0,
         list = list,
+        issueListOptions = issueListOptions,
+        issueOrder = issueOrder,
         super(key: key);
 
   @override
@@ -35,18 +47,39 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   TextEditingController _textEditingController;
+  ScrollController _scrollController;
   JournalBloc _journalBloc;
+  CommentBloc _commentBloc;
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   List commentList = [
     '최브팜',
+    '최브팜',
+    '최브팜',
+    '최브팜',
+    '최브팜',
+    '박브팜',
+    '박브팜',
+    '박브팜',
+    '박브팜',
+    '박브팜',
     '박브팜',
   ];
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  // double height;
+  double height;
+  bool _isVisible = true;
+  String comment = '';
+  FocusNode myfocusNode;
+  bool _isClear = true;
+  bool _isSubCommentClicked = false;
+  int indx = 0;
+  String cmtid = '';
+  // bool isExpanded = false;
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -55,8 +88,67 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   void initState() {
     super.initState();
     _journalBloc = BlocProvider.of<JournalBloc>(context);
+    _commentBloc = BlocProvider.of<CommentBloc>(context);
+    _commentBloc.add(GetComment(issid: widget.list[widget.index].issid));
+    Future.delayed(Duration.zero, () {
+      height = MediaQuery.of(context).size.height / 2;
+      print(height);
+    });
+    myfocusNode = FocusNode();
     _textEditingController = TextEditingController();
-    // height = MediaQuery.of(context).size.height + (MediaQuery.of(context).size.height / 2);
+    _textEditingController.addListener(() {
+      if (_textEditingController.text.length > 0) {
+        setState(() {
+          _isClear = false;
+        });
+      } else {
+        setState(() {
+          _isClear = true;
+        });
+      }
+    });
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      _bottomCommentSection();
+    });
+  }
+
+  void _bottomCommentSection() {
+    if (_scrollController.offset > height) {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (_isVisible == true) {
+          // print("**** ${_isVisible} up");
+          if (this.mounted) {
+            setState(() {
+              _isVisible = false;
+            });
+          }
+        }
+      } else {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          if (_isVisible == false) {
+            // print("**** ${_isVisible} down");
+            if (this.mounted) {
+              setState(() {
+                _isVisible = true;
+              });
+            }
+          }
+        }
+      }
+    } else {
+      setState(() {
+        _isVisible = true;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    myfocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,62 +156,107 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     return BlocConsumer<JournalBloc, JournalState>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 1,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            centerTitle: true,
-            title: Text(
-              '2021_0405_한동이네딸기농장',
-              style: TextStyle(
-                fontWeight: FontWeight.normal,
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-            actions: [
-              FlatButton(
-                onPressed: () {},
-                child: Text(
-                  '편집',
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          body: (widget.from == 'journal')
-              ? _journalBody(
-                  context: context,
-                  state: state,
-                )
-              : _issueBody(
-                  context: context,
-                  state: state,
-                ),
+        return BlocBuilder<CommentBloc, CommentState>(
+          builder: (context, cstate) {
+            return (cstate.isLoading)
+                ? Loading()
+                : Scaffold(
+                    appBar: _appBar(context: context),
+                    body: (widget.from == 'journal')
+                        ? _journalBody(
+                            context: context,
+                            state: state,
+                          )
+                        : Stack(
+                            children: [
+                              _issueBody(
+                                context: context,
+                                state: state,
+                                cstate: cstate,
+                              ),
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 500),
+                                // alignment: Alignment(0,1),
+                                alignment: _isVisible
+                                    ? Alignment(0, 1)
+                                    : Alignment(0, 1.5),
+                                child: _writeComment(
+                                  context: context,
+                                  state: cstate,
+                                ),
+                              ),
+                            ],
+                          ),
+                  );
+          },
         );
       },
     );
   }
 
-  Widget _issueBody({BuildContext context, JournalState state}) {
+  Widget _appBar({BuildContext context}) {
+    return AppBar(
+      elevation: 1,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      centerTitle: true,
+      title: Text(
+        '${widget.list[widget.index].title}',
+        style: TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
+      actions: [
+        FlatButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (BuildContext context) => JournalIssueCreateBloc(),
+                      ),
+                      BlocProvider.value(
+                          value: _journalBloc,
+                      ),
+                    ], child: SubJournalIssueModifyScreen(from: 'issue', index: widget.index,),
+                )),
+            );
+          },
+          child: Text(
+            '편집',
+            style: TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _issueBody(
+      {BuildContext context, JournalState state, CommentState cstate}) {
     List pic = state.issueImageList
         .where((element) => element.issid == widget.list[widget.index].issid)
         .toList();
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus();
-        TextEditingController().clear();
+        myfocusNode.unfocus();
+        _textEditingController.clear();
+        setState(() {
+          _isSubCommentClicked = false;
+        });
       },
       child: ListView(
+        shrinkWrap: true,
+        controller: _scrollController,
         children: [
           SizedBox(
             height: 13,
@@ -223,11 +360,13 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           SizedBox(
             height: 25,
           ),
-          (pic.isNotEmpty) ? Divider(
-            height: 0,
-            thickness: 1,
-            color: Color(0x20000000),
-          ) : Container(),
+          (pic.isNotEmpty)
+              ? Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Color(0x20000000),
+                )
+              : Container(),
           (pic.isNotEmpty)
               ? SizedBox(
                   height: 10,
@@ -269,13 +408,31 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           (pic.isNotEmpty)
               ? _addPictureBar(context: context, pic: pic)
               : Container(),
-          (pic.isNotEmpty) ? SizedBox(height: 17,) : Container(),
-          (commentList.isNotEmpty) ? Divider(
-            height: 0,
-            thickness: 1,
-            color: Color(0x20000000),
-          ) : Container(),
-          _comment(context: context),
+          (pic.isNotEmpty)
+              ? SizedBox(
+                  height: 17,
+                )
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Color(0x20000000),
+                )
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? SizedBox(
+                  height: 20,
+                )
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? _comment(context: context, state: cstate)
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? SizedBox(
+                  height: 91,
+                )
+              : Container(),
         ],
       ),
     );
@@ -987,38 +1144,197 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget _comment({BuildContext context}) {
+  Widget _comment({BuildContext context, CommentState state}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16),
-      height: 146,
+      child: Column(
+        children: List.generate(state.comments.length, (index) {
+          return Column(
+            children: [
+              commentTile(
+                  context: context, state: state, index: index),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget commentTile(
+      {BuildContext context, CommentState state, int index}) {
+    List scomments = state.scomments
+        .where((cmt) => cmt.cmtid == state.comments[index].cmtid)
+        .toList();
+    String time = getTime(date: state.comments[index].date);
+    return Container(
       child: Column(
         children: [
-          SizedBox(
-            height: 20,
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: commentList.length,
-            itemBuilder: (context, index) {
-              return Column(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                height: 37,
+                width: 37,
+                decoration: new BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
                 children: [
-                  _customListTile(context: context, index: index),
-                  SizedBox(
-                    height: 20,
+                  Text(
+                    state.comments[index].name,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  // SizedBox(
+                  //   height: 3,
+                  // ),
+                  Text(
+                    time,
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                   ),
                 ],
-              );
-            },
+              ),
+              SizedBox(
+                width: 7,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.comments[index].comment,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 11,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _isSubCommentClicked = true;
+                            cmtid = state.comments[index].cmtid;
+                            indx = index;
+                            myfocusNode.requestFocus();
+                          });
+                        },
+                        child: Text(
+                          '답글 달기',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                        ),
+                      ),
+                      SizedBox(width: 22,),
+                      (state.comments[index].isExpanded)
+                          ? InkWell(
+                        onTap: (){
+                          setState(() {
+                            // isExpanded = false;
+                            _commentBloc.add(CloseComment(index: index));
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              '답글 접기',
+                              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Container(
+                              width: 14,
+                                height: 14,
+                                child: FittedBox(
+                                    child: Icon(Icons.arrow_drop_up_outlined, color: Colors.grey,))),
+                          ],
+                        ),
+                      )
+                          : Container(),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
+          (scomments.isNotEmpty)
+              ? SizedBox(
+                  height: 10,
+                )
+              : Container(),
+          (scomments.isNotEmpty && !state.comments[index].isExpanded)
+              ? Row(
+                  children: [
+                    SizedBox(
+                      width: 77,
+                    ),
+                    Container(
+                      child: InkWell(
+                        onTap: (){
+                          setState(() {
+                            // isExpanded = true;
+                            _commentBloc.add(ExpandComment(index: index));
+                          });
+                        },
+                        child: Text('답글 ${scomments.length}개 펼치기',
+                            style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                    ),
+                  ],
+                )
+              : Container(),
+          (state.comments[index].isExpanded)
+              ? showSubComments(context: context, scmts: scomments)
+              : Container(),
         ],
       ),
     );
   }
 
-  Widget _customListTile({BuildContext context, int index}) {
+  Widget showSubComments({BuildContext context, List scmts}) {
+    return Container(
+      // padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: List.generate(scmts.length, (index) {
+          return Column(
+            children: [
+              subComment(
+                  context: context, scmts: scmts, index: index),
+              (index != scmts.length - 1) ? SizedBox(
+                height: 20,
+              ) : Container(),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget subComment({BuildContext context, List scmts, int index}) {
+    String time = getTime(date: scmts[index].date);
     return Container(
       child: Row(
         children: [
+          SizedBox(width: 10,),
+          Icon(Icons.subdirectory_arrow_right_outlined, color: Colors.grey,),
+          SizedBox(width: 10,),
           Container(
             height: 37,
             width: 37,
@@ -1031,55 +1347,24 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
             width: 10,
           ),
           Column(
-            children: [
-              Text(
-                commentList[index],
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(
-                height: 3,
-              ),
-              Text(
-                '1시간 전',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 7,
-          ),
-          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '수고하셨습니다. 끝까지 힘써주세요',
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(
-                height: 3,
-              ),
               Row(
                 children: [
-                  SizedBox(
-                    width: 11,
-                  ),
-                  Text(
-                    '답글 달기',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
+                  Text('${scmts[index].name}', style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),),
+                  SizedBox(width: 10,),
+                  Text('${time}', style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),),
                 ],
               ),
+              SizedBox(height: 3,),
+              Text('${scmts[index].scomment}', style: Theme.of(context).textTheme.bodyText2.copyWith(
+                fontSize: 12,
+              ),),
             ],
           ),
         ],
@@ -1087,51 +1372,195 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget _writeComment({BuildContext context}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      height: 92,
-      child: Column(
-        children: [
-          SizedBox(
-            height: 9,
-          ),
-          Row(
+  String getTime({Timestamp date}) {
+    DateTime now = DateTime.now();
+    DateTime _date =
+        DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
+    int diffDays = now.difference(_date).inDays;
+    if (diffDays < 1) {
+      int diffHours = now.difference(_date).inHours;
+      if (diffHours < 1) {
+        int diffMinutes = now.difference(_date).inMinutes;
+        if (diffMinutes < 1) {
+          int diffSeconds = now.difference(_date).inSeconds;
+          return '${diffSeconds}초 전';
+        } else {
+          return '${diffMinutes}분 전';
+        }
+      } else {
+        return '${diffHours}시간 전';
+      }
+    } else if (diffDays >= 1 && diffDays <= 365) {
+      int monthNow = int.parse(DateFormat('MM').format(now));
+      int monthBefore = int.parse(DateFormat('MM').format(
+          DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch)));
+      int diffMonths = monthNow - monthBefore;
+      if (diffMonths == 0) {
+        return '${diffDays}일 전';
+      } else {
+        return '${diffMonths}달 전';
+      }
+    } else {
+      double tmp = diffDays / 365;
+      int diffYears = tmp.toInt();
+      return '${diffYears}년 전';
+    }
+  }
+
+  Widget _writeComment({BuildContext context, CommentState state}) {
+    return Wrap(
+      children: [
+        (_isSubCommentClicked)
+            ? Container(
+                padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                height: 44,
+                color: Color(0xFFEDEDED),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${state.comments[indx].name}님에게 답글 남기는 중. . .'),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSubCommentClicked = false;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Container(),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          height: 81,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(width: 1, color: Color(0x30000000)),
+              )),
+          child: Column(
             children: [
-              Container(
-                height: 47,
-                width: 47,
-                decoration: new BoxDecoration(
-                  color: Colors.grey,
-                  shape: BoxShape.circle,
-                ),
-              ),
               SizedBox(
-                width: 9,
+                height: 9,
               ),
-              Expanded(
-                child: TextField(
-                  controller: _textEditingController,
-                  style: TextStyle(
-                    fontSize: 14,
+              Row(
+                children: [
+                  Container(
+                    height: 47,
+                    width: 47,
+                    decoration: new BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(23),
-                    )),
-                    hintText: '댓글 달기...',
-                    contentPadding: EdgeInsets.fromLTRB(15, 10, 15, 9),
+                  SizedBox(
+                    width: 9,
                   ),
-                ),
+                  Expanded(
+                    child: Theme(
+                      child: TextField(
+                        controller: _textEditingController,
+                        focusNode: myfocusNode,
+                        onTap: () {
+                          myfocusNode.requestFocus();
+                        },
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(23),
+                          ),
+                          hintText: '댓글 달기...',
+                          suffix: InkWell(
+                            onTap: () {
+                              setState(() {
+                                comment = _textEditingController.text;
+                              });
+                              if (_isSubCommentClicked) {
+                                if (widget.from == 'journal') {
+                                  _commentBloc.add(AddSubComment(
+                                    from: 'journal',
+                                    id: widget.list[widget.index].jid,
+                                    comment: comment,
+                                    cmtid: cmtid,
+                                  ));
+                                } else {
+                                  _commentBloc.add(AddSubComment(
+                                    from: 'issue',
+                                    id: widget.list[widget.index].issid,
+                                    comment: comment,
+                                    cmtid: cmtid,
+                                  ));
+                                }
+                              } else {
+                                if (widget.from == 'journal') {
+                                  _commentBloc.add(AddComment(
+                                    from: 'journal',
+                                    id: widget.list[widget.index].jid,
+                                    comment: comment,
+                                  ));
+                                } else {
+                                  _commentBloc.add(AddComment(
+                                    from: 'issue',
+                                    id: widget.list[widget.index].issid,
+                                    comment: comment,
+                                  ));
+                                }
+                              }
+                              setState(() {
+                                _isSubCommentClicked = false;
+                              });
+                              _commentBloc.add(LoadComment());
+                              _commentBloc.add(GetComment(
+                                  issid: widget.list[widget.index].issid));
+                              _textEditingController.clear();
+                              _journalBloc.add(AddIssueComment(
+                                  index: widget.index,
+                                  issueListOptions: widget.issueListOptions,
+                                  issueOrder: widget.issueOrder,));
+                            },
+                            child: Container(
+                                width: 30,
+                                child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '게시',
+                                      style: (_isClear)
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .bodyText2
+                                              .copyWith(
+                                                color: Colors.grey,
+                                              )
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyText2
+                                              .copyWith(
+                                                color: Color(0xFF15B833),
+                                              ),
+                                    ))),
+                          ),
+                          isDense: true,
+                          contentPadding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        ),
+                      ),
+                      data: Theme.of(context).copyWith(
+                        primaryColor: Color(0xFF15B85B),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          SizedBox(
-            height: 35,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

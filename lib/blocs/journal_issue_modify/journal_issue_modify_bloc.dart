@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image/image_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
@@ -11,13 +11,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 
-class JournalIssueCreateBloc
-    extends Bloc<JournalIssueCreateEvent, JournalIssueCreateState> {
-  JournalIssueCreateBloc() : super(JournalIssueCreateState.empty());
+class JournalIssueModifyBloc
+    extends Bloc<JournalIssueModifyEvent, JournalIssueModifyState> {
+  JournalIssueModifyBloc() : super(JournalIssueModifyState.empty());
 
   @override
-  Stream<JournalIssueCreateState> mapEventToState(
-      JournalIssueCreateEvent event) async* {
+  Stream<JournalIssueModifyState> mapEventToState(
+      JournalIssueModifyEvent event) async* {
     if (event is AddImageFile) {
       yield* _mapAddImageFileToState(
           imageFile: event.imageFile, index: event.index, from: event.from);
@@ -40,7 +40,7 @@ class JournalIssueCreateBloc
     }
   }
 
-  Stream<JournalIssueCreateState> _mapAddImageFileToState(
+  Stream<JournalIssueModifyState> _mapAddImageFileToState(
       {File imageFile, int index, int from}) async* {
     List<File> _img = state.imageList;
 
@@ -57,7 +57,7 @@ class JournalIssueCreateBloc
     );
   }
 
-  Stream<JournalIssueCreateState> _mapSelectImageToState(
+  Stream<JournalIssueModifyState> _mapSelectImageToState(
       {List<Asset> assetList}) async* {
     List<File> bufferList = state.imageList;
     for (int i = 0; i < assetList.length; i++) {
@@ -66,13 +66,13 @@ class JournalIssueCreateBloc
     yield state.update(assetList: assetList, imageList: bufferList);
   }
 
-  Stream<JournalIssueCreateState> _mapPressCompleteToState() async* {
+  Stream<JournalIssueModifyState> _mapPressCompleteToState() async* {
     yield state.update(
-        isComplete: true,
+      isComplete: true,
     );
   }
 
-  Stream<JournalIssueCreateState> _mapDeleteImageFileToState(
+  Stream<JournalIssueModifyState> _mapDeleteImageFileToState(
       {File removedFile}) async* {
     List<File> _img = state.imageList;
     _img.remove(removedFile);
@@ -82,14 +82,14 @@ class JournalIssueCreateBloc
     );
   }
 
-  Stream<JournalIssueCreateState> _mapUploadJournalToState(
+  Stream<JournalIssueModifyState> _mapUploadJournalToState(
       {String fid,
-      String sfmid,
-      String uid,
-      String title,
-      int category,
-      int issueState,
-      String contents}) async* {
+        String sfmid,
+        String uid,
+        String title,
+        int category,
+        int issueState,
+        String contents}) async* {
     String issid = '';
     issid = FirebaseFirestore.instance.collection('Issue').doc().id;
     SubJournalIssue subJournalIssue = SubJournalIssue(

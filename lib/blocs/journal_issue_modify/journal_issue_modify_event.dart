@@ -1,0 +1,79 @@
+
+import 'dart:io';
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+
+abstract class JournalIssueModifyEvent extends Equatable{
+  const JournalIssueModifyEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class SelectImage extends JournalIssueModifyEvent{
+  final List<Asset> assetList;
+
+  const SelectImage({@required this.assetList});
+
+  @override
+  String toString() => 'SelectImage {assetList: $assetList}';
+}
+
+class AddImageFile extends JournalIssueModifyEvent{
+  final File imageFile;
+  final int index;
+  final int from; // gallery 0 / camera 1
+
+  const AddImageFile({@required this.imageFile, int index, int from})
+      : this.index = index ?? 0,
+        this.from = from ?? 0;
+
+  @override
+  String toString() => 'AddImageFile {imageFile: ${imageFile.path}}';
+}
+
+class DeleteImageFile extends JournalIssueModifyEvent{
+  final File removedFile;
+
+  const DeleteImageFile({@required this.removedFile});
+
+  @override
+  String toString() => 'DeleteImageFile {removedFile: ${removedFile}}';
+}
+
+class PressComplete extends JournalIssueModifyEvent{}
+
+class UploadJournal extends JournalIssueModifyEvent {
+  final String fid;
+  final String sfmid;
+  final String uid;
+  final String title;
+  final int category; // 작물 1 / 시설 2 / 기타 3
+  final int issueState; // 예상 1 / 진행 2 / 완료 3
+  final String contents;
+
+  const UploadJournal({
+    @required this.fid,
+    @required this.sfmid,
+    @required this.uid,
+    @required this.title,
+    @required this.category,
+    @required this.issueState,
+    @required this.contents,
+  });
+
+  @override
+  String toString() {
+    return '''UploadJournal {
+      fid: $fid, 
+      sfmid: $sfmid,
+      uid: $uid,
+      title: $title,
+      category: $category,
+      issueState: $issueState,
+      contents: $contents,
+    }''';
+  }
+}
