@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
+import 'package:BrandFarm/screens/setting/setting_screen.dart';
 import 'package:BrandFarm/testpage.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 
@@ -72,7 +73,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                 },
                 settingPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => TestPage()));
+                      MaterialPageRoute(builder: (context) => SettingScreen()));
                 },
               ),
               body: SingleChildScrollView(

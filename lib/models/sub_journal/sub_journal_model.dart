@@ -47,6 +47,7 @@ class SubJournalIssue {
   final int category; // 작물 1 / 시설 2 / 기타 3
   final int issueState; // 예상 1 / 진행 2 / 완료 3
   final String contents;
+  final int comments;
 
   SubJournalIssue({
     @required this.date,
@@ -58,6 +59,7 @@ class SubJournalIssue {
     @required this.category,
     @required this.issueState,
     @required this.contents,
+    @required this.comments,
   });
 
   factory SubJournalIssue.fromSnapshot(DocumentSnapshot ds) {
@@ -71,6 +73,7 @@ class SubJournalIssue {
       category: ds['category'],
       issueState: ds['issueState'],
       contents: ds['contents'],
+      comments: ds['comments'],
     );
   }
 
@@ -85,6 +88,7 @@ class SubJournalIssue {
       'category': category,
       'issueState': issueState,
       'contents': contents,
+      'comments': comments,
     };
   }
 }

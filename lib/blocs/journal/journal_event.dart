@@ -72,3 +72,34 @@ class LoadMore extends JournalEvent {
   String toString() =>
       'LoadMore { tab: $tab, }';
 }
+
+class AddIssueComment extends JournalEvent {
+  final int index;
+  final String issueListOptions;
+  final int issueOrder;
+  final String issid;
+
+  const AddIssueComment({
+        @required this.index,
+        @required this.issueListOptions,
+        @required this.issueOrder,
+        @required this.issid,
+      });
+
+  @override
+  List<Object> get props => [
+    index,
+    issueListOptions,
+    issueOrder,
+    issid,
+  ];
+
+  @override
+  String toString() =>
+      '''AddComment { 
+      index: $index, 
+      issueListOptions: $issueListOptions, 
+      issueOrder: $issueOrder, 
+      issid: $issid, 
+      }''';
+}

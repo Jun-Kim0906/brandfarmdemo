@@ -77,3 +77,4 @@ class UploadJournal extends JournalIssueCreateEvent {
     }''';
   }
 }
+

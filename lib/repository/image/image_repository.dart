@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:BrandFarm/models/image/image_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -11,7 +11,7 @@ class ImageRepository{
   DocumentReference reference;
 
   Future<void> uploadImage({
-    Image picture,
+    ImagePicture picture,
   }) async {
     DocumentReference reference = _firestore.collection('Picture').doc(picture.pid);
     await reference.set(picture.toMap());
@@ -33,5 +33,19 @@ class ImageRepository{
         .then((value) => url = value);
 
     return url;
+  }
+
+  Future<void> deleteFromStorage({ImagePicture pic}) async {
+    // delete from storage
+    Reference photoRef = await FirebaseStorage.instance.refFromURL(pic.url);
+    await photoRef.delete();
+  }
+
+  Future<void> deleteFromDatabase({ImagePicture pic}) async {
+    // delete from database
+    await FirebaseFirestore.instance
+        .collection('Picture')
+        .doc(pic.pid)
+        .delete();
   }
 }

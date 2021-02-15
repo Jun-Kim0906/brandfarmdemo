@@ -34,7 +34,9 @@ class _SubJournalIssueCreateScreenState
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   JournalIssueCreateBloc _journalIssueCreateBloc;
-
+  FocusNode _title;
+  FocusNode _content;
+  ScrollController _scrollController;
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -49,7 +51,6 @@ class _SubJournalIssueCreateScreenState
   int issueState = 1;
   String title = '';
   String contents = '';
-
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -58,6 +59,9 @@ class _SubJournalIssueCreateScreenState
   void initState() {
     super.initState();
     _journalIssueCreateBloc = BlocProvider.of<JournalIssueCreateBloc>(context);
+    _title = FocusNode();
+    _content = FocusNode();
+    _scrollController = ScrollController();
   }
 
   @override
@@ -98,36 +102,43 @@ class _SubJournalIssueCreateScreenState
             ),
             centerTitle: true,
           ),
-          body: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 24.0,
-                ),
-                _dateBar(),
-                SizedBox(
-                  height: 37.0,
-                ),
-                _inputTitleBar(),
-                SizedBox(
-                  height: 51.0,
-                ),
-                _chooseCategory(),
-                SizedBox(
-                  height: 45.0,
-                ),
-                _chooseIssueState(),
-                SizedBox(
-                  height: 48.0,
-                ),
-                _addPictureBar(context: context, state: state),
-                SizedBox(
-                  height: 43.0,
-                ),
-                _inputIssueContents(),
-              ],
+          body: GestureDetector(
+            onTap: (){
+              _title.unfocus();
+              _content.unfocus();
+            },
+            child: SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 24.0,
+                  ),
+                  _dateBar(),
+                  SizedBox(
+                    height: 37.0,
+                  ),
+                  _inputTitleBar(),
+                  SizedBox(
+                    height: 51.0,
+                  ),
+                  _chooseCategory(),
+                  SizedBox(
+                    height: 45.0,
+                  ),
+                  _chooseIssueState(),
+                  SizedBox(
+                    height: 48.0,
+                  ),
+                  _addPictureBar(context: context, state: state),
+                  SizedBox(
+                    height: 43.0,
+                  ),
+                  _inputIssueContents(context: context),
+                  SizedBox(height: 72,),
+                ],
+              ),
             ),
           ),
           bottomNavigationBar: BottomNavigationButton(
@@ -170,11 +181,15 @@ class _SubJournalIssueCreateScreenState
           SizedBox(width: 8.0),
           Expanded(
               child: TextField(
+            focusNode: _title,
             onChanged: (text) {
               setState(() {
                 title = text;
               });
             },
+                onTap: (){
+                  _title.requestFocus();
+                },
             style:
                 Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
             decoration: InputDecoration(
@@ -462,7 +477,7 @@ class _SubJournalIssueCreateScreenState
     );
   }
 
-  Widget _inputIssueContents() {
+  Widget _inputIssueContents({BuildContext context}) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: defaultPadding),
       child: Column(
@@ -472,31 +487,46 @@ class _SubJournalIssueCreateScreenState
           SizedBox(
             height: 8.0,
           ),
-          Scrollbar(
-            child: TextField(
-              onChanged: (text) {
-                setState(() {
-                  contents = text;
-                });
-              },
-              scrollPhysics: ClampingScrollPhysics(),
-              minLines: null,
-              maxLines: 8,
-              style: Theme.of(context).textTheme.bodyText1,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  hintText: '내용을 입력해주세요',
-                  hintStyle: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(),
-                  )),
+          MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            removeBottom: true,
+            child: CupertinoScrollbar(
+              controller: _scrollController,
+              isAlwaysShown: true,
+              child: TextField(
+                focusNode: _content,
+                onTap: (){
+                  _content.requestFocus();
+                },
+                onChanged: (text) {
+                  setState(() {
+                    contents = text;
+                  });
+                },
+                scrollController: _scrollController,
+                scrollPadding: EdgeInsets.zero,
+                scrollPhysics: ClampingScrollPhysics(),
+                minLines: null,
+                maxLines: 8,
+                style: Theme.of(context).textTheme.bodyText1,
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    isDense: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    hintText: '내용을 입력해주세요',
+                    hintStyle: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(),
+                    )),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -521,7 +551,7 @@ class _SubJournalIssueCreateScreenState
                   onTap: () => {
                         Navigator.pop(context),
                         getImage(
-                          state: state,
+                          cstate: state,
                           journalIssueCreateBloc: _journalIssueCreateBloc,
                           from: 'SubJournalIssueCreateScreen',
                         ),
@@ -533,7 +563,7 @@ class _SubJournalIssueCreateScreenState
                 onTap: () => {
                   Navigator.pop(context),
                   getCameraImage(
-                    state: state,
+                    cstate: state,
                     journalIssueCreateBloc: _journalIssueCreateBloc,
                     from: 'SubJournalIssueCreateScreen',
                   ),

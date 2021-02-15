@@ -1,10 +1,12 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
+import 'package:BrandFarm/utils/issue/issue_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/image/image_model.dart';
 import '../../utils/user/user_util.dart';
 
 class JournalBloc extends Bloc<JournalEvent, JournalState> {
@@ -31,6 +33,12 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapGetIssueListByCategoryToState(issueState: event.issueState);
     } else if (event is WaitForLoadMore) {
       yield* _mapWaitForLoadMoreToState();
+    } else if (event is AddIssueComment) {
+      yield* _mapAddIssueCommentToState(
+          index: event.index,
+          issueListOptions: event.issueListOptions,
+          issueOrder: event.issueOrder,
+          issid: event.issid,);
     }
   }
 
@@ -93,7 +101,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
         .orderBy('dttm', descending: true)
         .get();
     pic.docs.forEach((ds) {
-      issueImageList.add(Image.fromSnapshot(ds));
+      issueImageList.add(ImagePicture.fromSnapshot(ds));
     });
 
     yield state.update(
@@ -126,25 +134,14 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapGetIssueListByTimeOrderToState(
       {String issueListOption, String issueListOrderOption}) async* {
-    List getList = [];
     List reverseIssueList = [];
 
     if (issueListOption == '전체') {
-      getList = state.issueList;
-      for (int i = getList.length - 1; i >= 0; i--) {
-        // print(DateFormat('yyyy-MM-dd').format(DateTime.fromMicrosecondsSinceEpoch(
-        //     getList[i].date.microsecondsSinceEpoch)));
-        // print(getList[i].issueState);
-        reverseIssueList.add(getList[i]);
-      }
+      reverseIssueList = state.issueList;
+      reverseIssueList = List.from(reverseIssueList.reversed);
     } else {
-      getList = state.issueListByCategorySelection;
-      for (int i = getList.length - 1; i >= 0; i--) {
-        // print(DateFormat('yyyy-MM-dd').format(DateTime.fromMicrosecondsSinceEpoch(
-        //     getList[i].date.microsecondsSinceEpoch)));
-        // print(getList[i].issueState);
-        reverseIssueList.add(getList[i]);
-      }
+      reverseIssueList = state.issueListByCategorySelection;
+      reverseIssueList = List.from(reverseIssueList.reversed);
     }
 
     yield state.update(
@@ -216,7 +213,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
           .orderBy('dttm', descending: true)
           .get();
       pic.docs.forEach((ds) {
-        newImageList.add(Image.fromSnapshot(ds));
+        newImageList.add(ImagePicture.fromSnapshot(ds));
       });
 
       combinedList = [...currentList, ...newList];
@@ -236,5 +233,52 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapWaitForLoadMoreToState() async* {
     yield state.update(isLoadingToGetMore: true);
+  }
+
+  Stream<JournalState> _mapAddIssueCommentToState({
+    int index, String issueListOptions, int issueOrder, String issid}) async* {
+
+    List issue = state.issueList;
+    List cat = state.issueListByCategorySelection;
+    List rev = state.reverseIssueList;
+
+    int index1 = issue.indexWhere((data) => data.issid == issid) ?? -1;
+    int index2 = cat.indexWhere((data) => data.issid == issid) ?? -1;
+    int index3 = rev.indexWhere((data) => data.issid == issid) ?? -1;
+
+    await SubJournalRepository().updateIssueComment(
+        issid: issid, cmts: issue[index1].comments + 1);
+
+    await IssueUtil.setIssue(SubJournalIssue(
+      category: issue[index1].category,
+      comments: issue[index1].comments + 1,
+      contents: issue[index1].contents,
+      date: issue[index1].date,
+      fid: issue[index1].fid,
+      uid: issue[index1].uid,
+      sfmid: issue[index1].sfmid,
+      issid: issue[index1].issid,
+      title: issue[index1].title,
+      issueState: issue[index1].issueState,
+    ));
+
+    if(index1 != -1) {
+      issue.removeAt(index1);
+      issue.insert(index1, await IssueUtil.getIssue());
+    }
+    if(index2 != -1) {
+      cat.removeAt(index2);
+      cat.insert(index2, await IssueUtil.getIssue());
+    }
+    if(index3 != -1) {
+      rev.removeAt(index3);
+      rev.insert(index3, await IssueUtil.getIssue());
+    }
+
+    yield state.update(
+      issueList: issue,
+      issueListByCategorySelection: cat,
+      reverseIssueList: rev,
+    );
   }
 }
