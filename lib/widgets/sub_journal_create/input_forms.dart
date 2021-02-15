@@ -32,7 +32,7 @@ class InputForm1 extends StatelessWidget {
           ),
           Expanded(
             child: TextFormField(
-              style: TextStyle(fontSize: 16.0),
+              style: Theme.of(context).textTheme.bodyText1,
               textInputAction: TextInputAction.done,
               onChanged: changed,
               controller: _controller,
@@ -87,6 +87,7 @@ class InputForm2 extends StatelessWidget {
             width: (MediaQuery.of(context).size.width - 32) * 0.41,
             margin: EdgeInsets.only(right: 20),
             child: TextField(
+              style: Theme.of(context).textTheme.bodyText1,
               onChanged: changed,
               controller: _controller,
               keyboardType: TextInputType.number,
@@ -191,6 +192,7 @@ class InputForm4 extends StatelessWidget {
             width: (MediaQuery.of(context).size.width - 32) * 0.41,
             margin: EdgeInsets.only(right: 20),
             child: TextField(
+              style: Theme.of(context).textTheme.bodyText1,
               onChanged: changed,
               controller: _controller,
               keyboardType: TextInputType.number,
