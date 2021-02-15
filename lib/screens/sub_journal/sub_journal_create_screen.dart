@@ -1,5 +1,7 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
+import 'package:BrandFarm/screens/sub_journal/add/editCategory.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_input_activity_screen.dart';
+import 'package:BrandFarm/utils/column_builder.dart';
 import 'package:BrandFarm/utils/journal.category.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/brandfarm_date_picker.dart';
@@ -92,6 +94,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
                       state: state,
                       journalCreateBloc: _journalCreateBloc,
                     ),
+                    _addedCategory(),
                     SizedBox(
                       height: 15.0,
                     ),
@@ -116,6 +119,62 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
             );
           },
         ));
+  }
+
+  Widget _addedCategory() {
+    return _journalCreateBloc.state.widgets.isEmpty
+        ? Container()
+        : Container(
+      child: ColumnBuilder(
+        itemBuilder: (BuildContext context, int index) {
+          return Ink(
+            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: defaultPadding),
+            color: Colors.white,
+            child: ListTile(
+              dense: true,
+              trailing: Text(
+                  '수정',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(fontSize: 18.0, color: Color(0xb3000000)),
+              ),
+              onTap: () {
+                _journalCreateBloc.add(CategoryChanged(
+                    category: getJournalCategoryId(
+                        name: _journalCreateBloc
+                            .state.widgets[index].name)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                        BlocProvider<JournalCreateBloc>.value(
+                            value: _journalCreateBloc,
+                            child: EditCategory(
+                              index: _journalCreateBloc
+                                  .state.widgets[index].index,
+                              category: _journalCreateBloc
+                                  .state.widgets[index].name,
+                              listIndex: index,
+                            ))));
+              },
+              title: Row(
+                children: [
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    _journalCreateBloc.state.widgets[index].name,
+                    style: Opacity70TileStyle,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        itemCount: _journalCreateBloc.state.widgets.length,
+      ),
+    );
   }
 }
 
@@ -476,7 +535,7 @@ class AddProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      padding: EdgeInsets.only(left: defaultPadding, right: defaultPadding, bottom: defaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
