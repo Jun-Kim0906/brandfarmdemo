@@ -7,6 +7,8 @@ class JournalIssueModifyState {
   final String title;
   final List<File> imageList;
   final List<Asset> assetList;
+  final List existingImageList;
+  final List deletedFromExistingImageList;
   final bool isComplete;
   final bool isUploaded;
 
@@ -14,6 +16,8 @@ class JournalIssueModifyState {
     @required this.title,
     @required this.imageList,
     @required this.assetList,
+    @required this.existingImageList,
+    @required this.deletedFromExistingImageList,
     @required this.isComplete,
     @required this.isUploaded,
   });
@@ -23,6 +27,8 @@ class JournalIssueModifyState {
       title: '',
       imageList: [],
       assetList: [],
+      existingImageList: [],
+      deletedFromExistingImageList: [],
       isComplete: false,
       isUploaded: false,
     );
@@ -32,6 +38,8 @@ class JournalIssueModifyState {
     String title,
     List<File> imageList,
     List<Asset> assetList,
+    List existingImageList,
+    List deletedFromExistingImageList,
     bool isComplete,
     bool isUploaded,
   }) {
@@ -39,6 +47,8 @@ class JournalIssueModifyState {
       title: title ?? this.title,
       imageList: imageList ?? this.imageList,
       assetList: assetList ?? this.assetList,
+      existingImageList: existingImageList ?? this.existingImageList,
+      deletedFromExistingImageList: deletedFromExistingImageList ?? this.deletedFromExistingImageList,
       isComplete: isComplete ?? this.isComplete,
       isUploaded: isUploaded ?? this.isUploaded,
     );
@@ -48,6 +58,8 @@ class JournalIssueModifyState {
     String title,
     List<File> imageList,
     List<Asset> assetList,
+    List existingImageList,
+    List deletedFromExistingImageList,
     bool isComplete,
     bool isUploaded,
   }) {
@@ -55,6 +67,8 @@ class JournalIssueModifyState {
       title: title,
       imageList: imageList,
       assetList: assetList,
+      existingImageList: existingImageList,
+      deletedFromExistingImageList: deletedFromExistingImageList,
       isComplete: isComplete,
       isUploaded: isUploaded,
     );
@@ -66,6 +80,8 @@ class JournalIssueModifyState {
     title: $title,
     imageList: ${imageList?.length ?? 0},
     assetList: ${assetList?.length ?? 0},
+    existingImageList: ${existingImageList?.length ?? 0},
+    deletedFromExistingImageList: ${deletedFromExistingImageList?.length ?? 0},
     isComplete: ${isComplete},
     isUploaded: ${isUploaded},
    }''';

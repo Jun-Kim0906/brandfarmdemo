@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -12,26 +13,26 @@ abstract class JournalIssueModifyEvent extends Equatable{
   List<Object> get props => [];
 }
 
-class SelectImage extends JournalIssueModifyEvent{
+class SelectImageM extends JournalIssueModifyEvent{
   final List<Asset> assetList;
 
-  const SelectImage({@required this.assetList});
+  const SelectImageM({@required this.assetList});
 
   @override
-  String toString() => 'SelectImage {assetList: $assetList}';
+  String toString() => 'SelectImageM {assetList: $assetList}';
 }
 
-class AddImageFile extends JournalIssueModifyEvent{
+class AddImageFileM extends JournalIssueModifyEvent{
   final File imageFile;
   final int index;
   final int from; // gallery 0 / camera 1
 
-  const AddImageFile({@required this.imageFile, int index, int from})
+  const AddImageFileM({@required this.imageFile, int index, int from})
       : this.index = index ?? 0,
         this.from = from ?? 0;
 
   @override
-  String toString() => 'AddImageFile {imageFile: ${imageFile.path}}';
+  String toString() => 'AddImageFileM {imageFile: ${imageFile.path}}';
 }
 
 class DeleteImageFile extends JournalIssueModifyEvent{
@@ -45,35 +46,71 @@ class DeleteImageFile extends JournalIssueModifyEvent{
 
 class PressComplete extends JournalIssueModifyEvent{}
 
-class UploadJournal extends JournalIssueModifyEvent {
+class UpdateJournal extends JournalIssueModifyEvent {
   final String fid;
   final String sfmid;
   final String uid;
+  final String issid;
   final String title;
   final int category; // 작물 1 / 시설 2 / 기타 3
   final int issueState; // 예상 1 / 진행 2 / 완료 3
   final String contents;
+  final int comments;
 
-  const UploadJournal({
+  const UpdateJournal({
     @required this.fid,
     @required this.sfmid,
     @required this.uid,
+    @required this.issid,
     @required this.title,
     @required this.category,
     @required this.issueState,
     @required this.contents,
+    @required this.comments,
   });
 
   @override
   String toString() {
-    return '''UploadJournal {
+    return '''UpdateJournal {
       fid: $fid, 
       sfmid: $sfmid,
       uid: $uid,
+      issid: $issid,
       title: $title,
       category: $category,
       issueState: $issueState,
       contents: $contents,
+      comments: $comments,
+    }''';
+  }
+}
+
+class GetImageList extends JournalIssueModifyEvent {
+  final String issid;
+
+  const GetImageList({
+    @required this.issid,
+  });
+
+  @override
+  String toString() {
+    return '''GetImageList {
+      issid, ${issid},
+    }''';
+  }
+}
+
+class DeleteExistingImage extends JournalIssueModifyEvent {
+  final ImagePicture obj;
+
+  const DeleteExistingImage({
+    @required this.obj,
+  });
+
+  @override
+  String toString() {
+    return '''DeleteExistingImage {
+      obj, ${obj},
     }''';
   }
 }

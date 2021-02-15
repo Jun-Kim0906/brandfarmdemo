@@ -1,6 +1,6 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
-import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
@@ -79,7 +79,8 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   bool _isSubCommentClicked = false;
   int indx = 0;
   String cmtid = '';
-  // bool isExpanded = false;
+  int numOfComments;
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -89,7 +90,15 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     super.initState();
     _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
-    _commentBloc.add(GetComment(issid: widget.list[widget.index].issid));
+    if (widget.from == 'issue') {
+      _commentBloc.add(LoadComment());
+    }
+    if (widget.from == 'issue') {
+      _commentBloc.add(GetComment(issid: widget.list[widget.index].issid));
+    }
+    if (widget.from == 'issue') {
+      numOfComments = widget.list[widget.index].comments;
+    }
     Future.delayed(Duration.zero, () {
       height = MediaQuery.of(context).size.height / 2;
       print(height);
@@ -204,29 +213,43 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         },
       ),
       centerTitle: true,
-      title: Text(
-        '${widget.list[widget.index].title}',
-        style: TextStyle(
-          fontWeight: FontWeight.normal,
-          fontSize: 16,
-          color: Colors.black,
-        ),
-      ),
+      title: (widget.from == 'issue')
+          ? Text(
+              '${widget.list[widget.index].title}',
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            )
+          : Text(
+              'from journal',
+              style: TextStyle(color: Colors.black),
+            ),
       actions: [
         FlatButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (BuildContext context) => JournalIssueCreateBloc(),
-                      ),
-                      BlocProvider.value(
-                          value: _journalBloc,
-                      ),
-                    ], child: SubJournalIssueModifyScreen(from: 'issue', index: widget.index,),
-                )),
-            );
+            (widget.from == 'issue') ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (BuildContext context) =>
+                                JournalIssueModifyBloc(),
+                          ),
+                          BlocProvider.value(
+                            value: _journalBloc,
+                          ),
+                        ],
+                        child: SubJournalIssueModifyScreen(
+                          from: 'issue',
+                          issid: widget.list[widget.index].issid,
+                          obj: widget.list[widget.index],
+                          comments: numOfComments,
+                        ),
+                      )),
+            ) : Container();
           },
           child: Text(
             '편집',
@@ -501,36 +524,34 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
-                padding: EdgeInsets.only(left: 10),
                 child: Text(
-                  '2021년 04월 05일 화요일',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                )),
+              '2021년 04월 05일 화요일',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            )),
           ),
           SizedBox(
             height: 12,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: _weatherCard(),
-          ),
-          SizedBox(
-            height: 41,
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          //   child: _weatherCard(),
+          // ),
+          // SizedBox(
+          //   height: 41,
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
-                padding: EdgeInsets.only(left: 10),
                 child: Text(
-                  '일일 활동내역',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                )),
+              '일일 활동내역',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            )),
           ),
           SizedBox(
             height: 15,
@@ -542,7 +563,6 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
-              padding: EdgeInsets.only(left: 10),
               child: Row(
                 children: [
                   Text(
@@ -594,51 +614,11 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           SizedBox(
             height: 55,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-                padding: EdgeInsets.only(left: 10),
-                child: Row(
-                  children: [
-                    Text(
-                      '댓글',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    Text(
-                      '2',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF219653),
-                      ),
-                    ),
-                  ],
-                )),
-          ),
-          SizedBox(
-            height: 8,
-          ),
           Divider(
             height: 0,
             thickness: 1,
             color: Colors.grey,
           ),
-          _comment(context: context),
-          Divider(
-            height: 0,
-            thickness: 1,
-            color: Colors.grey,
-          ),
-          SizedBox(
-            height: 9,
-          ),
-          _writeComment(context: context),
         ],
       ),
     );
@@ -807,231 +787,196 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   }
 
   Widget _infoContainer({BuildContext context}) {
-    return Container(
-      // padding: EdgeInsets.symmetric(horizontal: 11),
-      height: 420,
-      child: Swiper(
-        itemHeight: 420,
-        itemWidth: MediaQuery.of(context).size.width,
-        layout: SwiperLayout.DEFAULT,
-        pagination: SwiperPagination(
-            builder: DotSwiperPaginationBuilder(
-          color: Colors.grey,
-          activeColor: Color(0xFF219653),
-        )),
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.fromLTRB(22, 1, 22, 50),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children: [
+          Card(
             elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            child: Container(
-              padding: EdgeInsets.fromLTRB(11, 24, 11, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Text(
-                        '출하정보',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerTitleTextTheme
-                            .copyWith(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Container(
-                        width: 52,
-                        child: Text(
-                          '출하작물',
-                          style: Theme.of(context)
-                              .textTheme
-                              .infoContainerTitleTextTheme,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        '딸기',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerBodyTextTheme,
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Container(
-                        width: 52,
-                        child: Text(
-                          '출하경로',
-                          style: Theme.of(context)
-                              .textTheme
-                              .infoContainerTitleTextTheme,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        '얄리리 얄랑셩 얄라리 얄라',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerBodyTextTheme,
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Container(
-                        width: 52,
-                        child: Text(
-                          '출하단위',
-                          style: Theme.of(context)
-                              .textTheme
-                              .infoContainerTitleTextTheme,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        '1',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerBodyTextTheme,
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Container(
-                        width: 52,
-                        child: Text(
-                          '출하숫자',
-                          style: Theme.of(context)
-                              .textTheme
-                              .infoContainerTitleTextTheme,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        '50 kg',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerBodyTextTheme,
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Container(
-                        width: 52,
-                        child: Text(
-                          '등급',
-                          style: Theme.of(context)
-                              .textTheme
-                              .infoContainerTitleTextTheme,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        '특',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerBodyTextTheme,
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 17,
-                      ),
-                      Container(
-                        width: 52,
-                        child: Text(
-                          '단위가격',
-                          style: Theme.of(context)
-                              .textTheme
-                              .infoContainerTitleTextTheme,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        '9000 원',
-                        style: Theme.of(context)
-                            .textTheme
-                            .infoContainerBodyTextTheme,
-                      ),
-                    ],
-                  ),
-                ],
+            child: ExpansionTile(
+              tilePadding: EdgeInsets.symmetric(horizontal: defaultPadding),
+              collapsedBackgroundColor: Color(0xFFF3F3F3),
+              backgroundColor: Color(0xFFF3F3F3),
+              title: Text(
+                '출하정보',
+                style: Theme.of(context)
+                    .textTheme
+                    .infoContainerTitleTextTheme
+                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              children: [
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 16,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Container(
+                            width: 52,
+                            child: Text(
+                              '출하작물',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .infoContainerTitleTextTheme,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            '딸기',
+                            style: Theme.of(context)
+                                .textTheme
+                                .infoContainerBodyTextTheme,
+                          ),
+                        ],
+                      ),
+                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Container(
+                            width: 52,
+                            child: Text(
+                              '출하경로',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .infoContainerTitleTextTheme,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            '얄리리 얄랑셩 얄라리 얄라',
+                            style: Theme.of(context)
+                                .textTheme
+                                .infoContainerBodyTextTheme,
+                          ),
+                        ],
+                      ),
+                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Container(
+                            width: 52,
+                            child: Text(
+                              '출하단위',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .infoContainerTitleTextTheme,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            '1',
+                            style: Theme.of(context)
+                                .textTheme
+                                .infoContainerBodyTextTheme,
+                          ),
+                        ],
+                      ),
+                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Container(
+                            width: 52,
+                            child: Text(
+                              '출하숫자',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .infoContainerTitleTextTheme,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            '50 kg',
+                            style: Theme.of(context)
+                                .textTheme
+                                .infoContainerBodyTextTheme,
+                          ),
+                        ],
+                      ),
+                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Container(
+                            width: 52,
+                            child: Text(
+                              '등급',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .infoContainerTitleTextTheme,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            '특',
+                            style: Theme.of(context)
+                                .textTheme
+                                .infoContainerBodyTextTheme,
+                          ),
+                        ],
+                      ),
+                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Container(
+                            width: 52,
+                            child: Text(
+                              '단위가격',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .infoContainerTitleTextTheme,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            '9000 원',
+                            style: Theme.of(context)
+                                .textTheme
+                                .infoContainerBodyTextTheme,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: defaultPadding,),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+          SizedBox(height: 22,),
+        ],
       ),
     );
   }
@@ -1094,13 +1039,28 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: 4,
+          itemCount: 6,
           itemBuilder: (context, index) {
             return (index == 0)
-                ? Container(
-                    height: 85,
-                    width: 85,
-                    color: Colors.grey,
+                ? Row(
+                    children: [
+                      SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Container(
+                        height: 85,
+                        width: 85,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/strawberry.png'),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.5),
+                                BlendMode.srcATop),
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 : Row(
                     children: [
@@ -1111,8 +1071,21 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                       Container(
                         height: 85,
                         width: 85,
-                        color: Colors.grey,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/strawberry.png'),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.5),
+                                BlendMode.srcATop),
+                          ),
+                        ),
                       ),
+                      (index == 5)
+                          ? SizedBox(
+                              width: defaultPadding,
+                            )
+                          : Container(),
                     ],
                   );
           },
@@ -1151,8 +1124,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         children: List.generate(state.comments.length, (index) {
           return Column(
             children: [
-              commentTile(
-                  context: context, state: state, index: index),
+              commentTile(context: context, state: state, index: index),
               SizedBox(
                 height: 20,
               ),
@@ -1163,8 +1135,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget commentTile(
-      {BuildContext context, CommentState state, int index}) {
+  Widget commentTile({BuildContext context, CommentState state, int index}) {
     List scomments = state.scomments
         .where((cmt) => cmt.cmtid == state.comments[index].cmtid)
         .toList();
@@ -1241,32 +1212,40 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               ),
                         ),
                       ),
-                      SizedBox(width: 22,),
+                      SizedBox(
+                        width: 22,
+                      ),
                       (state.comments[index].isExpanded)
                           ? InkWell(
-                        onTap: (){
-                          setState(() {
-                            // isExpanded = false;
-                            _commentBloc.add(CloseComment(index: index));
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              '답글 접기',
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 12,
-                                color: Colors.grey,
+                              onTap: () {
+                                setState(() {
+                                  // isExpanded = false;
+                                  _commentBloc.add(CloseComment(index: index));
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '답글 접기',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        .copyWith(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                  ),
+                                  Container(
+                                      width: 14,
+                                      height: 14,
+                                      child: FittedBox(
+                                          child: Icon(
+                                        Icons.arrow_drop_up_outlined,
+                                        color: Colors.grey,
+                                      ))),
+                                ],
                               ),
-                            ),
-                            Container(
-                              width: 14,
-                                height: 14,
-                                child: FittedBox(
-                                    child: Icon(Icons.arrow_drop_up_outlined, color: Colors.grey,))),
-                          ],
-                        ),
-                      )
+                            )
                           : Container(),
                     ],
                   ),
@@ -1287,7 +1266,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                     ),
                     Container(
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           setState(() {
                             // isExpanded = true;
                             _commentBloc.add(ExpandComment(index: index));
@@ -1315,11 +1294,12 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         children: List.generate(scmts.length, (index) {
           return Column(
             children: [
-              subComment(
-                  context: context, scmts: scmts, index: index),
-              (index != scmts.length - 1) ? SizedBox(
-                height: 20,
-              ) : Container(),
+              subComment(context: context, scmts: scmts, index: index),
+              (index != scmts.length - 1)
+                  ? SizedBox(
+                      height: 20,
+                    )
+                  : Container(),
             ],
           );
         }),
@@ -1332,9 +1312,16 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     return Container(
       child: Row(
         children: [
-          SizedBox(width: 10,),
-          Icon(Icons.subdirectory_arrow_right_outlined, color: Colors.grey,),
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
+          Icon(
+            Icons.subdirectory_arrow_right_outlined,
+            color: Colors.grey,
+          ),
+          SizedBox(
+            width: 10,
+          ),
           Container(
             height: 37,
             width: 37,
@@ -1351,20 +1338,33 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
             children: [
               Row(
                 children: [
-                  Text('${scmts[index].name}', style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),),
-                  SizedBox(width: 10,),
-                  Text('${time}', style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),),
+                  Text(
+                    '${scmts[index].name}',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    '${time}',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                  ),
                 ],
               ),
-              SizedBox(height: 3,),
-              Text('${scmts[index].scomment}', style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontSize: 12,
-              ),),
+              SizedBox(
+                height: 3,
+              ),
+              Text(
+                '${scmts[index].scomment}',
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      fontSize: 12,
+                    ),
+              ),
             ],
           ),
         ],
@@ -1437,7 +1437,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
             : Container(),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          height: 81,
+          height: (myfocusNode.hasFocus) ? 65 : 91,
           decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
@@ -1515,6 +1515,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               }
                               setState(() {
                                 _isSubCommentClicked = false;
+                                numOfComments += 1;
                               });
                               _commentBloc.add(LoadComment());
                               _commentBloc.add(GetComment(
@@ -1523,7 +1524,8 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               _journalBloc.add(AddIssueComment(
                                   index: widget.index,
                                   issueListOptions: widget.issueListOptions,
-                                  issueOrder: widget.issueOrder,));
+                                  issueOrder: widget.issueOrder,
+                                  issid: widget.list[widget.index].issid));
                             },
                             child: Container(
                                 width: 30,

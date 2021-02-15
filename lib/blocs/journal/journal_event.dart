@@ -77,11 +77,13 @@ class AddIssueComment extends JournalEvent {
   final int index;
   final String issueListOptions;
   final int issueOrder;
+  final String issid;
 
   const AddIssueComment({
         @required this.index,
         @required this.issueListOptions,
         @required this.issueOrder,
+        @required this.issid,
       });
 
   @override
@@ -89,6 +91,7 @@ class AddIssueComment extends JournalEvent {
     index,
     issueListOptions,
     issueOrder,
+    issid,
   ];
 
   @override
@@ -97,5 +100,6 @@ class AddIssueComment extends JournalEvent {
       index: $index, 
       issueListOptions: $issueListOptions, 
       issueOrder: $issueOrder, 
+      issid: $issid, 
       }''';
 }

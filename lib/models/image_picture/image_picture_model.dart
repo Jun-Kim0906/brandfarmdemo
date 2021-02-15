@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Image {
+class ImagePicture {
   String fid;
   String jid;
   String uid;
@@ -13,7 +13,7 @@ class Image {
   Timestamp dttm;
 
 
-  Image({
+  ImagePicture({
     @required this.fid,
     @required this.jid,
     @required this.uid,
@@ -23,8 +23,8 @@ class Image {
     @required this.dttm,
   });
 
-  factory Image.fromSnapshot(DocumentSnapshot snapshot) {
-    return Image(
+  factory ImagePicture.fromSnapshot(DocumentSnapshot snapshot) {
+    return ImagePicture(
       fid: snapshot['fid'],
       jid: snapshot['jid'],
       uid: snapshot['uid'],

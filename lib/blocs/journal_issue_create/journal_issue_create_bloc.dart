@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
-import 'package:BrandFarm/models/image/image_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
@@ -114,7 +114,7 @@ class JournalIssueCreateBloc
     if (imageList.isNotEmpty) {
       await Future.forEach(imageList, (File file) async {
         pid = FirebaseFirestore.instance.collection('Picture').doc().id;
-        Image _picture = Image(
+        ImagePicture _picture = ImagePicture(
           fid: subJournalIssue.fid,
           jid: subJournalIssue.sfmid,
           uid: UserUtil.getUser().uid,

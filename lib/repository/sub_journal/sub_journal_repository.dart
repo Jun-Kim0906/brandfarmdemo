@@ -14,6 +14,14 @@ class SubJournalRepository {
   }
 
   Future<void> updateIssue({
+    SubJournalIssue subJournalIssue,
+  }) async {
+    DocumentReference reference =
+    _firestore.collection('Issue').doc(subJournalIssue.issid);
+    await reference.update(subJournalIssue.toMap());
+  }
+
+  Future<void> updateIssueComment({
     String issid, int cmts
   }) async {
     DocumentReference reference =
