@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserRepository {
@@ -34,5 +35,20 @@ class UserRepository {
 
   Future<User> getUser() async {
     return (_firebaseAuth.currentUser);
+  }
+
+  Future<void> resetPassword({String psw}) async {
+    final currentUser = await _firebaseAuth.currentUser;
+    UserCredential authResult = await currentUser.reauthenticateWithCredential(
+       EmailAuthProvider.credential(
+         email: await UserUtil.getUser().email,
+         password: await UserUtil.getUser().psw,
+       ),
+    );
+    await authResult.user.updatePassword(psw).then((_) {
+      print('Successfully changed password');
+    }).catchError((error) {
+      print("Password can't be changed: " + error.toString());
+    });
   }
 }
