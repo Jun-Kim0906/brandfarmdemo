@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:BrandFarm/blocs/profile/bloc.dart';
+import 'package:BrandFarm/utils/profile/profile_util.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,7 @@ class EditProfileImageScreen extends StatefulWidget {
 class _EditProfileImageScreenState extends State<EditProfileImageScreen> {
   ProfileBloc _profileBloc;
   bool isDefaultPressed = false;
+  File profileImage;
 
   @override
   void initState() {
@@ -27,7 +31,7 @@ class _EditProfileImageScreenState extends State<EditProfileImageScreen> {
           LoadingDialog.onLoading(context);
           (isDefaultPressed)
               ? _profileBloc.add(ChangeBackToDefaultImage())
-              : _profileBloc.add(ChangeProfileImage());
+              : _profileBloc.add(ChangeProfileImage(img: profileImage));
         } else if (state.isComplete == true && state.isUploaded == true) {
           LoadingDialog.dismiss(context, () {
             Navigator.pop(context);
@@ -75,10 +79,10 @@ class _EditProfileImageScreenState extends State<EditProfileImageScreen> {
                       ),
                       ListTile(
                         onTap: () {
-                          _profileBloc.add(CompletePressed());
                           setState(() {
                             isDefaultPressed = true;
                           });
+                          _profileBloc.add(CompletePressed());
                         },
                         title: Center(
                           child: Text(
@@ -97,7 +101,15 @@ class _EditProfileImageScreenState extends State<EditProfileImageScreen> {
                         color: Colors.grey,
                       ),
                       ListTile(
-                        onTap: () {},
+                        onTap: () async {
+                          File image;
+                          image = await ProfileUtil().getCameraImage();
+                          setState(() {
+                            isDefaultPressed = false;
+                            profileImage = image;
+                          });
+                          _profileBloc.add(CompletePressed());
+                        },
                         title: Center(
                           child: Text(
                             '사진촬영',
@@ -115,7 +127,15 @@ class _EditProfileImageScreenState extends State<EditProfileImageScreen> {
                         color: Colors.grey,
                       ),
                       ListTile(
-                        onTap: () {},
+                        onTap: () async {
+                          File image;
+                          image = await ProfileUtil().getAlbumImage();
+                          setState(() {
+                            isDefaultPressed = false;
+                            profileImage = image;
+                          });
+                          _profileBloc.add(CompletePressed());
+                        },
                         title: Center(
                           child: Text(
                             '앨범에서 사진 선택',

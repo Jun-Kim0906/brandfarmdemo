@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -60,4 +62,16 @@ class EditPassword extends ProfileEvent {
 
 class ChangeBackToDefaultImage extends ProfileEvent {}
 
-class ChangeProfileImage extends ProfileEvent {}
+class ChangeProfileImage extends ProfileEvent {
+  final File img;
+
+  const ChangeProfileImage({@required this.img});
+
+  @override
+  List<Object> get props => [img];
+
+  @override
+  String toString() => '''ChangeProfileImage { 
+    img: $img, 
+  }''';
+}

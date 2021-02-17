@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
                                         image: (state.profile.imgUrl.isNotEmpty)
-                                            ? CachedNetworkImageProvider(
+                                            ? NetworkImage(
                                                 state.profile.imgUrl)
                                             : AssetImage('assets/profile.png'),
                                         fit: BoxFit.cover,

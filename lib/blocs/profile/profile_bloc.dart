@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:BrandFarm/blocs/profile/profile_event.dart';
 import 'package:BrandFarm/blocs/profile/profile_state.dart';
 import 'package:BrandFarm/models/profile/profile_model.dart';
@@ -26,6 +28,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapResetToState();
     } else if (event is ChangeBackToDefaultImage) {
       yield* _mapChangeBackToDefaultImageToState();
+    } else if (event is ChangeProfileImage) {
+      yield* _mapChangeProfileImageToState(img: event.img);
     }
   }
 
@@ -105,7 +109,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       uid: state.profile.uid,
     );
 
-    await ProfileRepository().updateProfile(profile: profile);
+    await ProfileRepository().updatePassword(profile: profile);
 
     yield state.update(
       isUploaded: true,
@@ -135,7 +139,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       uid: state.profile.uid,
     );
 
-    await ProfileRepository().updateProfile(profile: profile);
+    await ProfileRepository().updateImage(profile: profile,);
+
+    yield state.update(
+      isUploaded: true,
+      profile: profile,
+    );
+  }
+
+  Stream<ProfileState> _mapChangeProfileImageToState({File img}) async* {
+    String url = await ProfileRepository().uploadImageToStorage(img, state.profile.profid);
+
+    Profile profile = await Profile(
+      email: state.profile.email,
+      name: state.profile.name,
+      addr: state.profile.addr,
+      imgUrl: url,
+      phone: state.profile.phone,
+      position: state.profile.position,
+      profid: state.profile.profid,
+      psw: state.profile.psw,
+      uid: state.profile.uid,
+    );
+
+    await ProfileRepository().updateImage(profile: profile,);
 
     yield state.update(
       isUploaded: true,
