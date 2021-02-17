@@ -32,7 +32,6 @@ class JournalCreateState {
   final List<String> widgetList;
   final List<Map<String, dynamic>> categories;
   final bool selectDatePressed;
-  final bool addCategoryPressed;
   final bool changeCategoryPressed;
   final bool isNewWrite;
   final List<DateTime> wroteDate;
@@ -178,7 +177,6 @@ class JournalCreateState {
     @required this.widgets,
     @required this.widgetList,
     @required this.selectDatePressed,
-    @required this.addCategoryPressed,
     @required this.changeCategoryPressed,
     @required this.pastBtn,
     @required this.writeComplete,
@@ -326,7 +324,6 @@ class JournalCreateState {
       widgets: [],
       widgetList: [],
       selectDatePressed: false,
-      addCategoryPressed: false,
       changeCategoryPressed: false,
       pastBtn: false,
       writeComplete: false,
@@ -474,7 +471,6 @@ class JournalCreateState {
     List<String> widgetList,
     List<Map<String, dynamic>> categories,
     bool selectDatePressed,
-    bool addCategoryPressed,
     bool changeCategoryPressed,
     bool pastBtn,
     bool writeComplete,
@@ -621,7 +617,6 @@ class JournalCreateState {
       isNewWrite: isNewWrite,
       wroteDate: wroteDate,
       selectDatePressed: selectDatePressed,
-      addCategoryPressed: addCategoryPressed,
       changeCategoryPressed: changeCategoryPressed,
       pastBtn: pastBtn,
       writeComplete: writeComplete,
@@ -780,7 +775,6 @@ class JournalCreateState {
     List<String> widgetList,
     List<Map<String, dynamic>> categories,
     bool selectDatePressed,
-    bool addCategoryPressed,
     bool changeCategoryPressed,
     bool pastBtn,
     bool writeComplete,
@@ -926,7 +920,6 @@ class JournalCreateState {
       widgetList: widgetList ?? this.widgetList,
       categories: categories ?? this.categories,
       selectDatePressed: selectDatePressed ?? false,
-      addCategoryPressed: addCategoryPressed ?? false,
       changeCategoryPressed: changeCategoryPressed ?? false,
       buttonSelected: buttonSelected ?? false,
       isDeleted: isDeleted ?? false,
