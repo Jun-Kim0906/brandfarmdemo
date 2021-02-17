@@ -1,6 +1,9 @@
+import 'package:BrandFarm/blocs/profile/bloc.dart';
 import 'package:BrandFarm/screens/setting/logout_screen.dart';
+import 'package:BrandFarm/screens/setting/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -39,7 +42,14 @@ class _SettingScreenState extends State<SettingScreen> {
           children: [
             Divider(height: 1, thickness: 1, color: Color(0x20000000),),
             ListTile(
-              onTap: (){},
+              onTap: (){
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => BlocProvider(
+                    create: (BuildContext context) => ProfileBloc()..add(LoadProfile()),
+                    child: ProfileScreen(),
+                  ))
+                );
+              },
               leading: Text('프로필 / 계정 설정',
                 style: Theme.of(context).textTheme.bodyText1,),
             ),

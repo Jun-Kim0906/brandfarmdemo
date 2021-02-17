@@ -1,6 +1,7 @@
 // import 'dart:io';
 
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
@@ -141,12 +142,12 @@ class _SubJournalIssueCreateScreenState
               ),
             ),
           ),
-          bottomNavigationBar: BottomNavigationButton(
+          bottomNavigationBar: CustomBottomButton(
             title: '완료',
-            onPressed: () {
+            onPressed: (){
               _journalIssueCreateBloc.add(PressComplete());
             },
-          ),
+          )
         );
       },
     );
