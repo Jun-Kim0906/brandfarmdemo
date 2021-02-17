@@ -68,10 +68,10 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
                 ),
                 centerTitle: true,
               ),
-              body: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              body: BlocProvider<JournalCreateBloc>.value(
+                value: _journalCreateBloc,
+                child: ListView(
+                  physics: ClampingScrollPhysics(),
                   children: [
                     SizedBox(
                       height: 20.0,
@@ -114,7 +114,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
               ),
               bottomNavigationBar: CustomBottomButton(
                 title: '완료',
-                onPressed: null,
+                onPressed: (){},
               ),
             );
           },
@@ -125,56 +125,57 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
     return _journalCreateBloc.state.widgets.isEmpty
         ? Container()
         : Container(
-      child: ColumnBuilder(
-        itemBuilder: (BuildContext context, int index) {
-          return Ink(
-            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: defaultPadding),
-            color: Colors.white,
-            child: ListTile(
-              dense: true,
-              trailing: Text(
-                  '수정',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    .copyWith(fontSize: 18.0, color: Color(0xb3000000)),
-              ),
-              onTap: () {
-                _journalCreateBloc.add(CategoryChanged(
-                    category: getJournalCategoryId(
-                        name: _journalCreateBloc
-                            .state.widgets[index].name)));
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                        BlocProvider<JournalCreateBloc>.value(
-                            value: _journalCreateBloc,
-                            child: EditCategory(
-                              index: _journalCreateBloc
-                                  .state.widgets[index].index,
-                              category: _journalCreateBloc
-                                  .state.widgets[index].name,
-                              listIndex: index,
-                            ))));
+            child: ColumnBuilder(
+              itemBuilder: (BuildContext context, int index) {
+                return Ink(
+                  padding: EdgeInsets.symmetric(
+                      vertical: 5.0, horizontal: defaultPadding),
+                  color: Colors.white,
+                  child: ListTile(
+                    dense: true,
+                    trailing: Text(
+                      '수정',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(fontSize: 18.0, color: Color(0xb3000000)),
+                    ),
+                    onTap: () {
+                      _journalCreateBloc.add(CategoryChanged(
+                          category: getJournalCategoryId(
+                              name: _journalCreateBloc
+                                  .state.widgets[index].name)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  BlocProvider<JournalCreateBloc>.value(
+                                      value: _journalCreateBloc,
+                                      child: EditCategory(
+                                        index: _journalCreateBloc
+                                            .state.widgets[index].index,
+                                        category: _journalCreateBloc
+                                            .state.widgets[index].name,
+                                        listIndex: index,
+                                      ))));
+                    },
+                    title: Row(
+                      children: [
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          _journalCreateBloc.state.widgets[index].name,
+                          style: Opacity70TileStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
-              title: Row(
-                children: [
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    _journalCreateBloc.state.widgets[index].name,
-                    style: Opacity70TileStyle,
-                  ),
-                ],
-              ),
+              itemCount: _journalCreateBloc.state.widgets.length,
             ),
           );
-        },
-        itemCount: _journalCreateBloc.state.widgets.length,
-      ),
-    );
   }
 }
 
@@ -535,7 +536,8 @@ class AddProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: defaultPadding, right: defaultPadding, bottom: defaultPadding),
+      padding: EdgeInsets.only(
+          left: defaultPadding, right: defaultPadding, bottom: defaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

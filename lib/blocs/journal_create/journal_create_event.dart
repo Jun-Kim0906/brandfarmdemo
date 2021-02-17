@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:BrandFarm/models/journal/farming_model.dart';
@@ -17,7 +16,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-abstract class JournalCreateEvent extends Equatable{
+abstract class JournalCreateEvent extends Equatable {
   const JournalCreateEvent();
 
   @override
@@ -26,7 +25,9 @@ abstract class JournalCreateEvent extends Equatable{
 
 class DataCheck extends JournalCreateEvent {
   final bool check;
+
   DataCheck({@required this.check});
+
   @override
   String toString() => 'DataCheck {DataCheck}';
 }
@@ -40,7 +41,7 @@ class DateSelected extends JournalCreateEvent {
   String toString() => 'DateSelected{ SelectedDate: $selectedDate}';
 }
 
-class TitleChanged extends JournalCreateEvent{
+class TitleChanged extends JournalCreateEvent {
   final String title;
 
   const TitleChanged({@required this.title});
@@ -51,8 +52,7 @@ class TitleChanged extends JournalCreateEvent{
   }
 }
 
-
-class ContentChanged extends JournalCreateEvent{
+class ContentChanged extends JournalCreateEvent {
   final String content;
 
   const ContentChanged({@required this.content});
@@ -63,7 +63,7 @@ class ContentChanged extends JournalCreateEvent{
   }
 }
 
-class CategoryChanged extends JournalCreateEvent{
+class CategoryChanged extends JournalCreateEvent {
   final int category;
 
   const CategoryChanged({@required this.category});
@@ -139,6 +139,7 @@ class AssetImageList extends JournalCreateEvent {
 ///출하정보
 class ShipmentPlantChanged extends JournalCreateEvent {
   final String plant;
+
   ShipmentPlantChanged({@required this.plant});
 
   @override
@@ -147,6 +148,7 @@ class ShipmentPlantChanged extends JournalCreateEvent {
 
 class ShipmentPathChanged extends JournalCreateEvent {
   final String path;
+
   ShipmentPathChanged({@required this.path});
 
   @override
@@ -155,6 +157,7 @@ class ShipmentPathChanged extends JournalCreateEvent {
 
 class ShipmentUnitChanged extends JournalCreateEvent {
   final double unit;
+
   ShipmentUnitChanged({@required this.unit});
 
   @override
@@ -163,6 +166,7 @@ class ShipmentUnitChanged extends JournalCreateEvent {
 
 class ShipmentUnitSelectChanged extends JournalCreateEvent {
   final String unitSelect;
+
   ShipmentUnitSelectChanged({@required this.unitSelect});
 
   @override
@@ -171,6 +175,7 @@ class ShipmentUnitSelectChanged extends JournalCreateEvent {
 
 class ShipmentAmountChanged extends JournalCreateEvent {
   final String amount;
+
   ShipmentAmountChanged({@required this.amount});
 
   @override
@@ -179,6 +184,7 @@ class ShipmentAmountChanged extends JournalCreateEvent {
 
 class ShipmentGradeChanged extends JournalCreateEvent {
   final String grade;
+
   ShipmentGradeChanged({@required this.grade});
 
   @override
@@ -187,6 +193,7 @@ class ShipmentGradeChanged extends JournalCreateEvent {
 
 class ShipmentPriceChanged extends JournalCreateEvent {
   final int price;
+
   ShipmentPriceChanged({@required this.price});
 
   @override
@@ -225,6 +232,7 @@ class ShipmentEdit extends JournalCreateEvent {
   final String shipmentGrade;
   final int shipmentPrice;
   final int currentIndex;
+
   //TODO: listIndex 안 쓰면 지우고 사용되는 곳 정리하기
   final int listIndex;
 
@@ -257,6 +265,7 @@ class ShipmentDelete extends JournalCreateEvent {
 ///비료정보
 class FertilizerMethod extends JournalCreateEvent {
   final String method;
+
   FertilizerMethod({@required this.method});
 
   @override
@@ -265,6 +274,7 @@ class FertilizerMethod extends JournalCreateEvent {
 
 class FertilizerAreaChanged extends JournalCreateEvent {
   final double area;
+
   FertilizerAreaChanged({@required this.area});
 
   @override
@@ -273,6 +283,7 @@ class FertilizerAreaChanged extends JournalCreateEvent {
 
 class FertilizerAreaUnitChanged extends JournalCreateEvent {
   final String areaUnit;
+
   FertilizerAreaUnitChanged({@required this.areaUnit});
 
   @override
@@ -281,6 +292,7 @@ class FertilizerAreaUnitChanged extends JournalCreateEvent {
 
 class FertilizerMaterialChanged extends JournalCreateEvent {
   final String material;
+
   FertilizerMaterialChanged({@required this.material});
 
   @override
@@ -289,6 +301,7 @@ class FertilizerMaterialChanged extends JournalCreateEvent {
 
 class FertilizerMaterialUseChanged extends JournalCreateEvent {
   final double materialUse;
+
   FertilizerMaterialUseChanged({@required this.materialUse});
 
   @override
@@ -298,6 +311,7 @@ class FertilizerMaterialUseChanged extends JournalCreateEvent {
 
 class FertilizerMaterialUnitChanged extends JournalCreateEvent {
   final String materialUnit;
+
   FertilizerMaterialUnitChanged({@required this.materialUnit});
 
   @override
@@ -307,6 +321,7 @@ class FertilizerMaterialUnitChanged extends JournalCreateEvent {
 
 class FertilizerWaterUseChanged extends JournalCreateEvent {
   final double waterUse;
+
   FertilizerWaterUseChanged({@required this.waterUse});
 
   @override
@@ -315,6 +330,7 @@ class FertilizerWaterUseChanged extends JournalCreateEvent {
 
 class FertilizerWaterUnitChanged extends JournalCreateEvent {
   final String waterUnit;
+
   FertilizerWaterUnitChanged({@required this.waterUnit});
 
   @override
@@ -356,6 +372,7 @@ class FertilizerEdit extends JournalCreateEvent {
   final double fertilizerWater;
   final String fertilizerWaterUnit;
   final int currentIndex;
+
   FertilizerEdit({
     @required this.fertilizerMethod,
     @required this.fertilizerArea,
@@ -386,6 +403,7 @@ class FertilizerDelete extends JournalCreateEvent {
 ///농약정보
 class PesticideMethod extends JournalCreateEvent {
   final String method;
+
   PesticideMethod({@required this.method});
 
   @override
@@ -394,6 +412,7 @@ class PesticideMethod extends JournalCreateEvent {
 
 class PesticideAreaChanged extends JournalCreateEvent {
   final double area;
+
   PesticideAreaChanged({@required this.area});
 
   @override
@@ -402,6 +421,7 @@ class PesticideAreaChanged extends JournalCreateEvent {
 
 class PesticideAreaUnitChanged extends JournalCreateEvent {
   final String areaUnit;
+
   PesticideAreaUnitChanged({@required this.areaUnit});
 
   @override
@@ -410,6 +430,7 @@ class PesticideAreaUnitChanged extends JournalCreateEvent {
 
 class PesticideMaterialChanged extends JournalCreateEvent {
   final String material;
+
   PesticideMaterialChanged({@required this.material});
 
   @override
@@ -418,6 +439,7 @@ class PesticideMaterialChanged extends JournalCreateEvent {
 
 class PesticideMaterialUseChanged extends JournalCreateEvent {
   final double materialUse;
+
   PesticideMaterialUseChanged({@required this.materialUse});
 
   @override
@@ -427,6 +449,7 @@ class PesticideMaterialUseChanged extends JournalCreateEvent {
 
 class PesticideMaterialUnitChanged extends JournalCreateEvent {
   final String materialUnit;
+
   PesticideMaterialUnitChanged({@required this.materialUnit});
 
   @override
@@ -436,6 +459,7 @@ class PesticideMaterialUnitChanged extends JournalCreateEvent {
 
 class PesticideWaterUseChanged extends JournalCreateEvent {
   final double waterUse;
+
   PesticideWaterUseChanged({@required this.waterUse});
 
   @override
@@ -444,6 +468,7 @@ class PesticideWaterUseChanged extends JournalCreateEvent {
 
 class PesticideWaterUnitChanged extends JournalCreateEvent {
   final String waterUnit;
+
   PesticideWaterUnitChanged({@required this.waterUnit});
 
   @override
@@ -476,6 +501,7 @@ class PesticideComplete extends JournalCreateEvent {
     @required this.pesticideWater,
     @required this.pesticideWaterUnit,
   });
+
   @override
   String toString() => 'PesticideComplete Pressed';
 }
@@ -502,6 +528,7 @@ class PesticideEdit extends JournalCreateEvent {
     @required this.pesticideWaterUnit,
     @required this.currentIndex,
   });
+
   @override
   String toString() => 'PesticideEdit Pressed';
 }
@@ -520,6 +547,7 @@ class PesticideDelete extends JournalCreateEvent {
 ///병,해충 정보
 class PestKindChanged extends JournalCreateEvent {
   final String kind;
+
   PestKindChanged({@required this.kind});
 
   @override
@@ -528,6 +556,7 @@ class PestKindChanged extends JournalCreateEvent {
 
 class SpreadDegreeChanged extends JournalCreateEvent {
   final double degree;
+
   SpreadDegreeChanged({@required this.degree});
 
   @override
@@ -536,12 +565,12 @@ class SpreadDegreeChanged extends JournalCreateEvent {
 
 class SpreadDegreeUnitChanged extends JournalCreateEvent {
   final String degreeUnit;
+
   SpreadDegreeUnitChanged({@required this.degreeUnit});
 
   @override
   String toString() => 'SpreadDegreeUnitChanged { waterUnit :$degreeUnit }';
 }
-
 
 class PestExpansionChanged extends JournalCreateEvent {
   @override
@@ -569,6 +598,7 @@ class PestEdit extends JournalCreateEvent {
   final double spreadDegree;
   final String spreadDegreeUnit;
   final int currentIndex;
+
   PestEdit({
     @required this.pestKind,
     @required this.spreadDegree,
@@ -593,6 +623,7 @@ class PestDelete extends JournalCreateEvent {
 ///정식정보
 class PlantingAreaChanged extends JournalCreateEvent {
   final double area;
+
   PlantingAreaChanged({@required this.area});
 
   @override
@@ -601,6 +632,7 @@ class PlantingAreaChanged extends JournalCreateEvent {
 
 class PlantingAreaUnitChanged extends JournalCreateEvent {
   final String areaUnit;
+
   PlantingAreaUnitChanged({@required this.areaUnit});
 
   @override
@@ -609,6 +641,7 @@ class PlantingAreaUnitChanged extends JournalCreateEvent {
 
 class PlantingCountChanged extends JournalCreateEvent {
   final String count;
+
   PlantingCountChanged({@required this.count});
 
   @override
@@ -617,12 +650,12 @@ class PlantingCountChanged extends JournalCreateEvent {
 
 class PlantingPriceChanged extends JournalCreateEvent {
   final int price;
+
   PlantingPriceChanged({@required this.price});
 
   @override
   String toString() => 'PlantingPriceChanged { price :$price }';
 }
-
 
 class PlantingExpansionChanged extends JournalCreateEvent {
   @override
@@ -679,6 +712,7 @@ class PlantingDelete extends JournalCreateEvent {
 ///파종정식
 class SeedingAreaChanged extends JournalCreateEvent {
   final double area;
+
   SeedingAreaChanged({@required this.area});
 
   @override
@@ -687,6 +721,7 @@ class SeedingAreaChanged extends JournalCreateEvent {
 
 class SeedingAreaUnitChanged extends JournalCreateEvent {
   final String areaUnit;
+
   SeedingAreaUnitChanged({@required this.areaUnit});
 
   @override
@@ -695,6 +730,7 @@ class SeedingAreaUnitChanged extends JournalCreateEvent {
 
 class SeedingAmountChanged extends JournalCreateEvent {
   final double amount;
+
   SeedingAmountChanged({@required this.amount});
 
   @override
@@ -703,6 +739,7 @@ class SeedingAmountChanged extends JournalCreateEvent {
 
 class SeedingAmountUnitChanged extends JournalCreateEvent {
   final String amountUnit;
+
   SeedingAmountUnitChanged({@required this.amountUnit});
 
   @override
@@ -738,6 +775,7 @@ class SeedingEdit extends JournalCreateEvent {
   final double seedingAmount;
   final String seedingAmountUnit;
   final int currentIndex;
+
   SeedingEdit({
     @required this.seedingArea,
     @required this.seedingAreaUnit,
@@ -763,6 +801,7 @@ class SeedingDelete extends JournalCreateEvent {
 ///제초정보
 class WeedingProgressChanged extends JournalCreateEvent {
   final double progress;
+
   WeedingProgressChanged({@required this.progress});
 
   @override
@@ -771,6 +810,7 @@ class WeedingProgressChanged extends JournalCreateEvent {
 
 class WeedingUnitChanged extends JournalCreateEvent {
   final String weedingUnit;
+
   WeedingUnitChanged({@required this.weedingUnit});
 
   @override
@@ -797,10 +837,11 @@ class WeedingEdit extends JournalCreateEvent {
   final double weedingProgress;
   final String weedingUnit;
   final int currentIndex;
+
   WeedingEdit(
       {@required this.weedingProgress,
-        @required this.weedingUnit,
-        @required this.currentIndex});
+      @required this.weedingUnit,
+      @required this.currentIndex});
 
   @override
   String toString() => 'WeedingEdit Pressed';
@@ -819,6 +860,7 @@ class WeedingDelete extends JournalCreateEvent {
 ///관수정보
 class WateringAreaChanged extends JournalCreateEvent {
   final double area;
+
   WateringAreaChanged({@required this.area});
 
   @override
@@ -827,6 +869,7 @@ class WateringAreaChanged extends JournalCreateEvent {
 
 class WateringAreaUnitChanged extends JournalCreateEvent {
   final String areaUnit;
+
   WateringAreaUnitChanged({@required this.areaUnit});
 
   @override
@@ -835,6 +878,7 @@ class WateringAreaUnitChanged extends JournalCreateEvent {
 
 class WateringAmountChanged extends JournalCreateEvent {
   final double amount;
+
   WateringAmountChanged({@required this.amount});
 
   @override
@@ -843,6 +887,7 @@ class WateringAmountChanged extends JournalCreateEvent {
 
 class WateringAmountUnitChanged extends JournalCreateEvent {
   final String amountUnit;
+
   WateringAmountUnitChanged({@required this.amountUnit});
 
   @override
@@ -904,6 +949,7 @@ class WateringDelete extends JournalCreateEvent {
 ///인력투입정보
 class WorkforceNumChanged extends JournalCreateEvent {
   final int workforceNum;
+
   WorkforceNumChanged({@required this.workforceNum});
 
   @override
@@ -912,13 +958,13 @@ class WorkforceNumChanged extends JournalCreateEvent {
 
 class WorkforcePriceChanged extends JournalCreateEvent {
   final int workforcePrice;
+
   WorkforcePriceChanged({@required this.workforcePrice});
 
   @override
   String toString() =>
       'WorkforcePriceChanged {workforcePrice : $workforcePrice}';
 }
-
 
 class WorkforceExpansionChanged extends JournalCreateEvent {
   @override
@@ -943,6 +989,7 @@ class WorkforceEdit extends JournalCreateEvent {
   final int workforceNum;
   final int workforcePrice;
   final int currentIndex;
+
   WorkforceEdit({
     @required this.workforceNum,
     @required this.workforcePrice,
@@ -967,6 +1014,7 @@ class WorkforceDelete extends JournalCreateEvent {
 ///경운정보
 class FarmingAreaChanged extends JournalCreateEvent {
   final double area;
+
   FarmingAreaChanged({@required this.area});
 
   @override
@@ -975,6 +1023,7 @@ class FarmingAreaChanged extends JournalCreateEvent {
 
 class FarmingAreaUnitChanged extends JournalCreateEvent {
   final String areaUnit;
+
   FarmingAreaUnitChanged({@required this.areaUnit});
 
   @override
@@ -983,6 +1032,7 @@ class FarmingAreaUnitChanged extends JournalCreateEvent {
 
 class FarmingMethodChanged extends JournalCreateEvent {
   final String method;
+
   FarmingMethodChanged({@required this.method});
 
   @override
@@ -991,12 +1041,12 @@ class FarmingMethodChanged extends JournalCreateEvent {
 
 class FarmingMethodUnitChanged extends JournalCreateEvent {
   final String methodUnit;
+
   FarmingMethodUnitChanged({@required this.methodUnit});
 
   @override
   String toString() => 'WateringAmountUnitChanged { amountUnit :$methodUnit }';
 }
-
 
 class FarmingExpansionChanged extends JournalCreateEvent {
   @override
@@ -1067,7 +1117,6 @@ class NewWriteCompleteChanged extends JournalCreateEvent {
       'WriteCompleteChanged { NewWriteCompleteChanged :NewWriteCompleteChanged }';
 }
 
-
 class PastBtnChanged extends JournalCreateEvent {
   @override
   String toString() => 'PastBtnChanged { PastBtnChanged :PastBtnChanged }';
@@ -1076,11 +1125,6 @@ class PastBtnChanged extends JournalCreateEvent {
 class SelectDateTimePressed extends JournalCreateEvent {
   @override
   String toString() => 'SelectDateTimePressed';
-}
-
-class AddCategoryPressed extends JournalCreateEvent {
-  @override
-  String toString() => 'AddCategoryBtnPressed';
 }
 
 class ChangeCategoryPressed extends JournalCreateEvent {
@@ -1102,17 +1146,18 @@ class JournalInitialized extends JournalCreateEvent {
   final List<String> widgetsList;
 
   JournalInitialized(
-      {@required this.shipmentList,
-        @required this.fertilizeList,
-        @required this.pesticideList,
-        @required this.pestList,
-        @required this.plantingList,
-        @required this.seedingList,
-        @required this.weedingList,
-        @required this.wateringList,
-        @required this.workforceList,
-        @required this.farmingList,
-        @required this.widgetsList});
+      {this.shipmentList,
+      this.fertilizeList,
+      this.pesticideList,
+      this.pestList,
+      this.plantingList,
+      this.seedingList,
+      this.weedingList,
+      this.wateringList,
+      this.workforceList,
+      this.farmingList,
+      this.widgetsList});
+
   @override
   String toString() => 'JournalInitialized';
 }
@@ -1157,7 +1202,8 @@ class EditJournalFid extends JournalCreateEvent {
   final String month;
   final String day;
 
-  EditJournalFid({@required this.year, @required this.month, @required this.day});
+  EditJournalFid(
+      {@required this.year, @required this.month, @required this.day});
 
   @override
   String toString() => "EditJournalFid";

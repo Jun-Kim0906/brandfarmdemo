@@ -100,7 +100,9 @@ class _EditCategoryState extends State<EditCategory> {
                       shipmentAmount: _journalCreateBloc.state.shipmentAmount,
                       shipmentGrade: _journalCreateBloc.state.shipmentGrade,
                       shipmentPrice: _journalCreateBloc.state.shipmentPrice,
-                      currentIndex: _index));
+                      currentIndex: _index,
+                      listIndex: _listIndex,
+                  ));
                 } else if (_category == "비료정보") {
                   _journalCreateBloc.add(FertilizerEdit(
                       fertilizerMethod:
@@ -242,7 +244,8 @@ class _EditCategoryState extends State<EditCategory> {
                         ),
                       )),
                   color: Colors.red,
-                  onPressed: () {
+                  onPressed: () async {
+                    await Navigator.of(context).pop();
                     if (_category == "출하정보") {
                       _journalCreateBloc.add(
                           ShipmentDelete(index: _index, listIndex: _listIndex));
@@ -274,7 +277,6 @@ class _EditCategoryState extends State<EditCategory> {
                       _journalCreateBloc.add(
                           FarmingDelete(index: _index, listIndex: _listIndex));
                     }
-                    Navigator.of(context).pop();
                   },
                 )
               ],

@@ -40,8 +40,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
       yield* _mapPastBtnChangedToState();
     } else if (event is SelectDateTimePressed) {
       yield* _mapSelectDateTimePressedToState();
-    } else if (event is AddCategoryPressed) {
-      yield* _mapAddCategoryToState();
     } else if (event is ChangeCategoryPressed) {
       yield* _mapChangeCategoryToState();
     } else if (event is JournalInitialized) {
@@ -583,6 +581,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     List<Shipment> _list = state.shipmentList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
+    print('111 shipmentList : ${state.shipmentList.length}\nwidgets : ${state.widgets.length}\nwidgetList : ${state.widgetList.length}');
 
     for (int i = index + 1; i < state.widgets.length; i++) {
       if (state.widgets[i].name == "출하정보") {
@@ -594,7 +593,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
-
+    print('222 shipmentList : ${state.shipmentList.length}\nwidgets : ${state.widgets.length}\nwidgetList : ${state.widgetList.length}');
   }
 
   ///비료정보
@@ -1835,7 +1834,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
       widgets: [],
       widgetList: [],
       selectDatePressed: false,
-      addCategoryPressed: false,
       changeCategoryPressed: false,
       pastBtn: false,
       writeComplete: false,
@@ -2554,10 +2552,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     yield state.update(selectDatePressed: false, picked: pickedDate);
   }
 
-  Stream<JournalCreateState> _mapAddCategoryToState() async* {
-    yield state.update(addCategoryPressed: true);
-  }
-
   Stream<JournalCreateState> _mapChangeCategoryToState() async* {
     yield state.update(changeCategoryPressed: true);
   }
@@ -2614,68 +2608,4 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
       List<Widgets> widgets) async* {
     yield state.update(widgets: widgets);
   }
-
-  // DocumentReference getJournalRef(String date) {
-  //   return Firestore.instance
-  //       .collection('Journal')
-  //       .document('$date&${UserUtil.getUser().fid}');
-  // }
-  //
-  // DocumentReference getJournalRecDateRef(String date) {
-  //   return Firestore.instance
-  //       .collection('JournalRecodedDates')
-  //       .document('${date.substring(0, 7)}&${UserUtil.getUser().fid}');
-  // }
-
-  // Future<File> writeToFile(ByteData data, int i) async {
-  //   final buffer = data.buffer;
-  //   Directory tempDir = await getTemporaryDirectory();
-  //   String tempPath = tempDir.path;
-  //   var filePath = tempPath +
-  //       '/file_0${{i}}.tmp'; // file_01.tmp is dump file, can be anything
-  //   return File(filePath).writeAsBytes(
-  //       buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
-  // }
-  //
-  // Stream<JournalCreateState> _mapEditJournalFidToState(
-  //     String year, String month, String day) async* {
-  //   String journalMonth = month.length < 2 ? "0" + month : month;
-  //   String journalDay = day.length < 2 ? "0" + day : day;
-  //
-  //   List<Journal> journalList = [];
-  //   List<GalleryModel> _pictures = [];
-  //   List<String> filePath = [];
-  //
-  //   QuerySnapshot _journalQuery = await Firestore.instance
-  //       .collection("Journal")
-  //       .where("fid", isEqualTo: UserUtil.getUser().fid)
-  //       .where("date", isEqualTo: year + "-" + journalMonth + "-" + journalDay)
-  //       .getDocuments();
-  //
-  //   journalList = _journalQuery.documents
-  //       .map((DocumentSnapshot ds) => Journal.fromDs(ds))
-  //       .toList();
-  //
-  //   QuerySnapshot _pictureQuery = await Firestore.instance
-  //       .collection("Pictures")
-  //       .where("fid", isEqualTo: journalList[0].fid)
-  //       .where("date", isEqualTo: journalList[0].date)
-  //       .getDocuments();
-  //
-  //   _pictures = _pictureQuery.documents
-  //       .map((DocumentSnapshot ds) => GalleryModel.fromDs(ds))
-  //       .toList();
-  //
-  //   for (int i = 0; i > _pictures.length; i++) {
-  //     filePath.add(_pictures[i].path);
-  //   }
-  //
-  //   yield state.update(
-  //       journal: journalList,
-  //       pictures: _pictures,
-  //       filePath: filePath,
-  //       widgets: journalList[0].widgets,
-  //       isEditDate: true,
-  //       isNewWrite: false);
-  // }
 }
