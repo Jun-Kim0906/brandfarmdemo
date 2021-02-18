@@ -18,6 +18,7 @@ class EditCategory extends StatefulWidget {
   final int index;
   final int listIndex;
   final String category;
+
   EditCategory(
       {this.journal,
       @required this.index,
@@ -52,15 +53,19 @@ class _EditCategoryState extends State<EditCategory> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: TextButton(
-            child: Text('취소', style: Theme.of(context).textTheme.subtitle1,),
-            onPressed: ()=> Navigator.of(context).pop(),
+            child: Text(
+              '취소',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           backgroundColor: Colors.white,
           elevation: 0.0,
           automaticallyImplyLeading: false,
           title: Text(
             "활동 수정하기",
-            style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
+            style:
+                Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
           ),
           actions: <Widget>[
             FlatButton(
@@ -92,16 +97,16 @@ class _EditCategoryState extends State<EditCategory> {
                       currentIndex: _index));
                 } else if (_category == "출하정보") {
                   _journalCreateBloc.add(ShipmentEdit(
-                      shipmentPlant: _journalCreateBloc.state.shipmentPlant,
-                      shipmentPath: _journalCreateBloc.state.shipmentPath,
-                      shipmentUnit: _journalCreateBloc.state.shipmentUnit,
-                      shipmentUnitSelect:
-                          _journalCreateBloc.state.shipmentUnitSelect,
-                      shipmentAmount: _journalCreateBloc.state.shipmentAmount,
-                      shipmentGrade: _journalCreateBloc.state.shipmentGrade,
-                      shipmentPrice: _journalCreateBloc.state.shipmentPrice,
-                      currentIndex: _index,
-                      listIndex: _listIndex,
+                    shipmentPlant: _journalCreateBloc.state.shipmentPlant,
+                    shipmentPath: _journalCreateBloc.state.shipmentPath,
+                    shipmentUnit: _journalCreateBloc.state.shipmentUnit,
+                    shipmentUnitSelect:
+                        _journalCreateBloc.state.shipmentUnitSelect,
+                    shipmentAmount: _journalCreateBloc.state.shipmentAmount,
+                    shipmentGrade: _journalCreateBloc.state.shipmentGrade,
+                    shipmentPrice: _journalCreateBloc.state.shipmentPrice,
+                    currentIndex: _index,
+                    listIndex: _listIndex,
                   ));
                 } else if (_category == "비료정보") {
                   _journalCreateBloc.add(FertilizerEdit(
@@ -190,62 +195,89 @@ class _EditCategoryState extends State<EditCategory> {
                         WorkForceAdd(
                             workforce: state.isNewWrite
                                 ? null
-                                : state.workforceList[_index])
+                                : state.workforceList.length == _index
+                                    ? null
+                                    : state.workforceList[_index])
                       else if (_category == "병,해충정보")
                         PestAdd(
-                          pest:
-                              state.isNewWrite ? null : state.pestList[_index],
+                          pest: state.isNewWrite
+                              ? null
+                              : state.pestList.length == _index
+                                  ? null
+                                  : state.pestList[_index],
                         )
                       else if (_category == "경운정보")
                         FarmingAdd(
                             farming: state.isNewWrite
                                 ? null
-                                : state.farmingList[_index])
-                      else if (state.isNewWrite ? null : _category == "출하정보")
-                        ShipmentAdding(shipment: state.shipmentList[_index])
+                                : state.farmingList.length == _index
+                                    ? null
+                                    : state.farmingList[_index])
+                      else if (_category == "출하정보")
+                        ShipmentAdding(
+                            shipment: state.isNewWrite
+                                ? null
+                                : state.shipmentList.length == _index
+                                    ? null
+                                    : state.shipmentList[_index])
                       else if (_category == "비료정보")
                         FertilizerAdd(
                             fertilize: state.isNewWrite
                                 ? null
-                                : state.fertilizerList[_index])
+                                : state.fertilizerList.length == _index
+                                    ? null
+                                    : state.fertilizerList[_index])
                       else if (_category == "농약정보")
                         PesticideAdd(
                             pesticide: state.isNewWrite
                                 ? null
-                                : state.pesticideList[_index])
+                                : state.pesticideList.length == _index
+                                    ? null
+                                    : state.pesticideList[_index])
                       else if (_category == "정식정보")
                         PlantingAdd(
                             planting: state.isNewWrite
                                 ? null
-                                : state.plantingList[_index])
+                                : state.plantingList.length == _index
+                                    ? null
+                                    : state.plantingList[_index])
                       else if (_category == "파종정보")
-                        SeedingAdd(seeding: state.seedingList[_index])
+                        SeedingAdd(
+                            seeding: state.seedingList.length == _index
+                                ? null
+                                : state.seedingList[_index])
                       else if (_category == "제초정보")
                         WeedingAdd(
                             weeding: state.isNewWrite
                                 ? null
-                                : state.weedingList[_index])
+                                : state.weedingList.length == _index
+                                    ? null
+                                    : state.weedingList[_index])
                       else if (_category == "관수정보")
                         WateringAdd(
                             watering: state.isNewWrite
                                 ? null
-                                : state.wateringList[_index])
+                                : state.wateringList.length == _index
+                                    ? null
+                                    : state.wateringList[_index])
                     ],
                   ),
                 ),
                 RaisedButton(
                   child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.07,
+                      height: MediaQuery.of(context).size.height * 0.086,
                       child: Center(
                         child: Text(
-                          "삭제하기",
-                          style: TextStyle(fontSize: 24, color: Colors.white),
+                          "삭제",
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontSize: 20.0,
+                              color: Theme.of(context).colorScheme.onPrimary),
                         ),
                       )),
-                  color: Colors.red,
-                  onPressed: () async {
-                    await Navigator.of(context).pop();
+                  color: Theme.of(context).colorScheme.error,
+                  onPressed: () {
+                    Navigator.of(context).pop();
                     if (_category == "출하정보") {
                       _journalCreateBloc.add(
                           ShipmentDelete(index: _index, listIndex: _listIndex));
@@ -283,7 +315,6 @@ class _EditCategoryState extends State<EditCategory> {
             );
           },
         ),
-//      body: ,
       ),
     );
     //return ;

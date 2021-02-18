@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/blocs/journal_create/bloc.dart' as jc;
+import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart' as jic;
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,14 +22,14 @@ Future<File> writeToFile(ByteData data, int i) async {
 }
 
 Future getImage(
-    {JournalIssueCreateState cstate,
-      JournalIssueModifyState mstate,
-    JournalIssueCreateBloc journalIssueCreateBloc,
+    {jic.JournalIssueCreateBloc journalIssueCreateBloc,
       JournalIssueModifyBloc journalIssueModifyBloc,
+      jc.JournalCreateBloc journalCreateBloc,
     String from}) async {
 
-  JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
+  jic.JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
   JournalIssueModifyBloc _journalIssueModifyBloc = journalIssueModifyBloc;
+  jc.JournalCreateBloc _journalCreateBloc = journalCreateBloc;
   List<Asset> resultList = [];
   resultList =
       await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
@@ -38,12 +39,12 @@ Future getImage(
       {
         try {
           if (resultList.isNotEmpty) {
-            _journalIssueCreateBloc.add(SelectImage(assetList: resultList));
+            _journalIssueCreateBloc.add(jic.SelectImage(assetList: resultList));
             for (int i = 0; i < resultList.length; i++) {
               ByteData a = await resultList[i].getByteData();
               File file = await writeToFile(a, i);
               _journalIssueCreateBloc
-                  .add(AddImageFile(imageFile: file, index: i));
+                  .add(jic.AddImageFile(imageFile: file, index: i));
             }
           }
         } catch (e) {
@@ -68,16 +69,19 @@ Future getImage(
         }
       }
       break;
+    case 'SubJournalCreateScreen':
+      {
+
+      }
+      break;
   }
 }
 
 Future getCameraImage(
-    {JournalIssueCreateState cstate,
-      JournalIssueModifyState mstate,
-    JournalIssueCreateBloc journalIssueCreateBloc,
+    { jic.JournalIssueCreateBloc journalIssueCreateBloc,
       JournalIssueModifyBloc journalIssueModifyBloc,
     String from}) async {
-  JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
+  jic.JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
   JournalIssueModifyBloc _journalIssueModifyBloc = journalIssueModifyBloc;
   PickedFile picked = await ImagePicker().getImage(source: ImageSource.camera);
   if (picked != null) {
@@ -85,10 +89,7 @@ Future getCameraImage(
     switch (from) {
       case 'SubJournalIssueCreateScreen':
         {
-          // if (imageFile != null) {
-          //   _journalIssueCreateBloc.add(AddImageFile(imageFile: imageFile,));
-          // }
-          _journalIssueCreateBloc.add(AddImageFile(
+          _journalIssueCreateBloc.add(jic.AddImageFile(
               imageFile: File(picked.path),
               from: 1,)
           );
@@ -96,9 +97,6 @@ Future getCameraImage(
         break;
       case 'SubJournalIssueModifyScreen':
         {
-          // if (imageFile != null) {
-          //   _journalIssueCreateBloc.add(AddImageFile(imageFile: imageFile,));
-          // }
           _journalIssueModifyBloc.add(AddImageFileM(
             imageFile: File(picked.path),
             from: 1,)

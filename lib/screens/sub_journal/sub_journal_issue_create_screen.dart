@@ -5,8 +5,8 @@ import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
+import 'package:BrandFarm/widgets/customized_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
-import 'package:BrandFarm/widgets/sub_journal/bottom_navigation_button.dart';
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,12 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../blocs/journal_issue_create/bloc.dart';
-import '../../blocs/journal_issue_create/bloc.dart';
 import '../../utils/user/user_util.dart';
-
-// import 'package:multi_image_picker/multi_image_picker.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:image_picker/image_picker.dart';
 
 class SubJournalIssueCreateScreen extends StatefulWidget {
   @override
@@ -38,6 +33,7 @@ class _SubJournalIssueCreateScreenState
   FocusNode _title;
   FocusNode _content;
   ScrollController _scrollController;
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -52,6 +48,7 @@ class _SubJournalIssueCreateScreenState
   int issueState = 1;
   String title = '';
   String contents = '';
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -90,65 +87,66 @@ class _SubJournalIssueCreateScreenState
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_rounded),
-              onPressed: () {
-                Navigator.pop(context);
+            appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios_rounded),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: Text(
+                '이슈일지 작성',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              centerTitle: true,
+            ),
+            body: GestureDetector(
+              onTap: () {
+                _title.unfocus();
+                _content.unfocus();
               },
-            ),
-            title: Text(
-              '이슈일지 작성',
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            centerTitle: true,
-          ),
-          body: GestureDetector(
-            onTap: (){
-              _title.unfocus();
-              _content.unfocus();
-            },
-            child: SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  _dateBar(),
-                  SizedBox(
-                    height: 37.0,
-                  ),
-                  _inputTitleBar(),
-                  SizedBox(
-                    height: 51.0,
-                  ),
-                  _chooseCategory(),
-                  SizedBox(
-                    height: 45.0,
-                  ),
-                  _chooseIssueState(),
-                  SizedBox(
-                    height: 48.0,
-                  ),
-                  _addPictureBar(context: context, state: state),
-                  SizedBox(
-                    height: 43.0,
-                  ),
-                  _inputIssueContents(context: context),
-                  SizedBox(height: 72,),
-                ],
+              child: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                    _dateBar(),
+                    SizedBox(
+                      height: 37.0,
+                    ),
+                    _inputTitleBar(),
+                    SizedBox(
+                      height: 51.0,
+                    ),
+                    _chooseCategory(),
+                    SizedBox(
+                      height: 45.0,
+                    ),
+                    _chooseIssueState(),
+                    SizedBox(
+                      height: 48.0,
+                    ),
+                    _addPictureBar(context: context, state: state),
+                    SizedBox(
+                      height: 43.0,
+                    ),
+                    _inputIssueContents(context: context),
+                    SizedBox(
+                      height: 72,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          bottomNavigationBar: CustomBottomButton(
-            title: '완료',
-            onPressed: (){
-              _journalIssueCreateBloc.add(PressComplete());
-            },
-          )
-        );
+            bottomNavigationBar: CustomBottomButton(
+              title: '완료',
+              onPressed: () {
+                _journalIssueCreateBloc.add(PressComplete());
+              },
+            ));
       },
     );
   }
@@ -188,9 +186,9 @@ class _SubJournalIssueCreateScreenState
                 title = text;
               });
             },
-                onTap: (){
-                  _title.requestFocus();
-                },
+            onTap: () {
+              _title.requestFocus();
+            },
             style:
                 Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
             decoration: InputDecoration(
@@ -379,6 +377,7 @@ class _SubJournalIssueCreateScreenState
                 : state.imageList.length,
             itemBuilder: (BuildContext context, int index) {
               return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   (index == 0)
                       ? SizedBox(
@@ -434,46 +433,67 @@ class _SubJournalIssueCreateScreenState
   Widget _image(
       {BuildContext context, JournalIssueCreateState state, int index}) {
     bool isNull = state.imageList[index] == null;
-    return Badge(
+    return CustomizedBadge(
+      onPressed: () {
+        _journalIssueCreateBloc
+            .add(DeleteImageFile(removedFile: state.imageList[index]));
+      },
       // padding: EdgeInsets.zero,
       toAnimate: false,
-      badgeContent: InkResponse(
-        onTap: () {
-          _journalIssueCreateBloc
-              .add(DeleteImageFile(removedFile: state.imageList[index]));
-        },
-        child: Icon(
-          Icons.close,
-          color: Colors.white,
-          size: 11,
-        ),
+      badgeContent: Icon(
+        Icons.close,
+        color: Colors.white,
+        size: 11,
       ),
+      position: BadgePosition.topEnd(top: 3, end: 3),
       badgeColor: Colors.black,
       shape: BadgeShape.circle,
       child: isNull
-          ? Container(
-              height: 74.0,
-              width: 74.0,
-              color: Colors.grey,
-              child: Center(
-                  child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 0, 61, 165)),
-              )),
-            )
-          : Container(
-              height: 74.0,
-              width: 74.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(
-                    state.imageList[index],
+          ? Stack(
+              children: [
+                Container(
+                  height: 87.0,
+                  width: 87.0,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 74.0,
+                      width: 74.0,
+                      color: Colors.grey,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color.fromARGB(255, 0, 61, 165)),
+                      )),
+                    ),
                   ),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.5), BlendMode.srcATop),
                 ),
-              ),
+              ],
+            )
+          : Stack(
+              children: [
+                Container(
+                  height: 87.0,
+                  width: 87.0,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 74.0,
+                      width: 74.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(
+                            state.imageList[index],
+                          ),
+                          fit: BoxFit.cover,
+                          // colorFilter: ColorFilter.mode(
+                          //     Colors.black.withOpacity(0.5), BlendMode.srcATop),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
     );
   }
@@ -497,7 +517,7 @@ class _SubJournalIssueCreateScreenState
               isAlwaysShown: true,
               child: TextField(
                 focusNode: _content,
-                onTap: (){
+                onTap: () {
                   _content.requestFocus();
                 },
                 onChanged: (text) {
@@ -513,7 +533,7 @@ class _SubJournalIssueCreateScreenState
                 style: Theme.of(context).textTheme.bodyText1,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     isDense: true,
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     hintText: '내용을 입력해주세요',
@@ -552,7 +572,6 @@ class _SubJournalIssueCreateScreenState
                   onTap: () => {
                         Navigator.pop(context),
                         getImage(
-                          cstate: state,
                           journalIssueCreateBloc: _journalIssueCreateBloc,
                           from: 'SubJournalIssueCreateScreen',
                         ),
@@ -564,7 +583,6 @@ class _SubJournalIssueCreateScreenState
                 onTap: () => {
                   Navigator.pop(context),
                   getCameraImage(
-                    cstate: state,
                     journalIssueCreateBloc: _journalIssueCreateBloc,
                     from: 'SubJournalIssueCreateScreen',
                   ),
