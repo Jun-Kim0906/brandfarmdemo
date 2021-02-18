@@ -601,7 +601,6 @@ class _SubJournalIssueCreateScreenState
                           onTap: () async {
                             Navigator.pop(context);
                             getCameraImage(
-                              cstate: state,
                               journalIssueCreateBloc: _journalIssueCreateBloc,
                               from: 'SubJournalIssueCreateScreen',
                             );
@@ -625,7 +624,6 @@ class _SubJournalIssueCreateScreenState
                           onTap: () async {
                             Navigator.pop(context);
                             getImage(
-                              cstate: state,
                               journalIssueCreateBloc: _journalIssueCreateBloc,
                               from: 'SubJournalIssueCreateScreen',
                             );
