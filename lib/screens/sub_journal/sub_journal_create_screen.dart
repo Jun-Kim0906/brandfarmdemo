@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/add/editCategory.dart';
+import 'package:BrandFarm/screens/sub_journal/add/photoAdd.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_input_activity_screen.dart';
 import 'package:BrandFarm/utils/column_builder.dart';
 import 'package:BrandFarm/utils/journal.category.dart';
@@ -20,8 +21,9 @@ class SubJournalCreateScreen extends StatefulWidget {
 
 class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
   JournalCreateBloc _journalCreateBloc;
-  ScrollController _scrollController;
+  ScrollController _progressScrollController;
   FocusNode _focusNode;
+  ScrollController _scrollController = ScrollController();
 
   Color textFieldBorderColor;
   bool isFocus = false;
@@ -30,7 +32,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
   void initState() {
     super.initState();
     _journalCreateBloc = BlocProvider.of<JournalCreateBloc>(context);
-    _scrollController = ScrollController(initialScrollOffset: 0.0);
+    _progressScrollController = ScrollController(initialScrollOffset: 0.0);
     textFieldBorderColor = Color(0x4d000000);
     _focusNode = FocusNode()
       ..addListener(() {
@@ -51,10 +53,20 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
   Widget build(BuildContext context) {
     return BlocListener(
         cubit: _journalCreateBloc,
-        listener: (BuildContext context, JournalCreateState state) {},
+        listener: (BuildContext context, JournalCreateState state){
+          if (state.isSuggestion == true) {
+            Future.delayed(Duration(milliseconds: 100), () {
+              _scrollController.animateTo(
+                  MediaQuery.of(context).size.height * 0.3,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.ease);
+            });
+          }
+        },
         child: BlocBuilder<JournalCreateBloc, JournalCreateState>(
           builder: (context, state) {
             return Scaffold(
+              resizeToAvoidBottomPadding: true,
               appBar: AppBar(
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back_ios_rounded),
@@ -70,46 +82,56 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
               ),
               body: BlocProvider<JournalCreateBloc>.value(
                 value: _journalCreateBloc,
-                child: ListView(
-                  physics: ClampingScrollPhysics(),
-                  children: [
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    InputDateBar(
-                      journalCreateBloc: _journalCreateBloc,
-                      state: state,
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    InputTitleBar(
-                      journalCreateBloc: _journalCreateBloc,
-                      state: state,
-                    ),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    InputActivityBar(
-                      state: state,
-                      journalCreateBloc: _journalCreateBloc,
-                    ),
-                    _addedCategory(),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    AddPictureBar(),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    AddProgressBar(
-                      textFieldBorderColor: textFieldBorderColor,
-                      scrollController: _scrollController,
-                      focusNode: _focusNode,
-                      journalCreateBloc: _journalCreateBloc,
-                      state: state,
-                    ),
-                  ],
+                child: GestureDetector(
+                  onTap: (){
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  child: ListView(
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    physics: ClampingScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      InputDateBar(
+                        journalCreateBloc: _journalCreateBloc,
+                        state: state,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      InputTitleBar(
+                        journalCreateBloc: _journalCreateBloc,
+                        state: state,
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      InputActivityBar(
+                        state: state,
+                        journalCreateBloc: _journalCreateBloc,
+                      ),
+                      _addedCategory(),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      PhotoAdd(
+                        journalImg: null,
+                      ),
+                      // AddPictureBar(),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      AddProgressBar(
+                        textFieldBorderColor: textFieldBorderColor,
+                        scrollController: _progressScrollController,
+                        focusNode: _focusNode,
+                        journalCreateBloc: _journalCreateBloc,
+                        state: state,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               bottomNavigationBar: CustomBottomButton(

@@ -7,8 +7,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
-  JournalCreateBloc(): super(JournalCreateState.empty());
+class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
+  JournalCreateBloc() : super(JournalCreateState.empty());
 
   @override
   Stream<JournalCreateState> mapEventToState(JournalCreateEvent event) async* {
@@ -16,11 +16,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
       yield* _mapDateSelectedToState(event.selectedDate);
     } else if (event is DataCheck) {
       yield* _mapDataCheckToState(event.check);
-    }  else if(event is TitleChanged){
+    } else if (event is TitleChanged) {
       yield* _mapTitleChangedToState(event.title);
-    } else if(event is ContentChanged){
+    } else if (event is ContentChanged) {
       yield* _mapContentChangedToState(event.content);
-    } else if(event is CategoryChanged){
+    } else if (event is CategoryChanged) {
       yield* _mapCategoryChangedToState(event.category);
     } else if (event is CheckNewWriteChange) {
       yield* _mapCheckNewWriteToState();
@@ -71,9 +71,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     // else if (event is EditJournalFid) {
     //   yield* _mapEditJournalFidToState(event.year, event.month, event.day);
     // }
-    else if (event is AllStateReset) {
-      yield* _mapAllStateResetToState();
-    } else if (event is IsEditChanged) {
+    else if (event is IsEditChanged) {
       yield* _mapIsEditChangedToState(event.isEdit);
     }
 
@@ -119,6 +117,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is UnSelectDateTimePressed) {
       yield* _mapUnSelectDateTimePressedToState(event.picked);
     }
+
     ///비료정보
     else if (event is FertilizerComplete) {
       yield* _mapFertilizerCompleteToState(
@@ -160,6 +159,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is FertilizerDelete) {
       yield* _mapFertilizerDeleteToState(event.index, event.listIndex);
     }
+
     ///농약정보
     else if (event is PesticideComplete) {
       yield* _mapPesticideCompleteToState(
@@ -203,6 +203,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is PesticideDelete) {
       yield* _mapPesticideDeleteToState(event.index, event.listIndex);
     }
+
     ///병,해충정보
     else if (event is PestComplete) {
       yield* _mapPestCompleteToState(
@@ -221,6 +222,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is PestDelete) {
       yield* _mapPestDeleteToState(event.index, event.listIndex);
     }
+
     ///정식정보
     else if (event is PlantingComplete) {
       yield* _mapPlantingCompleteToState(event.plantingArea,
@@ -262,6 +264,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is SeedingDelete) {
       yield* _mapSeedingDeleteToState(event.index, event.listIndex);
     }
+
     ///제초정보
     else if (event is WeedingComplete) {
       yield* _mapWeedingCompleteToState(
@@ -278,6 +281,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is WeedingDelete) {
       yield* _mapWeedingDeleteToState(event.index, event.listIndex);
     }
+
     ///관수정보
     else if (event is WateringComplete) {
       yield* _mapWateringCompleteToState(
@@ -296,9 +300,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
       yield* _mapWateringAmountChangedToState(event.amount);
     } else if (event is WateringAmountUnitChanged) {
       yield* _mapWateringAmountUnitToState(event.amountUnit);
-    }
-
-    else if (event is WateringExpansionChanged) {
+    } else if (event is WateringExpansionChanged) {
       yield* _mapWateringExpansionToState();
     } else if (event is WateringDelete) {
       yield* _mapWateringDeleteToState(event.index, event.listIndex);
@@ -320,6 +322,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     } else if (event is WorkforceDelete) {
       yield* _mapWorkforceDeleteToState(event.index, event.listIndex);
     }
+
     ///관수정보
     else if (event is FarmingComplete) {
       yield* _mapFarmingCompleteToState(event.farmingArea,
@@ -353,7 +356,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     // }
   }
 
-
   Stream<JournalCreateState> _mapDataCheckToState(bool check) async* {
     yield state.update(checkData: check);
   }
@@ -363,18 +365,15 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     yield state.update(selectedDate: selectedDate);
   }
 
-  Stream<JournalCreateState> _mapTitleChangedToState(
-      String title) async* {
+  Stream<JournalCreateState> _mapTitleChangedToState(String title) async* {
     yield state.update(title: title);
   }
 
-  Stream<JournalCreateState> _mapContentChangedToState(
-      String content) async* {
+  Stream<JournalCreateState> _mapContentChangedToState(String content) async* {
     yield state.update(content: content);
   }
 
-  Stream<JournalCreateState> _mapCategoryChangedToState(
-      int category) async* {
+  Stream<JournalCreateState> _mapCategoryChangedToState(int category) async* {
     yield state.update(category: category);
   }
 
@@ -536,13 +535,15 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     );
   }
 
-  Stream<JournalCreateState> _mapShipmentPathChangedToState(String path) async* {
+  Stream<JournalCreateState> _mapShipmentPathChangedToState(
+      String path) async* {
     yield state.update(
       shipmentPath: path,
     );
   }
 
-  Stream<JournalCreateState> _mapShipmentUnitChangedToState(double unit) async* {
+  Stream<JournalCreateState> _mapShipmentUnitChangedToState(
+      double unit) async* {
     yield state.update(
       shipmentUnit: unit,
     );
@@ -575,7 +576,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     );
   }
 
-
   Stream<JournalCreateState> _mapShipmentDeleteToState(
       int index, int listIndex) async* {
 
@@ -593,19 +593,20 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
   }
 
   ///비료정보
   Stream<JournalCreateState> _mapFertilizerCompleteToState(
-      String fertilizerMethod,
-      double fertilizerArea,
-      String fertilizerAreaUnit,
-      String fertilizerMaterialName,
-      double fertilizerMaterialUse,
-      String fertilizerMaterialUnit,
-      double fertilizerWater,
-      String fertilizerWaterUnit,
-      ) async* {
+    String fertilizerMethod,
+    double fertilizerArea,
+    String fertilizerAreaUnit,
+    String fertilizerMaterialName,
+    double fertilizerMaterialUse,
+    String fertilizerMaterialUnit,
+    double fertilizerWater,
+    String fertilizerWaterUnit,
+  ) async* {
     Fertilize fertilize = Fertilize(
         fertilizerMethod: fertilizerMethod,
         fertilizerArea: fertilizerArea,
@@ -633,16 +634,16 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
   }
 
   Stream<JournalCreateState> _mapFertilizerEditToState(
-      String fertilizerMethod,
-      double fertilizerArea,
-      String fertilizerAreaUnit,
-      String fertilizerMaterialName,
-      double fertilizerMaterialUse,
-      String fertilizerMaterialUnit,
-      double fertilizerWater,
-      String fertilizerWaterUnit,
-      int currentIndex,
-      ) async* {
+    String fertilizerMethod,
+    double fertilizerArea,
+    String fertilizerAreaUnit,
+    String fertilizerMaterialName,
+    double fertilizerMaterialUse,
+    String fertilizerMaterialUnit,
+    double fertilizerWater,
+    String fertilizerWaterUnit,
+    int currentIndex,
+  ) async* {
     Fertilize fertilize = Fertilize(
         fertilizerMethod: fertilizerMethod,
         fertilizerArea: fertilizerArea,
@@ -676,9 +677,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
-//
-//    state.update(
-//        fertilizerList: _list, widgets: _temp, widgetList: _widgetList);
+    yield state.update();
   }
 
   Stream<JournalCreateState> _mapFertilizerMethodToState(String method) async* {
@@ -840,6 +839,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
   }
 
   Stream<JournalCreateState> _mapPesticideMethodToState(String method) async* {
@@ -939,10 +939,10 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
 
   ///병,해충 정보
   Stream<JournalCreateState> _mapPestCompleteToState(
-      String pestKind,
-      double spreadDegree,
-      String spreadDegreeUnit,
-      ) async* {
+    String pestKind,
+    double spreadDegree,
+    String spreadDegreeUnit,
+  ) async* {
     Pest pest = Pest(
         pestKind: pestKind,
         spreadDegree: spreadDegree,
@@ -962,11 +962,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
   }
 
   Stream<JournalCreateState> _mapPestEditToState(
-      String pestKind,
-      double spreadDegree,
-      String spreadDegreeUnit,
-      int currentIndex,
-      ) async* {
+    String pestKind,
+    double spreadDegree,
+    String spreadDegreeUnit,
+    int currentIndex,
+  ) async* {
     Pest pest = Pest(
         pestKind: pestKind,
         spreadDegree: spreadDegree,
@@ -995,6 +995,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
   }
 
   Stream<JournalCreateState> _mapPestKindChangedToState(String kind) async* {
@@ -1090,7 +1091,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     yield state.update(plantingList: _list, planting: planting);
   }
 
-  Stream<JournalCreateState> _mapPlantingAreaChangedToState(double area) async* {
+  Stream<JournalCreateState> _mapPlantingAreaChangedToState(
+      double area) async* {
     yield state.update(
       plantingArea: area,
     );
@@ -1112,6 +1114,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
+
   }
 
   Stream<JournalCreateState> _mapPlantingAreaUnitChangedToState(
@@ -1341,7 +1345,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     }
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
-    _temp.removeAt(listIndex);
+    _temp.removeAt(listIndex);    yield state.update();
+
   }
 
   Stream<JournalCreateState> _mapWeedingProgressChangedToState(
@@ -1451,9 +1456,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
   }
 
-  Stream<JournalCreateState> _mapWateringAreaChangedToState(double area) async* {
+  Stream<JournalCreateState> _mapWateringAreaChangedToState(
+      double area) async* {
     yield state.update(
       wateringArea: area,
     );
@@ -1564,6 +1571,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
   }
 
   Stream<JournalCreateState> _mapWorkforceNumChangedToState(int num) async* {
@@ -1572,7 +1580,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     );
   }
 
-  Stream<JournalCreateState> _mapWorkforcePriceChangedToState(int price) async* {
+  Stream<JournalCreateState> _mapWorkforcePriceChangedToState(
+      int price) async* {
     yield state.update(
       workforcePrice: price,
     );
@@ -1668,6 +1677,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
+    yield state.update();
   }
 
   Stream<JournalCreateState> _mapFarmingAreaChangedToState(double area) async* {
@@ -1819,152 +1829,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
 //      cowExpansion: judge,
 //    );
 //  }
-
-  Stream<JournalCreateState> _mapAllStateResetToState() async* {
-    yield state.update(
-      checkData: false,
-      category: 0,
-      jid: "",
-      title: "",
-      content: "",
-      tag: [],
-      originalTag: [],
-      date: DateTime.now(),
-      widgets: [],
-      widgetList: [],
-      selectDatePressed: false,
-      changeCategoryPressed: false,
-      pastBtn: false,
-      writeComplete: false,
-      categories: [],
-      isNewWrite: true,
-      wroteDate: [],
-      buttonSelected: false,
-      isDeleted: false,
-      isSuggestion: false,
-
-      journal: [],
-      isEditDate: false,
-      isLoading: false,
-
-      ///사진정보
-      imageList: [],
-      imageExpansion: false,
-      galleryList: [],
-      filePath: [],
-      originalFilePath: [],
-      assetList: [],
-
-      ///출화정보
-      shipmentPlant: "",
-      shipmentPath: "",
-      shipmentUnit: 0,
-      shipmentUnitSelect: "Kg",
-      shipmentAmount: "",
-      shipmentGrade: "특",
-      shipmentPrice: 0,
-      shipmentValid: false,
-      shipmentExpansion: false,
-      shipment: null,
-      shipmentList: [],
-
-      ///비료정보
-      fertilizerMethod: "엽면살포",
-      fertilizerArea: 0,
-      fertilizerAreaUnit: "%",
-      fertilizerMaterialName: "",
-      fertilizerMaterialUse: 0,
-      fertilizerMaterialUnit: "g(ml)",
-      fertilizerWater: 0,
-      fertilizerWaterUnit: "리터",
-      fertilizerValid: false,
-      fertilizerExpansion: false,
-      fertilizer: null,
-      fertilizerList: [],
-
-      ///농약정보
-      pesticideMethod: "엽면살포",
-      pesticideArea: 0,
-      pesticideAreaUnit: "%",
-      pesticideMaterialName: "",
-      pesticideMaterialUse: 0,
-      pesticideMaterialUnit: "g(ml)",
-      pesticideWater: 0,
-      pesticideWaterUnit: "리터",
-      pesticideValid: false,
-      pesticideExpansion: false,
-      pesticide: null,
-      pesticideList: [],
-
-      ///병,해충 정보
-      pestKind: "",
-      spreadDegree: 0,
-      spreadDegreeUnit: "%",
-      pestValid: false,
-      pestExpansion: false,
-      pest: null,
-      pestList: [],
-
-      ///정식 정보
-      plantingArea: 0,
-      plantingAreaUnit: "%",
-      plantingCount: "",
-      plantingPrice: 0,
-      plantingValid: false,
-      plantingExpansion: false,
-      planting: null,
-      plantingList: [],
-
-      ///파종정보
-      seedingArea: 0,
-      seedingAreaUnit: "%",
-      seedingAmount: 0,
-      seedingAmountUnit: "kg",
-      seedingValid: false,
-      seedingExpansion: false,
-      seeding: null,
-      seedingList: [],
-
-      ///제초정보
-      weedingProgress: 0,
-      weedingUnit: "%",
-      weedingValid: false,
-      weedingExpansion: false,
-      weeding: null,
-      weedingList: [],
-
-      ///관수정보
-      wateringArea: 0,
-      wateringAreaUnit: "%",
-      wateringAmount: 0,
-      wateringAmountUnit: "리터",
-      wateringValid: false,
-      wateringExpansion: false,
-      watering: null,
-      wateringList: [],
-
-      ///인력투입 정보
-      workforceNum: 0,
-      workforcePrice: 0,
-      workforceValid: false,
-      workforceExpansion: false,
-      workforce: null,
-      workforceList: [],
-
-      ///관수정보
-      farmingArea: 0,
-      farmingAreaUnit: "%",
-      farmingMethod: "",
-      farmingMethodUnit: "로터리",
-      farmingValid: false,
-      farmingExpansion: false,
-      farming: null,
-      farmingList: [],
-
-      picked: DateTime.now(),
-      pictures: [],
-    );
-  }
 
   // Stream<JournalCreateState> _mapNewWriteCompleteChangedToState() async* {
   //   String date = state.picked.toIso8601String().substring(0, 10);
@@ -2554,6 +2418,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
   Stream<JournalCreateState> _mapChangeCategoryToState() async* {
     yield state.update(changeCategoryPressed: true);
   }
+
   Stream<JournalCreateState> _mapDeleteJournalGrpPressedToState() async* {
     yield state.update(buttonSelected: true);
   }
@@ -2572,16 +2437,16 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
       List<String> widgetList) async* {
     List<Map<String, dynamic>> temp = journalCategory
         .where((Map<String, dynamic> category) =>
-    category["id"] == 0 ||
-        category["id"] == 1 ||
-        category["id"] == 2 ||
-        category["id"] == 3 ||
-        category["id"] == 4 ||
-        category["id"] == 5 ||
-        category["id"] == 6 ||
-        category["id"] == 7 ||
-        category["id"] == 8 ||
-        category["id"] == 9)
+            category["id"] == 0 ||
+            category["id"] == 1 ||
+            category["id"] == 2 ||
+            category["id"] == 3 ||
+            category["id"] == 4 ||
+            category["id"] == 5 ||
+            category["id"] == 6 ||
+            category["id"] == 7 ||
+            category["id"] == 8 ||
+            category["id"] == 9)
         .toList();
     yield state.update(
         categories: temp,
@@ -2597,7 +2462,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
         farmingList: farmingList,
         widgetList: widgetList);
   }
-
 
   Stream<JournalCreateState> _mapCheckNewWriteToState() async* {
     yield state.update(isNewWrite: false);
