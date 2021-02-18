@@ -8,7 +8,6 @@ import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 

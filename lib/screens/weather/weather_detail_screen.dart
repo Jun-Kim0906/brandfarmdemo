@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
+import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
@@ -50,35 +51,20 @@ class _WeatherDetailState extends State<WeatherDetail> {
                   appBar: AppBar(
                     backgroundColor: Colors.transparent,
                     elevation: 0.0,
-                    leading: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    title: Text(
-                      fieldName,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5
-                          .copyWith(color: Colors.white),
-                    ),
+                    automaticallyImplyLeading: false,
                     actions: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 11.0),
-                        child: Center(
-                            child: Text(
-                          curr_addr,
-                          style: TextStyle(fontSize: 12),
-                        )),
+                      FlatButton(
+                        padding: EdgeInsets.only(right: 6),
+                        minWidth: 0,
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                        child: Text('닫기',
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),),
                       ),
                     ],
                   ),
@@ -110,6 +96,48 @@ class _WeatherDetailState extends State<WeatherDetail> {
                               const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                           child: ListView(
                             children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 27,),
+                                      Text(
+                                        fieldName,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .copyWith(color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: Colors.white,
+                                        size: 14,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 11.0),
+                                        child: Center(
+                                            child: Text(
+                                              curr_addr,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1
+                                                  .copyWith(color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal,),
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: defaultPadding,),
                               Container(
                                 padding: EdgeInsets.all(0),
                                 margin: EdgeInsets.all(0),
@@ -120,7 +148,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                     FlatButton(
                                       padding: EdgeInsets.all(0),
                                       height: 30,
-                                      minWidth: 1,
+                                      minWidth: 0,
                                       child: Icon(
                                         Icons.refresh,
                                         color: Colors.white,
@@ -176,7 +204,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                 ],
                               ),
                               SizedBox(
-                                height: 45,
+                                height: 38,
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -339,7 +367,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                                 child: Container(
-                                  height: 235,
+                                  height: 225,
                                   child: SingleChildScrollView(
                                     child: Column(
                                       children: [

@@ -13,7 +13,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:intl/intl.dart';
 
 class SubJournalDetailScreen extends StatefulWidget {
@@ -1226,7 +1225,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    '답글 접기',
+                                    '답글 숨기기',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyText2

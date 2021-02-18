@@ -1,5 +1,4 @@
 import 'package:BrandFarm/widgets/department_badge.dart';
-import 'package:BrandFarm/widgets/login/create_account_button.dart';
 import 'package:flutter/material.dart';
 
 class NotificationDialogScreen extends StatefulWidget {

@@ -3,6 +3,7 @@ import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
@@ -169,7 +170,7 @@ class _SubJournalIssueModifyScreenState
                   ),
                 ),
               ),
-              bottomNavigationBar: BottomNavigationButton(
+              bottomNavigationBar: CustomBottomButton(
                 title: '완료',
                 onPressed: () {
                   _journalIssueModifyBloc.add(PressComplete());
@@ -596,36 +597,119 @@ class _SubJournalIssueModifyScreenState
             topRight: Radius.circular(15),
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bc) {
-          return new Wrap(
-            children: <Widget>[
-              ListTile(
-                  leading: Text('앨범'),
-                  title: Text(''),
-                  onTap: () => {
-                    Navigator.pop(context),
-                    getImage(
-                      mstate: state,
-                      journalIssueModifyBloc: _journalIssueModifyBloc,
-                      from: 'SubJournalIssueModifyScreen',
+          return Wrap(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: defaultPadding),
+                    height: 152,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  }),
-              Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
-              ListTile(
-                leading: Text('카메라'),
-                title: Text(''),
-                onTap: () => {
-                  Navigator.pop(context),
-                  getCameraImage(
-                    mstate: state,
-                    journalIssueModifyBloc: _journalIssueModifyBloc,
-                    from: 'SubJournalIssueModifyScreen',
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Center(
+                          child: Text(
+                            '사진 첨부',
+                            style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              color: Color(0xFF868686),
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            Navigator.pop(context);
+                            getCameraImage(
+                              mstate: state,
+                              journalIssueModifyBloc: _journalIssueModifyBloc,
+                              from: 'SubJournalIssueModifyScreen',
+                            );
+                          },
+                          title: Center(
+                            child: Text(
+                              '사진촬영',
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontSize: 20,
+                                color: Color(0xFF3183E3),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            Navigator.pop(context);
+                            getImage(
+                              mstate: state,
+                              journalIssueModifyBloc: _journalIssueModifyBloc,
+                              from: 'SubJournalIssueModifyScreen',
+                            );
+                          },
+                          title: Center(
+                            child: Text(
+                              '앨범에서 사진 선택',
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontSize: 20,
+                                color: Color(0xFF3183E3),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                },
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: defaultPadding),
+                    height: 61,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      title: Text(
+                        '취소',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          color: Color(0xFF3183E3),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: defaultPadding,
+                  ),
+                ],
               ),
-              Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
             ],
           );
         });

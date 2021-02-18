@@ -1,3 +1,4 @@
+import 'package:BrandFarm/test.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:flutter/material.dart';
@@ -48,11 +49,23 @@ class SubHomeCalendar extends StatelessWidget {
                     style: Theme.of(context).textTheme.overline,
                   ),
                 ),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: SvgPicture.asset(
-                      'assets/svg_icon/calendar_icon.svg',
-                    ))
+                InkWell(
+                  onTap: (){
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                          pageBuilder: (context, a1, a2) =>
+                              Test(),
+                          transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                          transitionDuration: Duration(milliseconds: 300),
+                          opaque: false),
+                    );
+                  },
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: SvgPicture.asset(
+                        'assets/svg_icon/calendar_icon.svg',
+                      )),
+                )
               ],
             ),
           ),

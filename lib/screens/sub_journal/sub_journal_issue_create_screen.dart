@@ -1,12 +1,9 @@
-// import 'dart:io';
-
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
-import 'package:BrandFarm/widgets/sub_journal/bottom_navigation_button.dart';
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../blocs/journal_issue_create/bloc.dart';
 import '../../blocs/journal_issue_create/bloc.dart';
 import '../../utils/user/user_util.dart';
 
@@ -38,6 +34,7 @@ class _SubJournalIssueCreateScreenState
   FocusNode _title;
   FocusNode _content;
   ScrollController _scrollController;
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -52,6 +49,7 @@ class _SubJournalIssueCreateScreenState
   int issueState = 1;
   String title = '';
   String contents = '';
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -90,65 +88,66 @@ class _SubJournalIssueCreateScreenState
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_rounded),
-              onPressed: () {
-                Navigator.pop(context);
+            appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios_rounded),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: Text(
+                '이슈일지 작성',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              centerTitle: true,
+            ),
+            body: GestureDetector(
+              onTap: () {
+                _title.unfocus();
+                _content.unfocus();
               },
-            ),
-            title: Text(
-              '이슈일지 작성',
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            centerTitle: true,
-          ),
-          body: GestureDetector(
-            onTap: (){
-              _title.unfocus();
-              _content.unfocus();
-            },
-            child: SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  _dateBar(),
-                  SizedBox(
-                    height: 37.0,
-                  ),
-                  _inputTitleBar(),
-                  SizedBox(
-                    height: 51.0,
-                  ),
-                  _chooseCategory(),
-                  SizedBox(
-                    height: 45.0,
-                  ),
-                  _chooseIssueState(),
-                  SizedBox(
-                    height: 48.0,
-                  ),
-                  _addPictureBar(context: context, state: state),
-                  SizedBox(
-                    height: 43.0,
-                  ),
-                  _inputIssueContents(context: context),
-                  SizedBox(height: 72,),
-                ],
+              child: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                    _dateBar(),
+                    SizedBox(
+                      height: 37.0,
+                    ),
+                    _inputTitleBar(),
+                    SizedBox(
+                      height: 51.0,
+                    ),
+                    _chooseCategory(),
+                    SizedBox(
+                      height: 45.0,
+                    ),
+                    _chooseIssueState(),
+                    SizedBox(
+                      height: 48.0,
+                    ),
+                    _addPictureBar(context: context, state: state),
+                    SizedBox(
+                      height: 43.0,
+                    ),
+                    _inputIssueContents(context: context),
+                    SizedBox(
+                      height: 72,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          bottomNavigationBar: CustomBottomButton(
-            title: '완료',
-            onPressed: (){
-              _journalIssueCreateBloc.add(PressComplete());
-            },
-          )
-        );
+            bottomNavigationBar: CustomBottomButton(
+              title: '완료',
+              onPressed: () {
+                _journalIssueCreateBloc.add(PressComplete());
+              },
+            ));
       },
     );
   }
@@ -188,9 +187,9 @@ class _SubJournalIssueCreateScreenState
                 title = text;
               });
             },
-                onTap: (){
-                  _title.requestFocus();
-                },
+            onTap: () {
+              _title.requestFocus();
+            },
             style:
                 Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
             decoration: InputDecoration(
@@ -437,7 +436,7 @@ class _SubJournalIssueCreateScreenState
     return Badge(
       // padding: EdgeInsets.zero,
       toAnimate: false,
-      badgeContent: InkResponse(
+      badgeContent: InkWell(
         onTap: () {
           _journalIssueCreateBloc
               .add(DeleteImageFile(removedFile: state.imageList[index]));
@@ -497,7 +496,7 @@ class _SubJournalIssueCreateScreenState
               isAlwaysShown: true,
               child: TextField(
                 focusNode: _content,
-                onTap: (){
+                onTap: () {
                   _content.requestFocus();
                 },
                 onChanged: (text) {
@@ -513,7 +512,7 @@ class _SubJournalIssueCreateScreenState
                 style: Theme.of(context).textTheme.bodyText1,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     isDense: true,
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     hintText: '내용을 입력해주세요',
@@ -541,36 +540,119 @@ class _SubJournalIssueCreateScreenState
             topRight: Radius.circular(15),
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         context: context,
-        builder: (BuildContext bc) {
-          return new Wrap(
-            children: <Widget>[
-              ListTile(
-                  leading: Text('앨범'),
-                  title: Text(''),
-                  onTap: () => {
-                        Navigator.pop(context),
-                        getImage(
-                          cstate: state,
-                          journalIssueCreateBloc: _journalIssueCreateBloc,
-                          from: 'SubJournalIssueCreateScreen',
+        builder: (context) {
+          return Wrap(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: defaultPadding),
+                    height: 152,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 6,
                         ),
-                      }),
-              Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
-              ListTile(
-                leading: Text('카메라'),
-                title: Text(''),
-                onTap: () => {
-                  Navigator.pop(context),
-                  getCameraImage(
-                    cstate: state,
-                    journalIssueCreateBloc: _journalIssueCreateBloc,
-                    from: 'SubJournalIssueCreateScreen',
+                        Center(
+                          child: Text(
+                            '사진 첨부',
+                            style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                  color: Color(0xFF868686),
+                                  fontSize: 15,
+                                ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            Navigator.pop(context);
+                            getCameraImage(
+                              cstate: state,
+                              journalIssueCreateBloc: _journalIssueCreateBloc,
+                              from: 'SubJournalIssueCreateScreen',
+                            );
+                          },
+                          title: Center(
+                            child: Text(
+                              '사진촬영',
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                    fontSize: 20,
+                                    color: Color(0xFF3183E3),
+                                  ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            Navigator.pop(context);
+                            getImage(
+                              cstate: state,
+                              journalIssueCreateBloc: _journalIssueCreateBloc,
+                              from: 'SubJournalIssueCreateScreen',
+                            );
+                          },
+                          title: Center(
+                            child: Text(
+                              '앨범에서 사진 선택',
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                    fontSize: 20,
+                                    color: Color(0xFF3183E3),
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                },
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: defaultPadding),
+                    height: 61,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      title: Text(
+                        '취소',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Color(0xFF3183E3),
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: defaultPadding,
+                  ),
+                ],
               ),
-              Divider(height: 2, thickness: 2, color: Color(0xFFE0E0E0)),
             ],
           );
         });

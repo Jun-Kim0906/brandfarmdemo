@@ -578,10 +578,10 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
 
   Stream<JournalCreateState> _mapShipmentDeleteToState(
       int index, int listIndex) async* {
+
     List<Shipment> _list = state.shipmentList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
-    print('111 shipmentList : ${state.shipmentList.length}\nwidgets : ${state.widgets.length}\nwidgetList : ${state.widgetList.length}');
 
     for (int i = index + 1; i < state.widgets.length; i++) {
       if (state.widgets[i].name == "출하정보") {
@@ -593,7 +593,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState>{
     _widgetList.removeAt(listIndex);
     _list.removeAt(index);
     _temp.removeAt(listIndex);
-    print('222 shipmentList : ${state.shipmentList.length}\nwidgets : ${state.widgets.length}\nwidgetList : ${state.widgetList.length}');
   }
 
   ///비료정보

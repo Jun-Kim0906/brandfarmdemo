@@ -30,8 +30,13 @@ Future getImage(
   JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
   JournalIssueModifyBloc _journalIssueModifyBloc = journalIssueModifyBloc;
   List<Asset> resultList = [];
-  resultList =
-      await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
+
+  try {
+    resultList =
+        await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
+  } catch(e) {
+    print(e);
+  }
 
   switch (from) {
     case 'SubJournalIssueCreateScreen':
