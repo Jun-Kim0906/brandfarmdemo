@@ -62,7 +62,7 @@ class FarmThemeData {
     background: Color(0xFFFFFFFF),
     surface: Color(0xFFFFFFFF),
     onBackground: Colors.white,
-    error: _lightFillColor,
+    error: Color(0xFFCD0F0F),
     onError: _lightFillColor,
     onPrimary: _lightFillColor,
     onSecondary: Color(0xFF322942),

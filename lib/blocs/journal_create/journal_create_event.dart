@@ -1208,12 +1208,6 @@ class EditJournalFid extends JournalCreateEvent {
   @override
   String toString() => "EditJournalFid";
 }
-
-class AllStateReset extends JournalCreateEvent {
-  @override
-  String toString() => "AllStateReset";
-}
-
 class IsEditChanged extends JournalCreateEvent {
   final bool isEdit;
 
