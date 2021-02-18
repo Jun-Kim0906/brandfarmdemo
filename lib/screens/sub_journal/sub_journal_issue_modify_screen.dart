@@ -638,7 +638,6 @@ class _SubJournalIssueModifyScreenState
                           onTap: () async {
                             Navigator.pop(context);
                             getCameraImage(
-                              mstate: state,
                               journalIssueModifyBloc: _journalIssueModifyBloc,
                               from: 'SubJournalIssueModifyScreen',
                             );
@@ -662,7 +661,6 @@ class _SubJournalIssueModifyScreenState
                           onTap: () async {
                             Navigator.pop(context);
                             getImage(
-                              mstate: state,
                               journalIssueModifyBloc: _journalIssueModifyBloc,
                               from: 'SubJournalIssueModifyScreen',
                             );
