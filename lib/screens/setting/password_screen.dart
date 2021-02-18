@@ -1,4 +1,5 @@
-import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'dart:math';
+
 import 'package:BrandFarm/blocs/profile/bloc.dart';
 import 'package:BrandFarm/screens/setting/edit_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -11,10 +12,16 @@ class PasswordScreen extends StatefulWidget {
   _PasswordScreenState createState() => _PasswordScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
+class _PasswordScreenState extends State<PasswordScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
   ProfileBloc _profileBloc;
+
   TextEditingController _textEditingController;
   FocusNode pswNode;
+
   String userPsw;
   bool isCorrect = true;
 
@@ -25,6 +32,25 @@ class _PasswordScreenState extends State<PasswordScreen> {
     pswNode = FocusNode();
     userPsw = UserUtil.getUser().psw;
     _textEditingController = TextEditingController();
+    controller =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    animation = Tween(begin: 0.0, end: 43.0)
+        .chain(CurveTween(curve: Curves.elasticIn))
+        .animate(controller)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              controller.reverse();
+            }
+            // else if (status == AnimationStatus.dismissed) {
+            //   controller.forward();
+            // }
+          });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -62,7 +88,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     '패스워드를 입력해주세요',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontWeight: FontWeight.w200,
-                          fontSize: 24,
+                          fontSize: 20,
                         ),
                   ),
                   SizedBox(
@@ -72,7 +98,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     height: 106,
                     width: 106,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                        color: Colors.grey,
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           image: (state.profile.imgUrl.isNotEmpty)
@@ -93,50 +119,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    width: 284,
-                    padding: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFEAEAEA),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: TextField(
-                      controller: _textEditingController,
-                      textAlign: TextAlign.center,
-                      focusNode: pswNode,
-                      onTap: () {
-                        pswNode.requestFocus();
-                        setState(() {
-                          isCorrect = true;
-                        });
-                      },
-                      onSubmitted: (text) {
-                        if (userPsw == text) {
-                          setState(() {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BlocProvider.value(
-                                          value: _profileBloc,
-                                          child: EditScreen(),
-                                        )));
-                          });
-                        } else {
-                          setState(() {
-                            isCorrect = false;
-                            _textEditingController.clear();
-                          });
-                        }
-                      },
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        border: InputBorder.none,
-                        hintText: '비밀번호를 입력하세요',
-                        hintStyle: TextStyle(fontSize: 18),
-                      ),
-                    ),
+                  AnimatedBuilder(
+                    animation: animation,
+                    builder: (context, child) {
+                      return _textField(context: context);
+                    },
                   ),
                   SizedBox(
                     height: 14,
@@ -157,6 +144,61 @@ class _PasswordScreenState extends State<PasswordScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _textField({BuildContext context}) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: animation.value + 43, right: 43 - animation.value),
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: Color(0xFFEAEAEA),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: TextField(
+        controller: _textEditingController,
+        textAlign: TextAlign.center,
+        focusNode: pswNode,
+        onTap: () {
+          pswNode.requestFocus();
+          setState(() {
+            isCorrect = true;
+          });
+        },
+        onSubmitted: (text) {
+          if (userPsw == text) {
+            setState(() {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                            value: _profileBloc,
+                            child: EditScreen(),
+                          )));
+            });
+          } else {
+            setState(() {
+              isCorrect = false;
+              _textEditingController.clear();
+              controller.forward(from: 0.0);
+            });
+            Future.delayed(Duration(milliseconds: 500)).then((value) => {
+              pswNode.requestFocus()
+            });
+          }
+        },
+        // style: TextStyle(fontSize: 16),
+        obscureText: true,
+        obscuringCharacter: "\u2B24",
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.zero,
+          border: InputBorder.none,
+          hintText: '비밀번호를 입력하세요',
+          hintStyle: TextStyle(fontSize: 18),
+        ),
+      ),
     );
   }
 }

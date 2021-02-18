@@ -1,6 +1,5 @@
 import 'package:BrandFarm/models/profile/profile_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:BrandFarm/utils/todays_date.dart';
 
 class ProfileState {
   bool isLoading;

@@ -1,8 +1,6 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
-import 'package:BrandFarm/screens/home/fm_home_screen_widget.dart';
 import 'package:BrandFarm/screens/test/test_screen.dart';
-// import 'package:BrandFarm/screens/test/test_screen.dart';
 import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/weather/weather_icons.dart';

@@ -578,6 +578,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
   Stream<JournalCreateState> _mapShipmentDeleteToState(
       int index, int listIndex) async* {
+
     List<Shipment> _list = state.shipmentList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;

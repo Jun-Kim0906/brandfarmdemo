@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/profile/profile_event.dart';
 import 'package:BrandFarm/blocs/profile/profile_state.dart';
 import 'package:BrandFarm/models/profile/profile_model.dart';
 import 'package:BrandFarm/repository/profile/profile_repository.dart';
+import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -148,7 +149,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Stream<ProfileState> _mapChangeProfileImageToState({File img}) async* {
-    String url = await ProfileRepository().uploadImageToStorage(img, state.profile.profid);
+    String url = await ProfileRepository()
+        .uploadImageToStorage(await resizeImage(img), state.profile.profid);
 
     Profile profile = await Profile(
       email: state.profile.email,

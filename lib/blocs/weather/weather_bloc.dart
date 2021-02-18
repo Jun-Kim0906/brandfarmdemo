@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-// import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:bloc/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
@@ -9,7 +8,6 @@ import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/utils/weather/api_addr.dart';
 import 'package:BrandFarm/utils/weather/convert_grid_gps.dart';
 import 'package:date_format/date_format.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml2json/xml2json.dart';
 

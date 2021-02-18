@@ -1,12 +1,6 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
-import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
-import 'package:BrandFarm/screens/test/test_screen.dart';
-// import 'package:BrandFarm/screens/test/test_screen.dart';
-import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
-import 'package:BrandFarm/utils/weather/weather_icons.dart';
-import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

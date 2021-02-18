@@ -1,7 +1,5 @@
 // weather repository
 
-import 'package:BrandFarm/blocs/weather/weather_state.dart';
-
 String doubleToInt({String str}){
   if(str == '0' || str == null || str == "") {
     return '0';
