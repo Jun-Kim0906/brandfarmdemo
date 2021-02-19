@@ -23,10 +23,9 @@ Future<File> writeToFile(ByteData data, int i) async {
 
 Future getImage(
     {jic.JournalIssueCreateBloc journalIssueCreateBloc,
-      JournalIssueModifyBloc journalIssueModifyBloc,
-      jc.JournalCreateBloc journalCreateBloc,
+    JournalIssueModifyBloc journalIssueModifyBloc,
+    jc.JournalCreateBloc journalCreateBloc,
     String from}) async {
-
   jic.JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
   JournalIssueModifyBloc _journalIssueModifyBloc = journalIssueModifyBloc;
   jc.JournalCreateBloc _journalCreateBloc = journalCreateBloc;
@@ -35,7 +34,7 @@ Future getImage(
   try {
     resultList =
         await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
-  } catch(e) {
+  } catch (e) {
     print(e);
   }
 
@@ -76,18 +75,33 @@ Future getImage(
       break;
     case 'SubJournalCreateScreen':
       {
-
+        try {
+          if (resultList.isNotEmpty) {
+            _journalCreateBloc.add(jc.AssetImageList(assetImage: resultList));
+            for (int i = 0; i < resultList.length; i++) {
+              ByteData a = await resultList[i].getByteData();
+              File file = await writeToFile(a, i);
+              _journalCreateBloc
+                  .add(jc.AddImageFile(imgFile: file, index: i));
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
       }
       break;
   }
 }
 
 Future getCameraImage(
-    { jic.JournalIssueCreateBloc journalIssueCreateBloc,
-      JournalIssueModifyBloc journalIssueModifyBloc,
+    {jic.JournalIssueCreateBloc journalIssueCreateBloc,
+    JournalIssueModifyBloc journalIssueModifyBloc,
+    jc.JournalCreateBloc journalCreateBloc,
     String from}) async {
   jic.JournalIssueCreateBloc _journalIssueCreateBloc = journalIssueCreateBloc;
   JournalIssueModifyBloc _journalIssueModifyBloc = journalIssueModifyBloc;
+  jc.JournalCreateBloc _journalCreateBloc = journalCreateBloc;
+
   PickedFile picked = await ImagePicker().getImage(source: ImageSource.camera);
   if (picked != null) {
     // File imageFile = File(picked.path);
@@ -95,17 +109,23 @@ Future getCameraImage(
       case 'SubJournalIssueCreateScreen':
         {
           _journalIssueCreateBloc.add(jic.AddImageFile(
-              imageFile: File(picked.path),
-              from: 1,)
-          );
+            imageFile: File(picked.path),
+            from: 1,
+          ));
         }
         break;
       case 'SubJournalIssueModifyScreen':
         {
           _journalIssueModifyBloc.add(AddImageFileM(
             imageFile: File(picked.path),
-            from: 1,)
-          );
+            from: 1,
+          ));
+        }
+        break;
+      case 'SubJournalCreateScreen':
+        {
+          _journalCreateBloc
+              .add(jc.AddImageFile(imgFile: File(picked.path), from: 1));
         }
         break;
     }
