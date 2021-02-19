@@ -229,7 +229,7 @@ class SubHomeCalendar extends StatelessWidget {
                           ),),
                       ),
                       (index != testPlans.length - 1)
-                          ? SizedBox(height: 3,) : SizedBox(height: defaultPadding,),
+                          ? SizedBox(height: 3,) : Container(),
                     ],
                   )),
             ),

@@ -615,6 +615,7 @@ class _InputActivityBarState extends State<InputActivityBar> {
   void mainBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
