@@ -81,16 +81,32 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                     SubHomeGreetingBar(name: name),
                     SizedBox(height: 38.0),
                     SubHomeAnnounceBar(),
-                    SizedBox(height: 17.0),
+                    SizedBox(height: 14.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                      child: BlocProvider.value(
+                        value: _weatherBloc,
+                        child: SubHomeWeatherWidget(),
+                      ),
+                    ),
+                    SizedBox(height: defaultPadding),
                     SubHomeCalendar(
                       homeBloc: _homeBloc,
                       initialIndex: initialIndex,
                       state: state,
+                      testPlans: [
+                        '일지작성',
+                        '알량성 얄리리 얄라 ㅈㄷㄹ',
+                        '알량성 얄리리 얄라 ㅈㄷㄹ',
+                        '알량성 얄리리 얄라 ㅈㄷㄹ 알라딘 알량성 얄리리 량랴당사 다시마',
+                        '알량성 얄리리 얄라 ㅈㄷㄹ',
+                      ],
                     ),
-                    WeatherToDoWidgetBar(
-                      weatherBloc: _weatherBloc,
-                      state: state,
-                    ),
+                    SizedBox(height: defaultPadding),
+                    // WeatherToDoWidgetBar(
+                    //   weatherBloc: _weatherBloc,
+                    //   state: state,
+                    // ),
                   ],
                 ),
               ),

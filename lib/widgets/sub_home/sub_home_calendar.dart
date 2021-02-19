@@ -1,6 +1,7 @@
 import 'package:BrandFarm/test.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_calendar_full.dart';
 import 'package:flutter/material.dart';
 
 import 'package:BrandFarm/blocs/home/bloc.dart';
@@ -15,11 +16,14 @@ class SubHomeCalendar extends StatelessWidget {
     @required HomeBloc homeBloc,
     @required this.initialIndex,
     @required this.state,
+    @required this.testPlans,
   }) : _homeBloc = homeBloc, super(key: key);
 
   final HomeBloc _homeBloc;
   final int initialIndex;
   final HomeState state;
+
+  final List testPlans;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,7 @@ class SubHomeCalendar extends StatelessWidget {
                     Navigator.of(context).push(
                       PageRouteBuilder(
                           pageBuilder: (context, a1, a2) =>
-                              Test(),
+                              SubHomeCalendarFull(),
                           transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
                           transitionDuration: Duration(milliseconds: 300),
                           opaque: false),
@@ -162,6 +166,73 @@ class SubHomeCalendar extends StatelessWidget {
                     ),
                   );
                 }),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+            ),
+              child: plans(context: context)),
+          SizedBox(height: defaultPadding,),
+        ],
+      ),
+    );
+  }
+
+  Widget plans({BuildContext context}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        initiallyExpanded: true,
+        collapsedBackgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              '일정',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 3,),
+            Text(
+              '${testPlans.length}',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF15B85B)),
+            ),
+          ],
+        ),
+        children: [
+          Container(
+            color: Colors.white,
+            child: Column(
+              children: List.generate(testPlans.length, (index) =>
+                  Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.fromLTRB(11, 8, 6, 11),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF2F2F2),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(testPlans[index],
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Colors.black,
+                          ),),
+                      ),
+                      (index != testPlans.length - 1)
+                          ? SizedBox(height: 3,) : SizedBox(height: defaultPadding,),
+                    ],
+                  )),
+            ),
           ),
         ],
       ),
