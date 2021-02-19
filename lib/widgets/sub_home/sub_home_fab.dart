@@ -23,15 +23,15 @@ class SubHomeFAB extends StatelessWidget {
             SystemUiOverlayStyle.light.copyWith(
           statusBarColor: Colors.black,
           statusBarBrightness: Brightness.dark,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
         ));
       },
       onClose: () {
         SystemChrome.setSystemUIOverlayStyle(
             SystemUiOverlayStyle.light.copyWith(
-          statusBarColor: null,
+          statusBarColor: Colors.white,
           statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
         ));
       },
       animatedIcon: AnimatedIcons.menu_close,
