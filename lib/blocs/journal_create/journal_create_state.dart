@@ -44,18 +44,12 @@ class JournalCreateState {
   //=======================
   final List<Journal> journal;
   final bool isEditDate;
-  final List<GalleryModel> pictures;
   final DateTime picked;
   final bool isLoading;
 
   ///사진정보
   final List<File> imageList;
-  final bool imageExpansion;
-  final List<GalleryModel> galleryList;
-  final List<String> filePath;
-  final List<String> originalFilePath;
   final List<Asset> assetList;
-  final int progress;
 
   ///출하정보
   final String shipmentPlant;
@@ -188,18 +182,12 @@ class JournalCreateState {
     @required this.isSuggestion,
     @required this.journal,
     @required this.isEditDate,
-    @required this.pictures,
     @required this.picked,
     @required this.isLoading,
 
     ///사진정보
     @required this.imageList,
-    @required this.imageExpansion,
-    @required this.galleryList,
-    @required this.filePath,
-    @required this.originalFilePath,
     @required this.assetList,
-    @required this.progress,
 
     ///출하정보
     @required this.shipmentPlant,
@@ -336,18 +324,12 @@ class JournalCreateState {
 
       journal: [],
       isEditDate: false,
-      pictures: [],
       picked: DateTime.now(),
       isLoading: false,
 
       ///사진정보
       imageList: [],
-      imageExpansion: false,
-      galleryList: [],
-      filePath: [],
-      originalFilePath: [],
       assetList: [],
-      progress: 0,
 
       ///출하정보
       shipmentPlant: "",
@@ -925,7 +907,6 @@ class JournalCreateState {
       isDeleted: isDeleted ?? false,
       isSuggestion: isSuggestion ?? false,
       isEditDate: isEditDate ?? this.isEditDate,
-      pictures: pictures ?? this.pictures,
       picked: picked ?? this.picked,
 
       pastBtn: pastBtn ?? this.pastBtn,
@@ -938,12 +919,7 @@ class JournalCreateState {
 
       ///사진정보
       imageList: imageList ?? this.imageList,
-      imageExpansion: imageExpansion ?? this.imageExpansion,
-      galleryList: galleryList ?? this.galleryList,
-      filePath: filePath ?? this.filePath,
-      originalFilePath: originalFilePath ?? this.originalFilePath,
       assetList: assetList ?? this.assetList,
-      progress: progress ?? this.progress,
 
       ///출하정보
       shipmentPlant: shipmentPlant ?? this.shipmentPlant,

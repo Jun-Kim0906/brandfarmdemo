@@ -1,4 +1,5 @@
 
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -27,5 +28,21 @@ class SubJournalRepository {
     DocumentReference reference =
     _firestore.collection('Issue').doc(issid);
     await reference.update({"comments":cmts});
+  }
+
+  Future<void> uploadJournal({
+    Journal journal,
+  }) async {
+    DocumentReference reference =
+    _firestore.collection('Journal').doc(journal.jid);
+    await reference.set(journal.toMap());
+  }
+
+  Future<void> updateJournal({
+    Journal journal,
+  }) async {
+    DocumentReference reference =
+    _firestore.collection('Journal').doc(journal.jid);
+    await reference.update(journal.toMap());
   }
 }

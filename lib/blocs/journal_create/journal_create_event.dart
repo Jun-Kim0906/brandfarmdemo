@@ -77,8 +77,12 @@ class CategoryChanged extends JournalCreateEvent {
 ///사진정보
 class AddImageFile extends JournalCreateEvent {
   final File imgFile;
+  final int index;
+  final int from;
 
-  AddImageFile({@required this.imgFile});
+  AddImageFile({@required this.imgFile, int index, int from})
+      : this.index = index ?? 0,
+        this.from = from ?? 0;
 
   @override
   String toString() => 'imgFileChanged { imgFile :${imgFile.path} }';
@@ -86,44 +90,11 @@ class AddImageFile extends JournalCreateEvent {
 
 class DeleteImageFile extends JournalCreateEvent {
   final File removedFile;
-  final Asset assetFile;
 
-  DeleteImageFile({@required this.removedFile, @required this.assetFile});
+  DeleteImageFile({@required this.removedFile});
 
   @override
   String toString() => 'DeleteImageFile { imgFile :${removedFile} }';
-}
-
-class ImageClear extends JournalCreateEvent {
-  @override
-  String toString() => 'ImageClear { ImageClear : }';
-}
-
-class ImagePath extends JournalCreateEvent {
-  final String path;
-
-  ImagePath({@required this.path});
-
-  @override
-  String toString() => 'ImagePath { path :$path }';
-}
-
-class OriginalImagePath extends JournalCreateEvent {
-  final String path;
-
-  OriginalImagePath({@required this.path});
-
-  @override
-  String toString() => 'ImagePath { path :$path }';
-}
-
-class ImagePathDelete extends JournalCreateEvent {
-  final String path;
-
-  ImagePathDelete({@required this.path});
-
-  @override
-  String toString() => 'ImagePathDelete { path :$path }';
 }
 
 class AssetImageList extends JournalCreateEvent {
@@ -1208,6 +1179,7 @@ class EditJournalFid extends JournalCreateEvent {
   @override
   String toString() => "EditJournalFid";
 }
+
 class IsEditChanged extends JournalCreateEvent {
   final bool isEdit;
 

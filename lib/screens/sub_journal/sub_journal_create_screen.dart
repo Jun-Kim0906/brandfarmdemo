@@ -1,11 +1,13 @@
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/add/editCategory.dart';
-import 'package:BrandFarm/screens/sub_journal/add/photoAdd.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_input_activity_screen.dart';
 import 'package:BrandFarm/utils/column_builder.dart';
 import 'package:BrandFarm/utils/journal.category.dart';
+import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/brandfarm_date_picker.dart';
+import 'package:BrandFarm/widgets/customized_badge.dart';
+import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +55,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
   Widget build(BuildContext context) {
     return BlocListener(
         cubit: _journalCreateBloc,
-        listener: (BuildContext context, JournalCreateState state){
+        listener: (BuildContext context, JournalCreateState state) {
           if (state.isSuggestion == true) {
             Future.delayed(Duration(milliseconds: 100), () {
               _scrollController.animateTo(
@@ -83,7 +85,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
               body: BlocProvider<JournalCreateBloc>.value(
                 value: _journalCreateBloc,
                 child: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
                   child: ListView(
@@ -116,9 +118,7 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
                       SizedBox(
                         height: 15.0,
                       ),
-                      PhotoAdd(
-                        journalImg: null,
-                      ),
+                      _addPictureBar(context: context, state: state),
                       // AddPictureBar(),
                       SizedBox(
                         height: 15.0,
@@ -136,7 +136,13 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
               ),
               bottomNavigationBar: CustomBottomButton(
                 title: '완료',
-                onPressed: (){},
+                onPressed: state.title.isEmpty
+                    ? null
+                    : () {
+                        _journalCreateBloc.add(NewWriteCompleteChanged());
+                        Navigator.pop(context);
+                        print('여기실행됨');
+                      },
               ),
             );
           },
@@ -198,6 +204,279 @@ class _SubJournalCreateScreenState extends State<SubJournalCreateScreen> {
               itemCount: _journalCreateBloc.state.widgets.length,
             ),
           );
+  }
+
+  Widget _addPictureBar({BuildContext context, JournalCreateState state}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: Text('사진첨부', style: Theme.of(context).textTheme.headline5),
+        ),
+        SizedBox(
+          height: 5.0,
+        ),
+        Container(
+          height: 100.0,
+          child: ListView.builder(
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: (state?.imageList?.isEmpty ?? true)
+                ? 1
+                : state.imageList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  (index == 0)
+                      ? SizedBox(
+                          width: defaultPadding,
+                        )
+                      : Container(),
+                  (index == 0)
+                      ? Center(
+                          child: InkWell(
+                              onTap: () {
+                                _pickImage(context: context, state: state);
+                              },
+                              child: Container(
+                                height: 74.0,
+                                width: 74.0,
+                                decoration:
+                                    BoxDecoration(color: Color(0x1a000000)),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 34.0,
+                                  ),
+                                ),
+                              )),
+                        )
+                      : Container(),
+                  (state?.imageList?.isNotEmpty ?? true)
+                      ? SizedBox(
+                          width: defaultPadding,
+                        )
+                      : Container(),
+                  (state?.imageList?.isNotEmpty ?? true)
+                      ? _image(
+                          context: context,
+                          state: state,
+                          index: index,
+                        )
+                      : Container(),
+                  (index == state.imageList.length - 1)
+                      ? SizedBox(
+                          width: defaultPadding,
+                        )
+                      : Container(),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _image({BuildContext context, JournalCreateState state, int index}) {
+    bool isNull = state.imageList[index] == null;
+    return CustomizedBadge(
+      onPressed: () {
+        _journalCreateBloc
+            .add(DeleteImageFile(removedFile: state.imageList[index]));
+      },
+      // padding: EdgeInsets.zero,
+      toAnimate: false,
+
+      badgeContent: Icon(
+        Icons.close,
+        color: Colors.white,
+        size: 11,
+      ),
+      position: BadgePosition.topEnd(top: 3, end: 3),
+      badgeColor: Colors.black,
+      shape: BadgeShape.circle,
+      child: isNull
+          ? Stack(
+              children: [
+                Container(
+                  height: 87.0,
+                  width: 87.0,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 74.0,
+                      width: 74.0,
+                      color: Colors.grey,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color.fromARGB(255, 0, 61, 165)),
+                      )),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Stack(
+              children: [
+                Container(
+                  height: 87.0,
+                  width: 87.0,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 74.0,
+                      width: 74.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(
+                            state.imageList[index],
+                          ),
+                          fit: BoxFit.cover,
+                          // colorFilter: ColorFilter.mode(
+                          //     Colors.black.withOpacity(0.5), BlendMode.srcATop),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  void _pickImage({BuildContext context, JournalCreateState state}) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return Wrap(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: defaultPadding),
+                    height: 152,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Center(
+                          child: Text(
+                            '사진 첨부',
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      color: Color(0xFF868686),
+                                      fontSize: 15,
+                                    ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            Navigator.pop(context);
+                            getCameraImage(
+                              journalCreateBloc: _journalCreateBloc,
+                              from: 'SubJournalCreateScreen',
+                            );
+                          },
+                          title: Center(
+                            child: Text(
+                              '사진촬영',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    fontSize: 20,
+                                    color: Color(0xFF3183E3),
+                                  ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            Navigator.pop(context);
+                            getImage(
+                              journalCreateBloc: _journalCreateBloc,
+                              from: 'SubJournalCreateScreen',
+                            );
+                          },
+                          title: Center(
+                            child: Text(
+                              '앨범에서 사진 선택',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    fontSize: 20,
+                                    color: Color(0xFF3183E3),
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: defaultPadding),
+                    height: 61,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      title: Text(
+                        '취소',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Color(0xFF3183E3),
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: defaultPadding,
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 }
 

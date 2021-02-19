@@ -1,8 +1,13 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_models.dart';
+import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/journal.category.dart';
+import 'package:BrandFarm/utils/resize_image.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -25,15 +30,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     } else if (event is CheckNewWriteChange) {
       yield* _mapCheckNewWriteToState();
     } else if (event is AddImageFile) {
-      yield* _mapAddImageFileToState(event.imgFile);
-    } else if (event is ImageClear) {
-      yield* _mapImageClearToState();
-    } else if (event is ImagePathDelete) {
-      yield* _mapImagePathDeleteToState(event.path);
-    } else if (event is ImagePath) {
-      yield* _mapImagePathToState(event.path);
-    } else if (event is OriginalImagePath) {
-      yield* _mapOriginalImagePathToState(event.path);
+      yield* _mapAddImageFileToState(
+          imageFile: event.imgFile, index: event.index, from: event.from);
     } else if (event is ContentChanged) {
       yield* _mapContentChangedToState(event.content);
     } else if (event is PastBtnChanged) {
@@ -60,7 +58,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     } else if (event is WidgetListLoaded) {
       yield* _mapWidgetListLoadedToState(event.widgets);
     } else if (event is DeleteImageFile) {
-      yield* _mapDeleteImageFileToState(event.removedFile, event.assetFile);
+      yield* _mapDeleteImageFileToState(removedFile : event.removedFile);
     }
     // else if (event is DeleteJournalButtonPressed) {
     //   yield* _mapDeleteJournalBtnPressed(event.date);
@@ -351,9 +349,9 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     else if (event is AssetImageList) {
       yield* _mapAssetImageListToState(event.assetImage);
     }
-    // else if (event is NewWriteCompleteChanged) {
-    //   yield* _mapNewWriteCompleteChangedToState();
-    // }
+    else if (event is NewWriteCompleteChanged) {
+      yield* _mapNewWriteCompleteChangedToState();
+    }
   }
 
   Stream<JournalCreateState> _mapDataCheckToState(bool check) async* {
@@ -383,81 +381,114 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
 //IsEditChanged
   ///사진정보
-  Stream<JournalCreateState> _mapAddImageFileToState(File file) async* {
+  Stream<JournalCreateState> _mapAddImageFileToState(
+      {File imageFile, int index, int from}) async* {
     List<File> _img = state.imageList;
-    if (!_img.contains(file)) {
-      _img.insert(0, file);
+
+    if (!_img.contains(imageFile) && from == 0) {
+      _img.removeAt(index);
+      _img.insert(index, await resizeImage(imageFile));
+    }
+    if (from == 1) {
+      _img.add(await resizeImage(imageFile));
     }
 
     yield state.update(
       imageList: _img,
-    );
-  }
-
-  Stream<JournalCreateState> _mapOriginalImagePathToState(String path) async* {
-    List<String> _img = state.originalFilePath;
-    if (!_img.contains(path)) {
-      _img.insert(0, path);
-    }
-
-    yield state.update(
-      originalFilePath: _img,
-    );
-  }
-
-  Stream<JournalCreateState> _mapImagePathToState(String path) async* {
-    List<String> _img = state.filePath;
-    if (!_img.contains(path)) {
-      _img.insert(0, path);
-    }
-
-    yield state.update(
-      filePath: _img,
-    );
-  }
-
-  Stream<JournalCreateState> _mapImageClearToState() async* {
-    yield state.update(
-      imageList: [],
-      assetList: [],
     );
   }
 
   Stream<JournalCreateState> _mapDeleteImageFileToState(
-      File removedFile, Asset asset) async* {
+      {File removedFile}) async* {
     List<File> _img = state.imageList;
-    List<Asset> _assetList = state.assetList;
     _img.remove(removedFile);
-    _assetList.remove(asset);
 
     yield state.update(
       imageList: _img,
-      assetList: _assetList,
-    );
-  }
-
-  Stream<JournalCreateState> _mapImagePathDeleteToState(
-      String removedFile) async* {
-    List<String> _img = state.filePath;
-    _img.remove(removedFile);
-
-    yield state.update(
-      filePath: _img,
     );
   }
 
   Stream<JournalCreateState> _mapAssetImageListToState(
       List<Asset> asset) async* {
-    List<Asset> currentAssetImage = state.assetList;
-    List<File> emptyImageSet = [];
+    List<File> bufferList = state.imageList;
+    for (int i = 0; i < asset.length; i++) {
+      bufferList.insert(0, null);
+    }
+    yield state.update(assetList: asset, imageList: bufferList);
+  }
 
-    if (asset.isNotEmpty) {
-      for (int i = 0; i < asset.length; i++) {
-        currentAssetImage.add(asset[i]);
-      }
+
+  Stream<JournalCreateState> _mapNewWriteCompleteChangedToState() async* {
+    String date = state.picked.toIso8601String().substring(0, 10);
+    String monthDay = state.picked.toIso8601String().substring(5, 10);
+    String yearMonth = state.picked.toIso8601String().substring(0, 7);
+    int year = int.parse(state.picked.toIso8601String().substring(0, 4));
+    String jid = FirebaseFirestore.instance.collection('Journal').doc().id;
+
+
+    Journal journal = Journal(
+      fid: UserUtil.getUser().uid,
+      jid: state.jid.isNotEmpty ? state.jid : jid,
+      date: date,
+      monthDay: monthDay,
+      yearMonth: yearMonth,
+      year: year,
+      title: state.title,
+      content: state.content,
+      widgets: state.widgets,
+      widgetList: state.widgetList,
+      shipment: state.shipmentList.isEmpty ? null : state.shipmentList,
+      fertilize: state.fertilizerList.isEmpty ? null : state.fertilizerList,
+      pesticide: state.pesticideList.isEmpty ? null : state.pesticideList,
+      pest: state.pestList.isEmpty ? null : state.pestList,
+      planting: state.plantingList.isEmpty ? null : state.plantingList,
+      seeding: state.seedingList.isEmpty ? null : state.seedingList,
+      weeding: state.weedingList.isEmpty ? null : state.weedingList,
+      watering: state.wateringList.isEmpty ? null : state.wateringList,
+      workforce: state.workforceList.isEmpty ? null : state.workforceList,
+      farming: state.farmingList.isEmpty ? null : state.farmingList,
+    );
+
+    await SubJournalRepository().uploadJournal(
+      journal: journal,
+    );
+
+    ///사진추가 !!
+    List<File> imageList = state.imageList;
+    String pid = '';
+
+    if (imageList.isNotEmpty) {
+      await Future.forEach(imageList, (File file) async {
+        pid = FirebaseFirestore.instance.collection('Picture').doc().id;
+        ImagePicture _picture = ImagePicture(
+          fid: '--',
+          jid: jid,
+          uid: UserUtil.getUser().uid,
+          issid: '--',
+          pid: pid,
+          url: (await ImageRepository().uploadJournalImageFile(file, pid)),
+          dttm: Timestamp.now(),
+        );
+
+        await ImageRepository().uploadImage(
+          picture: _picture,
+        );
+      });
     }
 
-    yield state.update(assetList: asset, imageList: emptyImageSet);
+    yield state.update(writeComplete: true);
+  }
+
+  DocumentReference getJournalRef(String date) {
+    return FirebaseFirestore.instance
+        .collection('Journal')
+        .doc('$date&${UserUtil.getUser().uid}');
+  }
+
+  DocumentReference getJournalRecDateRef(String date) {
+    return FirebaseFirestore.instance
+        .collection('JournalRecodedDates')
+        .doc('${date.substring(0, 7)}&${UserUtil.getUser().uid}');
   }
 
   ///출하정보

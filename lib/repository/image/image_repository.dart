@@ -35,6 +35,24 @@ class ImageRepository{
     return url;
   }
 
+  Future<String> uploadJournalImageFile(File file, String pid) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    var url;
+    final Reference ref = storage
+        .ref()
+        .child('journal')
+        .child(UserUtil.getUser().uid)
+        .child('$pid.jpg');
+    final UploadTask uploadTask = ref.putFile(file);
+
+    await (await uploadTask)
+        .ref
+        .getDownloadURL()
+        .then((value) => url = value);
+
+    return url;
+  }
+
   Future<void> deleteFromStorage({ImagePicture pic}) async {
     // delete from storage
     Reference photoRef = await FirebaseStorage.instance.refFromURL(pic.url);

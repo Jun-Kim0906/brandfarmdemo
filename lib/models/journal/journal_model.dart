@@ -23,7 +23,6 @@ class Journal {
   final String title;
   final String content;
   final List<Widgets> widgets;
-  final List<String> tags;
   final List<String> widgetList;
 
 
@@ -67,7 +66,6 @@ class Journal {
     @required this.title,
     @required this.content,
     @required this.widgets,
-    @required this.tags,
     @required this.widgetList,
     @required this.shipment,
     @required this.fertilize,
@@ -100,7 +98,6 @@ class Journal {
       content: ds['content'],
       widgets: ds["widgets"] == null ? null : _temp,
       widgetList: List.from(ds["widgetList"]),
-      tags: List.from(ds['tags']),
       shipment: ds['shipment'] == null
           ? null
           : ds["shipment"]
@@ -281,7 +278,6 @@ class Journal {
       'content': this.content,
       'widgets': this.widgets == null ? null : widgets,
       'widgetList': this.widgetList,
-      'tags': this.tags,
       'shipment': this.shipment == null ? null : shipment,
       'fertilize': this.fertilize == null ? null : fertilize,
       'pesticide': this.pesticide == null ? null : pesticide,
