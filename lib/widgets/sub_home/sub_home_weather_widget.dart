@@ -13,7 +13,7 @@ class SubHomeWeatherWidget extends StatefulWidget {
 }
 
 class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
-  double height = 149;
+  double height = 97;
   String addr = '경북 포항시';
   WeatherBloc _weatherBloc;
 
@@ -39,7 +39,7 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
             );
           },
           child: Container(
-            padding: EdgeInsets.fromLTRB(0, 14, 0, 4),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
             height: height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -63,16 +63,7 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
                 ],
               ),
             ),
-            child: Column(
-              children: [
-                _upperHalf(state: state),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Divider(thickness: 1, color: Colors.white,),
-                ),
-                _lowerHalf(state: state),
-              ],
-            ),
+            child: _upperHalf(state: state),
           ),
         );
       },
@@ -81,29 +72,31 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
 
   Widget _upperHalf({WeatherState state}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.only(left: 13),
       child: Row(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              SizedBox(height: 13,),
               Row(
                 children: [
                   Text(addr,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 10, color: Colors.white),
+                    style: Theme.of(context).textTheme.subtitle1
+                        .copyWith(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.white),
                   ),
                   SizedBox(width: 6.25,),
                   Icon(Icons.near_me_outlined, color: Colors.white, size: 10,),
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     state.curr_temp,
-                    style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        fontSize: 60,
+                        fontWeight: FontWeight.w200,
                         color: Colors.white),
                   ),
                   SizedBox(width: 1,),
@@ -111,9 +104,9 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        height: 36,
+                        height: 60,
                         child: Text(degrees, style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 30,
                             color: Colors.white
                         ),),
                       ),
@@ -126,95 +119,48 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // Icon(Icons.wb_sunny_outlined, size: 17, color: Colors.white,),
-                horizontal_view_icon(
-                  precip_type: state.precip_type,
-                  skyType: state.sky,
-                ),
-                sky_type(
-                    precipType: state.precip_type.toString(),
-                    skyType: state.sky.toString()
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    horizontal_view_icon(
+                      precip_type: state.precip_type,
+                      skyType: state.sky,
+                    ),
+                    sky_type(
+                        precipType: state.precip_type.toString(),
+                        skyType: state.sky.toString()
+                    ),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
                       '최고: ' + doubleToInt(str: state.max_temp) + degrees,
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
                           fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           color: Colors.white),
                     ),
                     SizedBox(width: 7,),
                     Text(
                       '최저: ' + doubleToInt(str: state.min_temp) + degrees,
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
                           fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           color: Colors.white),
                     ),
+                    SizedBox(width: 10,),
                   ],
                 ),
+                SizedBox(height: 12,),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _lowerHalf({WeatherState state}) {
-    return Expanded(
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        itemCount: state.long_temp.length,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Row(
-              children: [
-                SizedBox(
-                  width: 14,
-                ),
-                horizontal_view(
-                  time: state.long_temp[index]
-                      .fcstTime,
-                  skyType: state.long_sky[index]
-                      .fcstValue,
-                  precipType: state
-                      .long_precip_type[index]
-                      .fcstValue,
-                  temp: state.long_temp[index]
-                      .fcstValue,
-                  now: 1,
-                ),
-                SizedBox(
-                  width: 23,
-                ),
-              ],
-            );
-          } else {
-            return Row(
-              children: [
-                horizontal_view(
-                  time: state.long_temp[index]
-                      .fcstTime,
-                  skyType: state.long_sky[index]
-                      .fcstValue,
-                  precipType: state
-                      .long_precip_type[index]
-                      .fcstValue,
-                  temp: state.long_temp[index]
-                      .fcstValue,
-                  now: 0,
-                ),
-                SizedBox(
-                  width: 23,
-                ),
-              ],
-            );
-          }
-        },
       ),
     );
   }
@@ -260,61 +206,8 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
   Widget sky_text({String text}) {
     return Text(
       text,
-      style: TextStyle(fontSize: 12, color: Colors.white),
-    );
-  }
-
-  Widget horizontal_view(
-      {String time, String precipType, String skyType, String temp, int now}) {
-    String half_time;
-    String tmp;
-    String iTime;
-    tmp = time.substring(0, 2);
-    if (tmp.contains('10')) {
-      iTime = tmp;
-    } else if (tmp.contains('0')) {
-      iTime = tmp.substring(1);
-    } else {
-      iTime = tmp;
-    }
-    if (int.parse(iTime) >= 12) {
-      half_time = '오후 ';
-    } else {
-      half_time = '오전 ';
-    }
-    return Container(
-      // width: 25,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(
-            half_time + iTime + '시',
-            style: TextStyle(color: Colors.white, fontSize: 10),
-          ),
-          // SizedBox(height: 10,),
-          horizontal_view_icon(
-            precip_type: precipType,
-            skyType: skyType,
-          ),
-          // SizedBox(height: 10,),
-          Row(
-            children: [
-              Text(
-                temp,
-                style:
-                TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
-              ),
-              Text(
-                degrees,
-                style: TextStyle(
-                    fontSize: 4.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ],
-      ),
+      style: Theme.of(context).textTheme.bodyText1
+          .copyWith(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
     );
   }
 
@@ -325,17 +218,17 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
           if (int.parse(skyType) < 6) {
             return Image.asset(
               'assets/weather_image/sunny.png',
-              width: 21.0,
+              width: 50.0,
             );
           } else if (int.parse(skyType) > 5 && int.parse(skyType) < 9) {
             return Image.asset(
               'assets/weather_image/sunny.png',
-              width: 21.0,
+              width: 50.0,
             );
           } else if (int.parse(skyType) > 8) {
             return Image.asset(
               'assets/weather_image/cloudy.png',
-              width: 21.0,
+              width: 50.0,
             );
           } else {
             print('Unknown sky type');
@@ -350,7 +243,7 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
         {
           return Image.asset(
             'assets/weather_image/rainy.png',
-            width: 21.0,
+            width: 50.0,
           );
         }
         break;
@@ -359,7 +252,7 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
         {
           return Image.asset(
             'assets/weather_image/snowy.png',
-            width: 21.0,
+            width: 50.0,
           );
         }
         break;

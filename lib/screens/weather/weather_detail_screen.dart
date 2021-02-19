@@ -52,21 +52,19 @@ class _WeatherDetailState extends State<WeatherDetail> {
                     backgroundColor: Colors.transparent,
                     elevation: 0.0,
                     automaticallyImplyLeading: false,
-                    actions: [
-                      FlatButton(
-                        padding: EdgeInsets.only(right: 6),
-                        minWidth: 0,
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
-                        child: Text('닫기',
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),),
-                      ),
-                    ],
+                    leading: FlatButton(
+                      padding: EdgeInsets.only(left: 6),
+                      minWidth: 0,
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      child: Text('닫기',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),),
+                    ),
                   ),
                   body: Stack(
                     children: <Widget>[
