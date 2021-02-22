@@ -775,8 +775,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 String monthBefore;
                 String currentMonth;
                 // String monthAfter;
-                currentMonth =
-                    DateFormat('MM').format(state.orderByRecent[index]);
+                currentMonth = DateFormat('MM').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .orderByRecent[index].date.microsecondsSinceEpoch));
                 if (index == 0) {
                   return Column(
                     children: [
@@ -792,7 +793,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   );
                 } else {
                   monthBefore =
-                      DateFormat('MM').format(state.orderByRecent[index - 1]);
+                      DateFormat('MM').format(
+                          DateTime.fromMicrosecondsSinceEpoch(state
+                              .orderByRecent[index - 1].date.microsecondsSinceEpoch));
 
                   // if (index + 1 < state.orderByRecent.length) {
                   //   monthAfter =
@@ -814,11 +817,15 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   } else {
                     return _customListTile(
                       date: int.parse(
-                          DateFormat('dd').format(state.orderByRecent[index])),
+                          DateFormat('dd').format(
+                              DateTime.fromMicrosecondsSinceEpoch(state
+                                  .orderByRecent[index].date.microsecondsSinceEpoch))),
                       week:
-                          daysOfWeek(index: state.orderByRecent[index].weekday),
+                          daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(state
+                              .orderByRecent[index].date.microsecondsSinceEpoch).weekday),
                       list: state.orderByRecent,
                       index: index,
+                      pic: state.imageList,
                     );
                   }
                 }
@@ -863,7 +870,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 String currentMonth;
                 // String monthAfter;
                 currentMonth =
-                    DateFormat('MM').format(state.orderByOldest[index]);
+                    DateFormat('MM').format(
+                        DateTime.fromMicrosecondsSinceEpoch(state
+                            .orderByOldest[index].date.microsecondsSinceEpoch));
                 if (index == 0) {
                   return Column(
                     children: [
@@ -879,7 +888,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   );
                 } else {
                   monthBefore =
-                      DateFormat('MM').format(state.orderByOldest[index - 1]);
+                      DateFormat('MM').format(
+                          DateTime.fromMicrosecondsSinceEpoch(state
+                              .orderByOldest[index - 1].date.microsecondsSinceEpoch));
 
                   // if (index + 1 < state.orderByOldest.length) {
                   //   monthAfter =
@@ -901,11 +912,15 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   } else {
                     return _customListTile(
                       date: int.parse(
-                          DateFormat('dd').format(state.orderByOldest[index])),
+                          DateFormat('dd').format(
+                              DateTime.fromMicrosecondsSinceEpoch(state
+                                  .orderByOldest[index].date.microsecondsSinceEpoch))),
                       week:
-                          daysOfWeek(index: state.orderByOldest[index].weekday),
+                          daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(state
+                              .orderByOldest[index].date.microsecondsSinceEpoch).weekday),
                       list: state.orderByOldest,
                       index: index,
+                      pic: state.imageList,
                     );
                   }
                 }
@@ -953,23 +968,30 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         height: 65,
                       ),
                       _customListTile(
-                        date: int.parse(DateFormat('dd')
-                            .format(state.listBySelection[index])),
+                        date: int.parse(DateFormat('dd').format(
+                            DateTime.fromMicrosecondsSinceEpoch(state
+                                .listBySelection[index].date.microsecondsSinceEpoch))),
                         week: daysOfWeek(
-                            index: state.listBySelection[index].weekday),
+                            index: DateTime.fromMicrosecondsSinceEpoch(state
+                                .listBySelection[index].date.microsecondsSinceEpoch).weekday),
                         list: state.listBySelection,
                         index: index,
+                        pic: state.imageList,
                       ),
                     ],
                   );
                 } else {
                   return _customListTile(
                     date: int.parse(
-                        DateFormat('dd').format(state.listBySelection[index])),
+                        DateFormat('dd').format(
+                            DateTime.fromMicrosecondsSinceEpoch(state
+                                .listBySelection[index].date.microsecondsSinceEpoch))),
                     week:
-                        daysOfWeek(index: state.listBySelection[index].weekday),
+                        daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(state
+                            .listBySelection[index].date.microsecondsSinceEpoch).weekday),
                     list: state.listBySelection,
                     index: index,
+                    pic: state.imageList,
                   );
                 }
               },
@@ -1029,7 +1051,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         issueState: state.issueList[index].issueState,
                         list: state.issueList,
                         index: index,
-                        pic: state.issueImageList,
+                        pic: state.imageList,
                       ),
                     ],
                   );
@@ -1039,7 +1061,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     issueState: state.issueList[index].issueState,
                     list: state.issueList,
                     index: index,
-                    pic: state.issueImageList,
+                    pic: state.imageList,
                   );
                 }
               },
@@ -1106,7 +1128,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                             .issueListByCategorySelection[index].issueState,
                         list: state.issueListByCategorySelection,
                         index: index,
-                        pic: state.issueImageList,
+                        pic: state.imageList,
                       ),
                     ],
                   );
@@ -1117,7 +1139,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         state.issueListByCategorySelection[index].issueState,
                     list: state.issueListByCategorySelection,
                     index: index,
-                    pic: state.issueImageList,
+                    pic: state.imageList,
                   );
                 }
               },
@@ -1177,7 +1199,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         issueState: state.reverseIssueList[index].issueState,
                         list: state.reverseIssueList,
                         index: index,
-                        pic: state.issueImageList,
+                        pic: state.imageList,
                       ),
                     ],
                   );
@@ -1187,7 +1209,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     issueState: state.reverseIssueList[index].issueState,
                     list: state.reverseIssueList,
                     index: index,
-                    pic: state.issueImageList,
+                    pic: state.imageList,
                   );
                 }
               },
@@ -1350,12 +1372,14 @@ class _JournalListScreenState extends State<JournalListScreen> {
       children: [
         Column(
           children: [
-            SizedBox(
-              height: 31,
-            ),
+            // SizedBox(
+            //   height: 31,
+            // ),
             _monthWidget(
                 month: currentMonth,
-                year: DateFormat('yyyy').format(items[index]),
+                year: DateFormat('yyyy').format(
+                    DateTime.fromMicrosecondsSinceEpoch(items[index]
+                        .date.microsecondsSinceEpoch)),
                 state: state,
                 index: index),
             SizedBox(
@@ -1364,10 +1388,14 @@ class _JournalListScreenState extends State<JournalListScreen> {
           ],
         ),
         _customListTile(
-          date: int.parse(DateFormat('dd').format(items[index])),
-          week: daysOfWeek(index: items[index].weekday),
+          date: int.parse(DateFormat('dd').format(
+              DateTime.fromMicrosecondsSinceEpoch(items[index]
+                  .date.microsecondsSinceEpoch)),),
+          week: daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(items[index]
+              .date.microsecondsSinceEpoch).weekday),
           list: items,
           index: index,
+          pic: state.imageList,
         ),
       ],
     );
@@ -1394,9 +1422,13 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget _customListTile({int date, String week, List list, int index}) {
+  Widget _customListTile({int date, String week, List list, int index, List pic}) {
+    List _pic = [];
+    if(pic.isNotEmpty) {
+      _pic = pic.where((element) => element.jid == list[index].jid).toList();
+    }
     return Container(
-      height: 96,
+      height: 92,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -1438,7 +1470,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                       SizedBox(
                         width: 19,
                       ),
-                      titleNSubtitle(),
+                      titleNSubtitle(list: list, index: index),
                       SizedBox(
                         width: 25,
                       ),
@@ -1447,20 +1479,18 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            trailingIcon(pic: [0]),
+                            trailingIcon(pic: _pic),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  (list == 1)
-                      ? Divider(
+                  Divider(
                           height: 0,
                           thickness: 1,
                           // indent: 10,
                           // endIndent: 10,
-                        )
-                      : Container(),
+                        ),
                 ],
               ),
             ),
@@ -1470,44 +1500,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget list_tile({int date, String week}) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SubJournalDetailScreen()),
-        );
-      },
-      leading: leadingIcon(date: date, week: week),
-      title: Text(
-        '2022년 2월 21일의 일지',
-        style: Theme.of(context)
-            .textTheme
-            .bodyText1
-            .copyWith(fontWeight: FontWeight.normal),
-      ),
-      subtitle: Text(
-        '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
-        style: Theme.of(context)
-            .textTheme
-            .bodyText2
-            .copyWith(fontWeight: FontWeight.normal),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      trailing: trailingIcon(),
-    );
-  }
-
   Widget leadingIcon({int date, String week}) {
     return Container(
       child: FittedBox(
         child: Column(
           children: [
-            SizedBox(
-              height: 7,
-            ),
             Text(
               '$date',
               style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -1529,19 +1526,18 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget titleNSubtitle() {
+  Widget titleNSubtitle({List list, int index}) {
+    DateTime title = DateTime.fromMicrosecondsSinceEpoch(list[index]
+        .date.microsecondsSinceEpoch);
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 15,
-          ),
           Container(
             width: 192,
             child: Text(
-              '2022년 2월 21일의 일지',
+              '${title.year}년 ${title.month}월 ${title.day}일의 일지',
               style: Theme.of(context).textTheme.bodyText1.copyWith(
                     fontWeight: FontWeight.normal,
                     color: Color(0xFF000000),
@@ -1555,9 +1551,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
             // height: 36,
             width: 192,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다. 딸기는 넘 맛있다.',
+                  '${list[index].content}' ?? '--',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.normal,
                         color: Color(0xFF999999),
@@ -1569,39 +1566,19 @@ class _JournalListScreenState extends State<JournalListScreen> {
             ),
           ),
           SizedBox(
-            height: 6,
+            height: 3,
           ),
           Row(
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.favorite_border,
-                    color: Color(0x30000000),
-                    size: 14,
-                  ),
-                  SizedBox(
-                    width: 3,
-                  ),
                   Text(
-                    '0',
+                    '댓글',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0x30000000),
-                        ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 13,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    CupertinoIcons.chat_bubble,
-                    color: Color(0x30000000),
-                    size: 14,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0x30000000),
+                    ),
                   ),
                   SizedBox(
                     width: 3,
@@ -1618,24 +1595,18 @@ class _JournalListScreenState extends State<JournalListScreen> {
               ),
             ],
           ),
-          SizedBox(
-            height: 15,
-          ),
         ],
       ),
     );
   }
 
   Widget trailingIcon({List pic}) {
-    bool isNull = pic[0] == 0;
-    return Container(
+    return (pic.isNotEmpty) ? Container(
       height: 55,
       width: 55,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: isNull
-              ? AssetImage('assets/strawberry.png')
-              : CachedNetworkImageProvider(pic[0].url),
+          image: CachedNetworkImageProvider(pic[0].url),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.5), BlendMode.srcATop),
@@ -1650,7 +1621,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
               ),
         ),
       ),
-    );
+    ) : Container();
   }
 
   void _settingModalBottomSheet({BuildContext context}) {
@@ -2182,55 +2153,55 @@ class _JournalListScreenState extends State<JournalListScreen> {
     }
   }
 
-  // String _weekOfMonth({DateTime date}) {
-  //   // get today's date
-  //   var now = date;
-  //
-  //   // set it to feb 10th for testing
-  //   //now = now.add(new Duration(days:7));
-  //
-  //   int today = now.weekday;
-  //
-  //   // ISO week date weeks start on monday
-  //   // so correct the day number
-  //   var dayNr = (today + 6) % 7;
-  //
-  //   // ISO 8601 states that week 1 is the week
-  //   // with the first thursday of that year.
-  //   // Set the target date to the thursday in the target week
-  //   var thisMonday = now.subtract(new Duration(days: (dayNr)));
-  //   var thisThursday = thisMonday.add(new Duration(days: 3));
-  //
-  //   // Set the target to the first thursday of the year
-  //   // First set the target to january first
-  //   var firstThursday = new DateTime(now.year, DateTime.january, 1);
-  //
-  //   if (firstThursday.weekday != (DateTime.thursday)) {
-  //     firstThursday = new DateTime(now.year, DateTime.january,
-  //         1 + ((4 - firstThursday.weekday) + 7) % 7);
-  //   }
-  //
-  //   // The weeknumber is the number of weeks between the
-  //   // first thursday of the year and the thursday in the target week
-  //   var x = thisThursday.millisecondsSinceEpoch -
-  //       firstThursday.millisecondsSinceEpoch;
-  //   var weekNumber = x.ceil() / 604800000; // 604800000 = 7 * 24 * 3600 * 1000
-  //
-  //   // print("Todays date: ${now}");
-  //   // print("Monday of this week: ${thisMonday}");
-  //   // print("Thursday of this week: ${thisThursday}");
-  //   // print("First Thursday of this year: ${firstThursday}");
-  //   // print("This week is week #${weekNumber.ceil()}");
-  //
-  //   if (weekNumber.ceil() > 4) {
-  //     int tmp = weekNumber.ceil() % 4;
-  //     if (tmp == 0) {
-  //       return '4';
-  //     }
-  //     return '${tmp}';
-  //   } else {
-  //     return '${weekNumber.ceil()}';
-  //   }
-  //   // return '${weekNumber.ceil()}';
-  // }
+// String _weekOfMonth({DateTime date}) {
+//   // get today's date
+//   var now = date;
+//
+//   // set it to feb 10th for testing
+//   //now = now.add(new Duration(days:7));
+//
+//   int today = now.weekday;
+//
+//   // ISO week date weeks start on monday
+//   // so correct the day number
+//   var dayNr = (today + 6) % 7;
+//
+//   // ISO 8601 states that week 1 is the week
+//   // with the first thursday of that year.
+//   // Set the target date to the thursday in the target week
+//   var thisMonday = now.subtract(new Duration(days: (dayNr)));
+//   var thisThursday = thisMonday.add(new Duration(days: 3));
+//
+//   // Set the target to the first thursday of the year
+//   // First set the target to january first
+//   var firstThursday = new DateTime(now.year, DateTime.january, 1);
+//
+//   if (firstThursday.weekday != (DateTime.thursday)) {
+//     firstThursday = new DateTime(now.year, DateTime.january,
+//         1 + ((4 - firstThursday.weekday) + 7) % 7);
+//   }
+//
+//   // The weeknumber is the number of weeks between the
+//   // first thursday of the year and the thursday in the target week
+//   var x = thisThursday.millisecondsSinceEpoch -
+//       firstThursday.millisecondsSinceEpoch;
+//   var weekNumber = x.ceil() / 604800000; // 604800000 = 7 * 24 * 3600 * 1000
+//
+//   // print("Todays date: ${now}");
+//   // print("Monday of this week: ${thisMonday}");
+//   // print("Thursday of this week: ${thisThursday}");
+//   // print("First Thursday of this year: ${firstThursday}");
+//   // print("This week is week #${weekNumber.ceil()}");
+//
+//   if (weekNumber.ceil() > 4) {
+//     int tmp = weekNumber.ceil() % 4;
+//     if (tmp == 0) {
+//       return '4';
+//     }
+//     return '${tmp}';
+//   } else {
+//     return '${weekNumber.ceil()}';
+//   }
+//   // return '${weekNumber.ceil()}';
+// }
 }

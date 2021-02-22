@@ -1,6 +1,7 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
 import 'package:BrandFarm/screens/weather/weather_detail_screen.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class SubHomeWeatherWidget extends StatefulWidget {
 
 class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
   double height = 97;
-  String addr = '경북 포항시';
+  String addr = '${FieldUtil.getField().province} ${FieldUtil.getField().city}시' ?? '--';
   WeatherBloc _weatherBloc;
 
   @override
@@ -93,7 +94,7 @@ class _SubHomeWeatherWidgetState extends State<SubHomeWeatherWidget> {
               Row(
                 children: [
                   Text(
-                    state.curr_temp,
+                    state.curr_temp ?? '--',
                     style: Theme.of(context).textTheme.bodyText1.copyWith(
                         fontSize: 60,
                         fontWeight: FontWeight.w200,

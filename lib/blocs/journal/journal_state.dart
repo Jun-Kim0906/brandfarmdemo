@@ -13,7 +13,7 @@ class JournalState {
   List issueList;
   List issueListByCategorySelection;
   List reverseIssueList;
-  List issueImageList;
+  List imageList;
 
   JournalState({
     @required this.isLoading,
@@ -24,7 +24,7 @@ class JournalState {
     @required this.issueList,
     @required this.issueListByCategorySelection,
     @required this.reverseIssueList,
-    @required this.issueImageList,
+    @required this.imageList,
   });
 
   factory JournalState.empty() {
@@ -37,7 +37,7 @@ class JournalState {
       issueList: [],
       issueListByCategorySelection: [],
       reverseIssueList: [],
-      issueImageList: [],
+      imageList: [],
     );
   }
 
@@ -50,7 +50,7 @@ class JournalState {
     List issueList,
     List issueListByCategorySelection,
     List reverseIssueList,
-    List issueImageList,
+    List imageList,
   }) {
     return JournalState(
       isLoading: isLoading ?? this.isLoading,
@@ -61,7 +61,7 @@ class JournalState {
       issueList: issueList ?? this.issueList,
       issueListByCategorySelection: issueListByCategorySelection ?? this.issueListByCategorySelection,
       reverseIssueList: reverseIssueList ?? this.reverseIssueList,
-      issueImageList: issueImageList ?? this.issueImageList,
+      imageList: imageList ?? this.imageList,
     );
   }
 
@@ -74,7 +74,7 @@ class JournalState {
     List issueList,
     List issueListByCategorySelection,
     List reverseIssueList,
-    List issueImageList,
+    List imageList,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -85,7 +85,7 @@ class JournalState {
       issueList: issueList,
       issueListByCategorySelection: issueListByCategorySelection,
       reverseIssueList: reverseIssueList,
-      issueImageList: issueImageList,
+      imageList: imageList,
     );
   }
 
@@ -100,7 +100,7 @@ class JournalState {
     issueList: ${issueList.length},
     issueListByCategorySelection: ${issueListByCategorySelection.length},
     reverseIssueList: ${reverseIssueList.length},
-    issueImageList: ${issueImageList.length},
+    imageList: ${imageList.length},
     }
     ''';
   }
