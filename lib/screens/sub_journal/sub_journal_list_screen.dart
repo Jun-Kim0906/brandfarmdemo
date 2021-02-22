@@ -782,7 +782,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: 65,
+                        height: 75,
                       ),
                       _firstOfList(
                           currentMonth: currentMonth,
@@ -877,7 +877,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: 65,
+                        height: 75,
                       ),
                       _firstOfList(
                           currentMonth: currentMonth,
@@ -965,7 +965,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: 65,
+                        height: 75,
                       ),
                       _customListTile(
                         date: int.parse(DateFormat('dd').format(
@@ -1486,7 +1486,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   ),
                   Divider(
-                          height: 0,
+                          height: 20,
                           thickness: 1,
                           // indent: 10,
                           // endIndent: 10,

@@ -88,7 +88,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     listBySelection = fromExistingList
         .where((element) =>
             DateFormat('yyyy-MM').format(DateTime.fromMicrosecondsSinceEpoch(
-                element.microsecondsSinceEpoch)) ==
+                element.date.microsecondsSinceEpoch)) ==
             '${year}-${month}')
         .toList();
 
