@@ -24,10 +24,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SubHomeScreen extends StatefulWidget {
   const SubHomeScreen({
     Key key,
-    this.name,
   }) : super(key: key);
 
-  final String name;
 
   @override
   _SubHomeScreenState createState() => _SubHomeScreenState();
@@ -45,7 +43,6 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
     _homeBloc = BlocProvider.of<HomeBloc>(context);
     _weatherBloc = BlocProvider.of<WeatherBloc>(context);
     _weatherBloc.add(GetWeatherInfo());
-    name = widget.name;
   }
 
   @override
@@ -78,7 +75,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                 physics: ClampingScrollPhysics(),
                 child: Column(
                   children: [
-                    SubHomeGreetingBar(name: name),
+                    SubHomeGreetingBar(),
                     SizedBox(height: 38.0),
                     SubHomeAnnounceBar(),
                     SizedBox(height: 14.0),

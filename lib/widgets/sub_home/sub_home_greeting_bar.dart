@@ -1,12 +1,10 @@
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:flutter/material.dart';
 
 class SubHomeGreetingBar extends StatelessWidget {
   const SubHomeGreetingBar({
     Key key,
-    @required this.name,
   }) : super(key: key);
-
-  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class SubHomeGreetingBar extends StatelessWidget {
           RichText(
               text:
               TextSpan(
-                  text: "안녕하세요 ${name}님,\n좋은 하루되세요 :)",
+                  text: "안녕하세요 ${UserUtil.getUser().name}님,\n좋은 하루되세요 :)",
                   style: Theme.of(context).textTheme.headline3
               )),
           Spacer(),
