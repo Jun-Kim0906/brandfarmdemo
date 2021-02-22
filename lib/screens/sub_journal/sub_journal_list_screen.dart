@@ -304,22 +304,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   right: 0,
                                   child: _optionContainer1(context: context),
                                 ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 1,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.white.withOpacity(0.5),
-                                          spreadRadius: 80,
-                                          blurRadius: 50,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                               ],
                             )
                           : Stack(
@@ -358,22 +342,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   left: 0,
                                   right: 0,
                                   child: _optionContainer1(context: context),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 1,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.white.withOpacity(0.5),
-                                          spreadRadius: 80,
-                                          blurRadius: 50,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -415,22 +383,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   right: 0,
                                   child: _optionContainer2(context: context),
                                 ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 1,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.white.withOpacity(0.5),
-                                          spreadRadius: 80,
-                                          blurRadius: 50,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                               ],
                             )
                           : Stack(
@@ -445,22 +397,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   left: 0,
                                   right: 0,
                                   child: _optionContainer2(context: context),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 1,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.white.withOpacity(0.5),
-                                          spreadRadius: 80,
-                                          blurRadius: 50,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -491,7 +427,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            if(_tab == 0) {
+                            if (_tab == 0) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -503,9 +439,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => BlocProvider(
-                                        create: (BuildContext context) => JournalIssueCreateBloc(),
-                                        child: SubJournalIssueCreateScreen(),
-                                      )));
+                                            create: (BuildContext context) =>
+                                                JournalIssueCreateBloc(),
+                                            child:
+                                                SubJournalIssueCreateScreen(),
+                                          )));
                             }
                           },
                         ),
@@ -594,6 +532,25 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   text: '이슈기록'),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget bottomBlur({BuildContext context}) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 1,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white.withOpacity(0.5),
+              spreadRadius: 80,
+              blurRadius: 50,
+            ),
+          ],
         ),
       ),
     );
@@ -786,164 +743,237 @@ class _JournalListScreenState extends State<JournalListScreen> {
   Widget _listByRecent({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.orderByRecent.length,
-        itemBuilder: (context, index) {
-          int end;
-          String monthBefore;
-          String currentMonth;
-          String monthAfter;
-          currentMonth = DateFormat('MM').format(state.orderByRecent[index]);
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 65,
-                ),
-                _firstOfList(
-                    currentMonth: currentMonth,
-                    state: state,
-                    index: index,
-                    items: state.orderByRecent),
-              ],
-            );
-          } else {
-            monthBefore =
-                DateFormat('MM').format(state.orderByRecent[index - 1]);
+      child: (state.orderByRecent.isEmpty)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.doc_text,
+                    color: Color(0xFFAEAEAE),
+                    size: 86,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '기록이 없습니다',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 15,
+                          color: Color(0xFFAEAEAE),
+                        ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: state.orderByRecent.length,
+              itemBuilder: (context, index) {
+                String monthBefore;
+                String currentMonth;
+                // String monthAfter;
+                currentMonth =
+                    DateFormat('MM').format(state.orderByRecent[index]);
+                if (index == 0) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 65,
+                      ),
+                      _firstOfList(
+                          currentMonth: currentMonth,
+                          state: state,
+                          index: index,
+                          items: state.orderByRecent),
+                    ],
+                  );
+                } else {
+                  monthBefore =
+                      DateFormat('MM').format(state.orderByRecent[index - 1]);
 
-            if (index + 1 < state.orderByRecent.length) {
-              monthAfter =
-                  DateFormat('MM').format(state.orderByRecent[index + 1]);
-            }
+                  // if (index + 1 < state.orderByRecent.length) {
+                  //   monthAfter =
+                  //       DateFormat('MM').format(state.orderByRecent[index + 1]);
+                  // }
 
-            if (currentMonth != monthAfter) {
-              end = 0;
-            } else {
-              end = 1;
-            }
+                  // if (currentMonth != monthAfter) {
+                  //   end = 0;
+                  // } else {
+                  //   end = 1;
+                  // }
 
-            if (currentMonth != monthBefore) {
-              return _firstOfList(
-                  currentMonth: currentMonth,
-                  state: state,
-                  index: index,
-                  items: state.orderByRecent);
-            } else {
-              return _customListTile(
-                date: int.parse(
-                    DateFormat('dd').format(state.orderByRecent[index])),
-                week: daysOfWeek(index: state.orderByRecent[index].weekday),
-                list: state.orderByRecent,
-                index: index,
-              );
-            }
-          }
-        },
-      ),
+                  if (currentMonth != monthBefore) {
+                    return _firstOfList(
+                        currentMonth: currentMonth,
+                        state: state,
+                        index: index,
+                        items: state.orderByRecent);
+                  } else {
+                    return _customListTile(
+                      date: int.parse(
+                          DateFormat('dd').format(state.orderByRecent[index])),
+                      week:
+                          daysOfWeek(index: state.orderByRecent[index].weekday),
+                      list: state.orderByRecent,
+                      index: index,
+                    );
+                  }
+                }
+              },
+            ),
     );
   }
 
   Widget _listByOldest({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.orderByOldest.length,
-        itemBuilder: (context, index) {
-          int end;
-          String monthBefore;
-          String currentMonth;
-          String monthAfter;
-          currentMonth = DateFormat('MM').format(state.orderByOldest[index]);
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 65,
-                ),
-                _firstOfList(
-                    currentMonth: currentMonth,
-                    state: state,
-                    index: index,
-                    items: state.orderByOldest),
-              ],
-            );
-          } else {
-            monthBefore =
-                DateFormat('MM').format(state.orderByOldest[index - 1]);
+      child: (state.orderByOldest.isEmpty)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.doc_text,
+                    color: Color(0xFFAEAEAE),
+                    size: 86,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '기록이 없습니다',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 15,
+                          color: Color(0xFFAEAEAE),
+                        ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: state.orderByOldest.length,
+              itemBuilder: (context, index) {
+                String monthBefore;
+                String currentMonth;
+                // String monthAfter;
+                currentMonth =
+                    DateFormat('MM').format(state.orderByOldest[index]);
+                if (index == 0) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 65,
+                      ),
+                      _firstOfList(
+                          currentMonth: currentMonth,
+                          state: state,
+                          index: index,
+                          items: state.orderByOldest),
+                    ],
+                  );
+                } else {
+                  monthBefore =
+                      DateFormat('MM').format(state.orderByOldest[index - 1]);
 
-            if (index + 1 < state.orderByOldest.length) {
-              monthAfter =
-                  DateFormat('MM').format(state.orderByOldest[index + 1]);
-            }
+                  // if (index + 1 < state.orderByOldest.length) {
+                  //   monthAfter =
+                  //       DateFormat('MM').format(state.orderByOldest[index + 1]);
+                  // }
 
-            if (currentMonth != monthAfter) {
-              end = 0;
-            } else {
-              end = 1;
-            }
+                  // if (currentMonth != monthAfter) {
+                  //   end = 0;
+                  // } else {
+                  //   end = 1;
+                  // }
 
-            if (currentMonth != monthBefore) {
-              return _firstOfList(
-                  currentMonth: currentMonth,
-                  state: state,
-                  index: index,
-                  items: state.orderByOldest);
-            } else {
-              return _customListTile(
-                date: int.parse(
-                    DateFormat('dd').format(state.orderByOldest[index])),
-                week: daysOfWeek(index: state.orderByOldest[index].weekday),
-                list: state.orderByOldest,
-                index: index,
-              );
-            }
-          }
-        },
-      ),
+                  if (currentMonth != monthBefore) {
+                    return _firstOfList(
+                        currentMonth: currentMonth,
+                        state: state,
+                        index: index,
+                        items: state.orderByOldest);
+                  } else {
+                    return _customListTile(
+                      date: int.parse(
+                          DateFormat('dd').format(state.orderByOldest[index])),
+                      week:
+                          daysOfWeek(index: state.orderByOldest[index].weekday),
+                      list: state.orderByOldest,
+                      index: index,
+                    );
+                  }
+                }
+              },
+            ),
     );
   }
 
   Widget _listBySelectedDate({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.listBySelection.length,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 65,
-                ),
-                _customListTile(
-                  date: int.parse(
-                      DateFormat('dd').format(state.listBySelection[index])),
-                  week: daysOfWeek(index: state.listBySelection[index].weekday),
-                  list: state.listBySelection,
-                  index: index,
-                ),
-              ],
-            );
-          } else {
-            return _customListTile(
-              date: int.parse(
-                  DateFormat('dd').format(state.listBySelection[index])),
-              week: daysOfWeek(index: state.listBySelection[index].weekday),
-              list: state.listBySelection,
-              index: index,
-            );
-          }
-        },
-      ),
+      child: (state.listBySelection.isEmpty)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.doc_text,
+                    color: Color(0xFFAEAEAE),
+                    size: 86,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '기록이 없습니다',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 15,
+                          color: Color(0xFFAEAEAE),
+                        ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: state.listBySelection.length,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 65,
+                      ),
+                      _customListTile(
+                        date: int.parse(DateFormat('dd')
+                            .format(state.listBySelection[index])),
+                        week: daysOfWeek(
+                            index: state.listBySelection[index].weekday),
+                        list: state.listBySelection,
+                        index: index,
+                      ),
+                    ],
+                  );
+                } else {
+                  return _customListTile(
+                    date: int.parse(
+                        DateFormat('dd').format(state.listBySelection[index])),
+                    week:
+                        daysOfWeek(index: state.listBySelection[index].weekday),
+                    list: state.listBySelection,
+                    index: index,
+                  );
+                }
+              },
+            ),
     );
   }
 
@@ -1098,47 +1128,70 @@ class _JournalListScreenState extends State<JournalListScreen> {
   Widget _reverseIssueList({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.reverseIssueList.length,
-        itemBuilder: (context, index) {
-          String year = DateFormat('yyyy').format(
-              DateTime.fromMicrosecondsSinceEpoch(
-                  state.reverseIssueList[index].date.microsecondsSinceEpoch));
-          String month = DateFormat('MM').format(
-              DateTime.fromMicrosecondsSinceEpoch(
-                  state.reverseIssueList[index].date.microsecondsSinceEpoch));
-          String day = DateFormat('dd').format(
-              DateTime.fromMicrosecondsSinceEpoch(
-                  state.reverseIssueList[index].date.microsecondsSinceEpoch));
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: 85,
-                ),
-                _issueListTile(
-                  date: '${year}. ${month}. ${day}',
-                  issueState: state.reverseIssueList[index].issueState,
-                  list: state.reverseIssueList,
-                  index: index,
-                  pic: state.issueImageList,
-                ),
-              ],
-            );
-          } else {
-            return _issueListTile(
-              date: '${year}. ${month}. ${day}',
-              issueState: state.reverseIssueList[index].issueState,
-              list: state.reverseIssueList,
-              index: index,
-              pic: state.issueImageList,
-            );
-          }
-        },
-      ),
+      child: (state.reverseIssueList.isEmpty)
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.doc_text,
+                    color: Color(0xFFAEAEAE),
+                    size: 86,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '기록이 없습니다',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 15,
+                          color: Color(0xFFAEAEAE),
+                        ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: state.reverseIssueList.length,
+              itemBuilder: (context, index) {
+                String year = DateFormat('yyyy').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .reverseIssueList[index].date.microsecondsSinceEpoch));
+                String month = DateFormat('MM').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .reverseIssueList[index].date.microsecondsSinceEpoch));
+                String day = DateFormat('dd').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .reverseIssueList[index].date.microsecondsSinceEpoch));
+                if (index == 0) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 85,
+                      ),
+                      _issueListTile(
+                        date: '${year}. ${month}. ${day}',
+                        issueState: state.reverseIssueList[index].issueState,
+                        list: state.reverseIssueList,
+                        index: index,
+                        pic: state.issueImageList,
+                      ),
+                    ],
+                  );
+                } else {
+                  return _issueListTile(
+                    date: '${year}. ${month}. ${day}',
+                    issueState: state.reverseIssueList[index].issueState,
+                    list: state.reverseIssueList,
+                    index: index,
+                    pic: state.issueImageList,
+                  );
+                }
+              },
+            ),
     );
   }
 
@@ -1178,22 +1231,25 @@ class _JournalListScreenState extends State<JournalListScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: _journalBloc,
-                ),
-                BlocProvider<CommentBloc>(
-                  create: (BuildContext context) => CommentBloc()..add(LoadComment()),
-                ),
-              ],
-            child: SubJournalDetailScreen(
-              from: 'issue',
-              index: index,
-              list: list,
-              issueListOptions: issueListOptions,
-              issueOrder: issueOrder,),
-            )),
+            MaterialPageRoute(
+                builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: _journalBloc,
+                        ),
+                        BlocProvider<CommentBloc>(
+                          create: (BuildContext context) =>
+                              CommentBloc()..add(LoadComment()),
+                        ),
+                      ],
+                      child: SubJournalDetailScreen(
+                        from: 'issue',
+                        index: index,
+                        list: list,
+                        issueListOptions: issueListOptions,
+                        issueOrder: issueOrder,
+                      ),
+                    )),
           );
         },
         child: Column(
@@ -1345,20 +1401,22 @@ class _JournalListScreenState extends State<JournalListScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: _journalBloc,
-                ),
-                BlocProvider<CommentBloc>(
-                  create: (BuildContext context) => CommentBloc(),
-                  // create: (BuildContext context) => CommentBloc()..add(LoadComment()),
-                ),
-              ],
-              child: SubJournalDetailScreen(
-                index: index,
-                list: list,),
-            )),
+            MaterialPageRoute(
+                builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: _journalBloc,
+                        ),
+                        BlocProvider<CommentBloc>(
+                          create: (BuildContext context) => CommentBloc(),
+                          // create: (BuildContext context) => CommentBloc()..add(LoadComment()),
+                        ),
+                      ],
+                      child: SubJournalDetailScreen(
+                        index: index,
+                        list: list,
+                      ),
+                    )),
           );
         },
         child: Row(
@@ -1609,15 +1667,24 @@ class _JournalListScreenState extends State<JournalListScreen> {
           return new Wrap(
             children: <Widget>[
               ListTile(
-                  leading: Text('최신순',
+                  leading: Text(
+                    '최신순',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 18,
-                      fontWeight: (order == 1) ? FontWeight.w600 : FontWeight.normal,
-                      color: (order == 1) ? Color(0xFF219653) : Colors.black,
-                    ),),
+                          fontSize: 18,
+                          fontWeight: (order == 1)
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                          color:
+                              (order == 1) ? Color(0xFF219653) : Colors.black,
+                        ),
+                  ),
                   title: Text(''),
                   trailing: (order == 1)
-                      ? Icon(Icons.check, color: (order == 1) ? Color(0xFF219653) : Colors.black,)
+                      ? Icon(
+                          Icons.check,
+                          color:
+                              (order == 1) ? Color(0xFF219653) : Colors.black,
+                        )
                       : Container(
                           height: 1,
                           width: 1,
@@ -1634,17 +1701,24 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
+                endIndent: defaultPadding,
+              ),
               ListTile(
-                leading: Text('오래된순',
+                leading: Text(
+                  '오래된순',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                    fontWeight: (order == 2) ? FontWeight.w600 : FontWeight.normal,
-                    color: (order == 2) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                        fontSize: 18,
+                        fontWeight:
+                            (order == 2) ? FontWeight.w600 : FontWeight.normal,
+                        color: (order == 2) ? Color(0xFF219653) : Colors.black,
+                      ),
+                ),
                 title: Text(''),
                 trailing: (order == 2)
-                    ? Icon(Icons.check, color: (order == 2) ? Color(0xFF219653) : Colors.black,)
+                    ? Icon(
+                        Icons.check,
+                        color: (order == 2) ? Color(0xFF219653) : Colors.black,
+                      )
                     : Container(
                         height: 1,
                         width: 1,
@@ -1662,14 +1736,18 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
-              SizedBox(height: 40,),
+                endIndent: defaultPadding,
+              ),
+              SizedBox(
+                height: 40,
+              ),
               Divider(
                 height: 2,
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
+                endIndent: defaultPadding,
+              ),
             ],
           );
         });
@@ -1689,15 +1767,26 @@ class _JournalListScreenState extends State<JournalListScreen> {
           return new Wrap(
             children: <Widget>[
               ListTile(
-                  leading: Text('최신순',
+                  leading: Text(
+                    '최신순',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                    fontWeight: (issueOrder == 1) ? FontWeight.w600 : FontWeight.normal,
-                    color: (issueOrder == 1) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                          fontSize: 18,
+                          fontWeight: (issueOrder == 1)
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                          color: (issueOrder == 1)
+                              ? Color(0xFF219653)
+                              : Colors.black,
+                        ),
+                  ),
                   title: Text(''),
                   trailing: (issueOrder == 1)
-                      ? Icon(Icons.check, color: (issueOrder == 1) ? Color(0xFF219653) : Colors.black,)
+                      ? Icon(
+                          Icons.check,
+                          color: (issueOrder == 1)
+                              ? Color(0xFF219653)
+                              : Colors.black,
+                        )
                       : Container(
                           height: 1,
                           width: 1,
@@ -1714,17 +1803,29 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
+                endIndent: defaultPadding,
+              ),
               ListTile(
-                leading: Text('오래된순',
+                leading: Text(
+                  '오래된순',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                    fontWeight: (issueOrder == 2) ? FontWeight.w600 : FontWeight.normal,
-                    color: (issueOrder == 2) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                        fontSize: 18,
+                        fontWeight: (issueOrder == 2)
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        color: (issueOrder == 2)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      ),
+                ),
                 title: Text(''),
                 trailing: (issueOrder == 2)
-                    ? Icon(Icons.check, color: (issueOrder == 2) ? Color(0xFF219653) : Colors.black,)
+                    ? Icon(
+                        Icons.check,
+                        color: (issueOrder == 2)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      )
                     : Container(
                         height: 1,
                         width: 1,
@@ -1746,8 +1847,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
-              SizedBox(height: 40,),
+                endIndent: defaultPadding,
+              ),
+              SizedBox(
+                height: 40,
+              ),
             ],
           );
         });
@@ -1767,15 +1871,26 @@ class _JournalListScreenState extends State<JournalListScreen> {
           return new Wrap(
             children: <Widget>[
               ListTile(
-                  leading: Text('전체',
+                  leading: Text(
+                    '전체',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                      fontWeight: (issueState == 1) ? FontWeight.w600 : FontWeight.normal,
-                      color: (issueState == 1) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                          fontSize: 18,
+                          fontWeight: (issueState == 1)
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                          color: (issueState == 1)
+                              ? Color(0xFF219653)
+                              : Colors.black,
+                        ),
+                  ),
                   title: Text(''),
                   trailing: (issueState == 1)
-                      ? Icon(Icons.check, color: (issueState == 1) ? Color(0xFF219653) : Colors.black,)
+                      ? Icon(
+                          Icons.check,
+                          color: (issueState == 1)
+                              ? Color(0xFF219653)
+                              : Colors.black,
+                        )
                       : Container(
                           height: 1,
                           width: 1,
@@ -1794,17 +1909,29 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
+                endIndent: defaultPadding,
+              ),
               ListTile(
-                leading: Text('예상',
+                leading: Text(
+                  '예상',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                    fontWeight: (issueState == 2) ? FontWeight.w600 : FontWeight.normal,
-                    color: (issueState == 2) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                        fontSize: 18,
+                        fontWeight: (issueState == 2)
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        color: (issueState == 2)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      ),
+                ),
                 title: Text(''),
                 trailing: (issueState == 2)
-                    ? Icon(Icons.check, color: (issueState == 2) ? Color(0xFF219653) : Colors.black,)
+                    ? Icon(
+                        Icons.check,
+                        color: (issueState == 2)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      )
                     : Container(
                         height: 1,
                         width: 1,
@@ -1825,17 +1952,29 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
+                endIndent: defaultPadding,
+              ),
               ListTile(
-                leading: Text('진행',
+                leading: Text(
+                  '진행',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                    fontWeight: (issueState == 3) ? FontWeight.w600 : FontWeight.normal,
-                    color: (issueState == 3) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                        fontSize: 18,
+                        fontWeight: (issueState == 3)
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        color: (issueState == 3)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      ),
+                ),
                 title: Text(''),
                 trailing: (issueState == 3)
-                    ? Icon(Icons.check, color: (issueState == 3) ? Color(0xFF219653) : Colors.black,)
+                    ? Icon(
+                        Icons.check,
+                        color: (issueState == 3)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      )
                     : Container(
                         height: 1,
                         width: 1,
@@ -1856,17 +1995,29 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
+                endIndent: defaultPadding,
+              ),
               ListTile(
-                leading: Text('완료',
+                leading: Text(
+                  '완료',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 18,
-                    fontWeight: (issueState == 4) ? FontWeight.w600 : FontWeight.normal,
-                    color: (issueState == 4) ? Color(0xFF219653) : Colors.black,
-                  ),),
+                        fontSize: 18,
+                        fontWeight: (issueState == 4)
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        color: (issueState == 4)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      ),
+                ),
                 title: Text(''),
                 trailing: (issueState == 4)
-                    ? Icon(Icons.check, color: (issueState == 4) ? Color(0xFF219653) : Colors.black,)
+                    ? Icon(
+                        Icons.check,
+                        color: (issueState == 4)
+                            ? Color(0xFF219653)
+                            : Colors.black,
+                      )
                     : Container(
                         height: 1,
                         width: 1,
@@ -1887,8 +2038,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 thickness: 2,
                 color: Color(0xFFE0E0E0),
                 indent: defaultPadding,
-                endIndent: defaultPadding,),
-              SizedBox(height: 40,),
+                endIndent: defaultPadding,
+              ),
+              SizedBox(
+                height: 40,
+              ),
             ],
           );
         });
@@ -2006,7 +2160,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 40,),
+                SizedBox(
+                  height: 40,
+                ),
               ],
             ),
           );
@@ -2026,55 +2182,55 @@ class _JournalListScreenState extends State<JournalListScreen> {
     }
   }
 
-  String _weekOfMonth({DateTime date}) {
-    // get today's date
-    var now = date;
-
-    // set it to feb 10th for testing
-    //now = now.add(new Duration(days:7));
-
-    int today = now.weekday;
-
-    // ISO week date weeks start on monday
-    // so correct the day number
-    var dayNr = (today + 6) % 7;
-
-    // ISO 8601 states that week 1 is the week
-    // with the first thursday of that year.
-    // Set the target date to the thursday in the target week
-    var thisMonday = now.subtract(new Duration(days: (dayNr)));
-    var thisThursday = thisMonday.add(new Duration(days: 3));
-
-    // Set the target to the first thursday of the year
-    // First set the target to january first
-    var firstThursday = new DateTime(now.year, DateTime.january, 1);
-
-    if (firstThursday.weekday != (DateTime.thursday)) {
-      firstThursday = new DateTime(now.year, DateTime.january,
-          1 + ((4 - firstThursday.weekday) + 7) % 7);
-    }
-
-    // The weeknumber is the number of weeks between the
-    // first thursday of the year and the thursday in the target week
-    var x = thisThursday.millisecondsSinceEpoch -
-        firstThursday.millisecondsSinceEpoch;
-    var weekNumber = x.ceil() / 604800000; // 604800000 = 7 * 24 * 3600 * 1000
-
-    // print("Todays date: ${now}");
-    // print("Monday of this week: ${thisMonday}");
-    // print("Thursday of this week: ${thisThursday}");
-    // print("First Thursday of this year: ${firstThursday}");
-    // print("This week is week #${weekNumber.ceil()}");
-
-    if (weekNumber.ceil() > 4) {
-      int tmp = weekNumber.ceil() % 4;
-      if (tmp == 0) {
-        return '4';
-      }
-      return '${tmp}';
-    } else {
-      return '${weekNumber.ceil()}';
-    }
-    // return '${weekNumber.ceil()}';
-  }
+  // String _weekOfMonth({DateTime date}) {
+  //   // get today's date
+  //   var now = date;
+  //
+  //   // set it to feb 10th for testing
+  //   //now = now.add(new Duration(days:7));
+  //
+  //   int today = now.weekday;
+  //
+  //   // ISO week date weeks start on monday
+  //   // so correct the day number
+  //   var dayNr = (today + 6) % 7;
+  //
+  //   // ISO 8601 states that week 1 is the week
+  //   // with the first thursday of that year.
+  //   // Set the target date to the thursday in the target week
+  //   var thisMonday = now.subtract(new Duration(days: (dayNr)));
+  //   var thisThursday = thisMonday.add(new Duration(days: 3));
+  //
+  //   // Set the target to the first thursday of the year
+  //   // First set the target to january first
+  //   var firstThursday = new DateTime(now.year, DateTime.january, 1);
+  //
+  //   if (firstThursday.weekday != (DateTime.thursday)) {
+  //     firstThursday = new DateTime(now.year, DateTime.january,
+  //         1 + ((4 - firstThursday.weekday) + 7) % 7);
+  //   }
+  //
+  //   // The weeknumber is the number of weeks between the
+  //   // first thursday of the year and the thursday in the target week
+  //   var x = thisThursday.millisecondsSinceEpoch -
+  //       firstThursday.millisecondsSinceEpoch;
+  //   var weekNumber = x.ceil() / 604800000; // 604800000 = 7 * 24 * 3600 * 1000
+  //
+  //   // print("Todays date: ${now}");
+  //   // print("Monday of this week: ${thisMonday}");
+  //   // print("Thursday of this week: ${thisThursday}");
+  //   // print("First Thursday of this year: ${firstThursday}");
+  //   // print("This week is week #${weekNumber.ceil()}");
+  //
+  //   if (weekNumber.ceil() > 4) {
+  //     int tmp = weekNumber.ceil() % 4;
+  //     if (tmp == 0) {
+  //       return '4';
+  //     }
+  //     return '${tmp}';
+  //   } else {
+  //     return '${weekNumber.ceil()}';
+  //   }
+  //   // return '${weekNumber.ceil()}';
+  // }
 }
