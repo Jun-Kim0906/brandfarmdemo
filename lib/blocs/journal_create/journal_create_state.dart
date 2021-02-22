@@ -26,7 +26,7 @@ class JournalCreateState {
   final String content;
   final List<String> tag;
   final List<String> originalTag;
-  final DateTime date;
+  // final DateTime date;
 
   final List<Widgets> widgets;
   final List<String> widgetList;
@@ -167,7 +167,7 @@ class JournalCreateState {
     @required this.content,
     @required this.tag,
     @required this.originalTag,
-    @required this.date,
+    // @required this.date,
     @required this.widgets,
     @required this.widgetList,
     @required this.selectDatePressed,
@@ -298,8 +298,22 @@ class JournalCreateState {
   });
 
   factory JournalCreateState.empty() {
+    String month;
+    String day;
+    if(DateTime.now().month<10){
+      month='0${DateTime.now().month}';
+    }else{
+      month='${DateTime.now().month}';
+    }
+    if(DateTime.now().day<10){
+      day='0${DateTime.now().day}';
+    }else{
+      day='${DateTime.now().day}';
+    }
     return JournalCreateState(
-      selectedDate: Timestamp.now(),
+      selectedDate: Timestamp.fromMillisecondsSinceEpoch(
+          DateTime.parse('${DateTime.now().year}${month}${day}')
+              .millisecondsSinceEpoch),
       title: '',
       category: -1,
 
@@ -308,7 +322,6 @@ class JournalCreateState {
       content: "",
       tag: [],
       originalTag: [],
-      date: DateTime.now(),
       widgets: [],
       widgetList: [],
       selectDatePressed: false,
@@ -324,7 +337,7 @@ class JournalCreateState {
 
       journal: [],
       isEditDate: false,
-      picked: DateTime.now(),
+      picked: DateTime.parse('${DateTime.now().year}${month}${day}'),
       isLoading: false,
 
       ///사진정보
@@ -726,20 +739,6 @@ class JournalCreateState {
       farming: farming,
       farmingList: farmingList,
 
-      ///소등록
-//      cowCategory: cowCategory,
-//      cowId: cowId,
-//      sex: sex,
-//      birth: birth,
-//      cowHouse: cowHouse,
-//      fertilizationDate: fertilizationDate,
-//      spermId: spermId,
-//      birthDueDate: birthDueDate,
-//      characteristic: characteristic,
-//      manageDate: manageDate,
-//      manageContent: manageContent,
-//      cowValid: cowValid,
-//      cowExpansion: cowExpansion,
     );
   }
 
@@ -897,7 +896,7 @@ class JournalCreateState {
       content: content ?? this.content,
       tag: tag ?? this.tag,
       originalTag: originalTag ?? this.originalTag,
-      date: date ?? this.date,
+      // date: date ?? this.date,
       widgets: widgets ?? this.widgets,
       widgetList: widgetList ?? this.widgetList,
       categories: categories ?? this.categories,
@@ -1043,7 +1042,6 @@ class JournalCreateState {
       wroteDate: $wroteDate,
       content : $content,
       journal: $journal,
-      date!!!!!!!!!!!!!!! : $date,
       selectDatePressed: $selectDatePressed,
       isEditDate: $isEditDate,
       picked: $picked,

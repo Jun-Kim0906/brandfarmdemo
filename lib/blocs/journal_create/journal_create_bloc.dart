@@ -419,20 +419,15 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
 
   Stream<JournalCreateState> _mapNewWriteCompleteChangedToState() async* {
-    String date = state.picked.toIso8601String().substring(0, 10);
-    String monthDay = state.picked.toIso8601String().substring(5, 10);
-    String yearMonth = state.picked.toIso8601String().substring(0, 7);
-    int year = int.parse(state.picked.toIso8601String().substring(0, 4));
+    Timestamp date = Timestamp.fromDate(state.picked);
     String jid = FirebaseFirestore.instance.collection('Journal').doc().id;
 
 
     Journal journal = Journal(
       fid: UserUtil.getUser().uid,
       jid: state.jid.isNotEmpty ? state.jid : jid,
+      uid: UserUtil.getUser().uid,
       date: date,
-      monthDay: monthDay,
-      yearMonth: yearMonth,
-      year: year,
       title: state.title,
       content: state.content,
       widgets: state.widgets,

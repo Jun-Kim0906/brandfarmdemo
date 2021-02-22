@@ -141,9 +141,11 @@ class _SubJournalIssueCreateScreenState
             ),
             bottomNavigationBar: CustomBottomButton(
               title: '완료',
-              onPressed: () {
-                _journalIssueCreateBloc.add(PressComplete());
-              },
+              onPressed: state.title.isEmpty
+                  ? null
+                  : () {
+                      _journalIssueCreateBloc.add(PressComplete());
+                    },
             ));
       },
     );
@@ -583,10 +585,11 @@ class _SubJournalIssueCreateScreenState
                         Center(
                           child: Text(
                             '사진 첨부',
-                            style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                  color: Color(0xFF868686),
-                                  fontSize: 15,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      color: Color(0xFF868686),
+                                      fontSize: 15,
+                                    ),
                           ),
                         ),
                         SizedBox(
@@ -608,7 +611,10 @@ class _SubJournalIssueCreateScreenState
                           title: Center(
                             child: Text(
                               '사진촬영',
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
                                     fontSize: 20,
                                     color: Color(0xFF3183E3),
                                   ),
@@ -631,7 +637,10 @@ class _SubJournalIssueCreateScreenState
                           title: Center(
                             child: Text(
                               '앨범에서 사진 선택',
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
                                     fontSize: 20,
                                     color: Color(0xFF3183E3),
                                   ),
