@@ -1153,15 +1153,6 @@ class WidgetListLoaded extends JournalCreateEvent {
   String toString() => "WidgetList loaded";
 }
 
-class DeleteJournalButtonPressed extends JournalCreateEvent {
-  final String date;
-
-  DeleteJournalButtonPressed({@required this.date});
-
-  @override
-  String toString() => "DeleteJournalButtonPressed";
-}
-
 class DeleteJournalGrpPressed extends JournalCreateEvent {
   @override
   String toString() => "DeleteJournalGrpPressed";

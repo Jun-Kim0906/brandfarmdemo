@@ -16,10 +16,8 @@ import 'workforce_model.dart';
 class Journal {
   final String fid;
   final String jid;
-  final String date;
-  final String monthDay;
-  final String yearMonth;
-  final int year;
+  final String uid;
+  final Timestamp date;
   final String title;
   final String content;
   final List<Widgets> widgets;
@@ -59,10 +57,8 @@ class Journal {
   Journal({
     @required this.fid,
     @required this.jid,
+    @required this.uid,
     @required this.date,
-    @required this.monthDay,
-    @required this.yearMonth,
-    @required this.year,
     @required this.title,
     @required this.content,
     @required this.widgets,
@@ -90,10 +86,8 @@ class Journal {
     return Journal(
       fid: ds['fid'],
       jid: ds['jid'],
+      uid: ds['uid'],
       date: ds['date'],
-      monthDay: ds['monthDay'],
-      yearMonth: ds['yearMonth'],
-      year: ds['year'],
       title: ds['title'],
       content: ds['content'],
       widgets: ds["widgets"] == null ? null : _temp,
@@ -270,10 +264,8 @@ class Journal {
     return {
       'fid': this.fid,
       'jid': this.jid,
+      'uid' : this.uid,
       'date': this.date,
-      'monthDay': this.monthDay,
-      'yearMonth': this.yearMonth,
-      'year': this.year,
       'title': this.title,
       'content': this.content,
       'widgets': this.widgets == null ? null : widgets,
