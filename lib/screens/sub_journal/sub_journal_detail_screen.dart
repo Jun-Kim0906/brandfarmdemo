@@ -3,6 +3,7 @@ import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
@@ -171,10 +172,26 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                 : Scaffold(
                     appBar: _appBar(context: context),
                     body: (widget.from == 'journal')
-                        ? _journalBody(
-                            context: context,
-                            state: state,
-                          )
+                        ? Stack(
+                          children: [
+                            _journalBody(
+                                context: context,
+                                state: state,
+                              cstate: cstate,
+                              ),
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 500),
+                              // alignment: Alignment(0,1),
+                              alignment: _isVisible
+                                  ? Alignment(0, 1)
+                                  : Alignment(0, 1.5),
+                              child: _writeComment(
+                                context: context,
+                                state: cstate,
+                              ),
+                            ),
+                          ],
+                        )
                         : Stack(
                             children: [
                               _issueBody(
@@ -222,9 +239,13 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
               ),
             )
           : Text(
-              'from journal',
-              style: TextStyle(color: Colors.black),
-            ),
+        '${widget.list[widget.index].title}',
+        style: TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
       actions: [
         FlatButton(
           onPressed: () {
@@ -509,7 +530,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     }
   }
 
-  Widget _journalBody({BuildContext context, JournalState state}) {
+  Widget _journalBody({BuildContext context, JournalState state, CommentState cstate}) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -520,17 +541,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           SizedBox(
             height: 24,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-                child: Text(
-              '2021년 04월 05일 화요일',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-            )),
-          ),
+          _journalDate(context: context, state: state),
           SizedBox(
             height: 12,
           ),
@@ -623,165 +634,19 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget _weatherCard() {
-    return Card(
-      elevation: 5.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
+  Widget _journalDate({BuildContext context, JournalState state}) {
+    DateTime date = DateTime
+        .fromMicrosecondsSinceEpoch(widget.list[widget.index].date.microsecondsSinceEpoch);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
-        padding: EdgeInsets.fromLTRB(14, 13, 13, 14),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [
-                0.0,
-                1.0,
-              ],
-              colors: [
-                Color(0xFF3195DE),
-                Color(0xFF9AECFE),
-              ],
-            )),
-        child: Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '경북 포항시 북구 흫해읍 한동로 558',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Icon(
-                      Icons.near_me_outlined,
-                      size: 10,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 11,
-                ),
-                Row(
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          '16',
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          degrees,
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 13,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              '최고: 18',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  degrees,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '최저: 6',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  degrees,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+          child: Text(
+            '${date.year}년 ${date.month}월 ${date.day}일 --',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    children: [
-                      Image.asset(
-                        'assets/weather_image/sunny.png',
-                        height: 36,
-                        width: 45,
-                      ),
-                      Text(
-                        '맑음',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+          )),
     );
   }
 
