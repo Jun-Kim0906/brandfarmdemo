@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
-import 'package:BrandFarm/utils/feild_util.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

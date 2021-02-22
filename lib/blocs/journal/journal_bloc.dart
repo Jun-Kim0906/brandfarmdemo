@@ -51,7 +51,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     List orderByOldest = [];
     List issueList = [];
     List reverseIssueList = [];
-    List issueImageList = [];
+    List imageList = [];
 
     // get journal list
     ////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     // get image
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    issueImageList = await SubJournalRepository().getImage();
+    imageList = await SubJournalRepository().getImage();
 
     yield state.update(
       isLoading: false,
@@ -76,7 +76,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       orderByRecent: orderByRecent,
       issueList: issueList,
       reverseIssueList: reverseIssueList,
-      issueImageList: issueImageList,
+      imageList: imageList,
     );
   }
 
@@ -156,9 +156,9 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       );
     } else {
       currentList = state.issueList;
-      currentImageList = state.issueImageList;
+      currentImageList = state.imageList;
       int length1 = state.issueList.length - 1;
-      int length2 = state.issueImageList.length - 1;
+      int length2 = state.imageList.length - 1;
 
       QuerySnapshot _issue = await FirebaseFirestore.instance
           .collection('Issue')
@@ -175,7 +175,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       QuerySnapshot pic = await FirebaseFirestore.instance
           .collection('Picture')
           .where('uid', isEqualTo: UserUtil.getUser().uid)
-          .where('dttm', isLessThan: state.issueImageList[length2].dttm)
+          .where('dttm', isLessThan: state.imageList[length2].dttm)
           .orderBy('dttm', descending: true)
           .get();
       pic.docs.forEach((ds) {
@@ -191,7 +191,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield state.update(
         isLoadingToGetMore: false,
         issueList: combinedList,
-        issueImageList: combinedImageList,
+        imageList: combinedImageList,
         reverseIssueList: reverseList,
       );
     }

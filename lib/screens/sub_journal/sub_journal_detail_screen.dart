@@ -265,7 +265,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
 
   Widget _issueBody(
       {BuildContext context, JournalState state, CommentState cstate}) {
-    List pic = state.issueImageList
+    List pic = state.imageList
         .where((element) => element.issid == widget.list[widget.index].issid)
         .toList();
     return GestureDetector(

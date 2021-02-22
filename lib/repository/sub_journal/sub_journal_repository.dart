@@ -91,6 +91,7 @@ class SubJournalRepository {
         .collection('Picture')
         .where('uid', isEqualTo: UserUtil.getUser().uid)
         .orderBy('dttm', descending: true)
+        .limit(1000)
         .get();
     img.docs.forEach((ds) {
       image.add(ImagePicture.fromSnapshot(ds));
