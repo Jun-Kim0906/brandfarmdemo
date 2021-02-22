@@ -53,56 +53,22 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     List reverseIssueList = [];
     List issueImageList = [];
 
-    orderByRecent = List<DateTime>.generate(100, (i) {
-      return now.add(Duration(days: i));
-    });
+    // get journal list
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    orderByRecent = await SubJournalRepository().getJournal();
+    orderByOldest = List.from(orderByRecent.reversed);
 
-    for (int i = orderByRecent.length - 1; i >= 0; i--) {
-      orderByOldest.add(orderByRecent[i]);
-    }
+    // get issue list
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    issueList = await SubJournalRepository().getIssue();
+    reverseIssueList = List.from(issueList.reversed);
 
-    // Issue State
-    // 예상 1
-    // 진행 2
-    // 완료 3
-    // issueList = List<IssueItem>.generate(20, (i) {
-    //   if(i < 10) {
-    //     return IssueItem(date: now.add(Duration(days: i)), issueState: 1);
-    //   } else if(i > 9 && i < 15) {
-    //     return IssueItem(date: now.add(Duration(days: i)), issueState: 2);
-    //   } else{
-    //     return IssueItem(date: now.add(Duration(days: i)), issueState: 3);
-    //   }
-    //   // return now.add(Duration(days: i));
-    // });
-
-    // for (int i = issueList.length - 1; i >= 0; i--) {
-    //   reverseIssueList.add(issueList[i]);
-    // }
-
-    QuerySnapshot _issue = await FirebaseFirestore.instance
-        .collection('Issue')
-        .where('uid', isEqualTo: UserUtil.getUser().uid)
-        .orderBy('date', descending: true)
-        .limit(20)
-        .get();
-
-    _issue.docs.forEach((ds) {
-      issueList.add(SubJournalIssue.fromSnapshot(ds));
-    });
-
-    for (int i = issueList.length - 1; i >= 0; i--) {
-      reverseIssueList.add(issueList[i]);
-    }
-
-    QuerySnapshot pic = await FirebaseFirestore.instance
-        .collection('Picture')
-        .where('uid', isEqualTo: UserUtil.getUser().uid)
-        .orderBy('dttm', descending: true)
-        .get();
-    pic.docs.forEach((ds) {
-      issueImageList.add(ImagePicture.fromSnapshot(ds));
-    });
+    // get image
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    issueImageList = await SubJournalRepository().getImage();
 
     yield state.update(
       isLoading: false,
