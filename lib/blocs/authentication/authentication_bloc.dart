@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
+import 'package:BrandFarm/utils/feild_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -48,6 +50,11 @@ class AuthenticationBloc
           .collection('User')
           .doc((await UserRepository().getUser()).uid)
           .get()));
+      QuerySnapshot fieldList = await FirebaseFirestore.instance
+          .collection('Field')
+          .where('sfmid', isEqualTo: (await UserRepository().getUser()).uid).get();
+      FieldUtil.setField(Field.fromSnapshot(fieldList.docs.first));
+      print('Login User Field ID : ' + FieldUtil.getField().fid);
       print('Login User Name : ' + UserUtil.getUser().name);
       yield AuthenticationSuccess(UserUtil.getUser().name);
       // yield AuthenticationSuccess('Username');

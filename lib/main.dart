@@ -113,7 +113,7 @@ class _AppState extends State<App> {
                 BlocProvider<WeatherBloc>(
                   create: (BuildContext context) => WeatherBloc(),
                 )
-              ], child: SubHomeScreen(name: state.displayName));
+              ], child: SubHomeScreen());
             } else if (state is AuthenticationInitial && !isDesktop) {
               return SplashScreen(duration: 2);
             } else {
