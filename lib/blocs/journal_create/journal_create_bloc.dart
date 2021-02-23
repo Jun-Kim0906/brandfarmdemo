@@ -419,7 +419,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
 
   Stream<JournalCreateState> _mapNewWriteCompleteChangedToState() async* {
-    Timestamp date = Timestamp.fromDate(state.picked);
     String jid = FirebaseFirestore.instance.collection('Journal').doc().id;
 
 
@@ -427,7 +426,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       fid: UserUtil.getUser().uid,
       jid: state.jid.isNotEmpty ? state.jid : jid,
       uid: UserUtil.getUser().uid,
-      date: date,
+      date: state.selectedDate,
       title: state.title,
       content: state.content,
       widgets: state.widgets,
