@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:BrandFarm/models/profile/profile_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/user/user_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,69 +10,55 @@ import 'package:firebase_storage/firebase_storage.dart';
 class ProfileRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> uploadProfile({
-    Profile profile,
-  }) async {
+  Future<void> uploadProfile() async {
     DocumentReference reference =
-    _firestore.collection('Profile').doc(profile.profid);
-    await reference.set(profile.toDocument());
+    _firestore.collection('User').doc(UserUtil.getUser().uid);
+    await reference.set(UserUtil.getUser().toDocument());
   }
 
-  Future<void> updateProfile({
-    Profile profile,
-  }) async {
+  Future<void> updateProfile() async {
     DocumentReference reference =
-    _firestore.collection('Profile').doc(profile.profid);
-    await reference.update(profile.toDocument());
+    _firestore.collection('User').doc(UserUtil.getUser().uid);
+    await reference.update(UserUtil.getUser().toDocument());
   }
 
-  Future<void> updatePassword({
-    Profile profile,
-  }) async {
+  Future<void> updatePassword({String prev}) async {
     DocumentReference reference =
-    _firestore.collection('Profile').doc(profile.profid);
-    await reference.update(profile.toDocument());
+    _firestore.collection('User').doc(UserUtil.getUser().uid);
+    await reference.update(UserUtil.getUser().toDocument());
 
-    DocumentReference user =
-    _firestore.collection('User').doc(profile.uid);
-    await user.update({"psw":profile.psw});
-
-    await UserRepository().resetPassword(psw: profile.psw);
+    await UserRepository().resetPassword(changed: UserUtil.getUser().psw, prev: prev);
   }
 
-  Future<Profile> getProfile({
-    String uid,
-  }) async {
-    Profile profile;
+  Future<User> getProfile() async {
+    User user;
     await FirebaseFirestore.instance
-        .collection('Profile')
-        .where('uid', isEqualTo: uid)
+        .collection('User')
+        .where('uid', isEqualTo: UserUtil.getUser().uid)
         .get()
         .then((qs) {
       qs.docs.forEach((ds) {
-        profile = Profile.fromSnapshot(ds);
+        user = User.fromSnapshot(ds);
       });
     });
-    return profile;
+    return user;
   }
 
-  Future<void> updateImage({
-    Profile profile,
-  }) async {
+  Future<void> updateImage() async {
 
     DocumentReference reference =
-    _firestore.collection('Profile').doc(profile.profid);
-    await reference.update(profile.toDocument());
+    _firestore.collection('User').doc(UserUtil.getUser().uid);
+    await reference.update(UserUtil.getUser().toDocument());
   }
 
-  Future<String> uploadImageToStorage(File file, String profid) async {
+  Future<String> uploadImageToStorage(File file) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     var url;
     final Reference ref = storage
         .ref()
         .child('profile')
         .child(UserUtil.getUser().uid)
-        .child('$profid.jpg');
+        .child('${UserUtil.getUser().uid}.jpg');
     final UploadTask uploadTask = ref.putFile(file);
 
     await (await uploadTask)

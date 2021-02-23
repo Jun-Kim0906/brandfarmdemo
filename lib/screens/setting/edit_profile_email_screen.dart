@@ -34,10 +34,10 @@ class _EditProfileEmailScreenState extends State<EditProfileEmailScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state.isComplete == true && state.isUploaded == false) {
+        if (state.isEmailComplete == true && state.isUploaded == false) {
           LoadingDialog.onLoading(context);
           _profileBloc.add(EditEmail(email: _textEditingController.text));
-        } else if (state.isComplete == true && state.isUploaded == true) {
+        } else if (state.isEmailComplete == true && state.isUploaded == true) {
           LoadingDialog.dismiss(context, () {
             Navigator.pop(context);
           });
@@ -94,7 +94,7 @@ class _EditProfileEmailScreenState extends State<EditProfileEmailScreen> {
                         },
                         onSubmitted: (text) {
                           if(text.contains('@')) {
-                            _profileBloc.add(CompletePressed());
+                            _profileBloc.add(CompletePressed(from: 3));
                           } else {
                             setState(() {
                               isValid = false;

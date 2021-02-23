@@ -34,10 +34,10 @@ class _EditProfilePhoneNumScreenState extends State<EditProfilePhoneNumScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
-          if (state.isComplete == true && state.isUploaded == false) {
+          if (state.isPhoneComplete == true && state.isUploaded == false) {
             LoadingDialog.onLoading(context);
             _profileBloc.add(EditPhoneNum(num: _textEditingController.text));
-          } else if (state.isComplete == true && state.isUploaded == true) {
+          } else if (state.isPhoneComplete == true && state.isUploaded == true) {
             LoadingDialog.dismiss(context, () {
               Navigator.pop(context);
             });
@@ -94,7 +94,7 @@ class _EditProfilePhoneNumScreenState extends State<EditProfilePhoneNumScreen> {
                           },
                           onSubmitted: (text) {
                             if(text.contains('-')) {
-                              _profileBloc.add(CompletePressed());
+                              _profileBloc.add(CompletePressed(from: 2));
                             } else {
                               setState(() {
                                 isValid = false;

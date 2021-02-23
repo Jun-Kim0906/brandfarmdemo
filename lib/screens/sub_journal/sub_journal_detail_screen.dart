@@ -3,8 +3,6 @@ import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
-import 'package:BrandFarm/utils/todays_date.dart';
-import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';

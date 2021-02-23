@@ -8,16 +8,16 @@ class UserRepository {
   UserRepository({FirebaseAuth firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
-  Future<void> signInWithCredentials(String email, String password) {
+  Future<void> signInWithCredentials(String id, String password) {
     return _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
+      email: id,
       password: password,
     );
   }
 
-  Future<void> signUp({String email, String password}) async {
+  Future<void> signUp({String id, String password}) async {
     return await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
+      email: id,
       password: password,
     );
   }
@@ -37,15 +37,15 @@ class UserRepository {
     return (_firebaseAuth.currentUser);
   }
 
-  Future<void> resetPassword({String psw}) async {
+  Future<void> resetPassword({String changed, String prev}) async {
     final currentUser = await _firebaseAuth.currentUser;
     UserCredential authResult = await currentUser.reauthenticateWithCredential(
        EmailAuthProvider.credential(
-         email: await UserUtil.getUser().email,
-         password: await UserUtil.getUser().psw,
+         email: await UserUtil.getUser().id,
+         password: prev,
        ),
     );
-    await authResult.user.updatePassword(psw).then((_) {
+    await authResult.user.updatePassword(changed).then((_) {
       print('Successfully changed password');
     }).catchError((error) {
       print("Password can't be changed: " + error.toString());

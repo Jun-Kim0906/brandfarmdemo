@@ -1,15 +1,21 @@
-import 'package:BrandFarm/models/profile/profile_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:flutter/foundation.dart';
 
 class ProfileState {
   bool isLoading;
-  bool isComplete;
+  bool isEmailComplete;
+  bool isPhoneComplete;
+  bool isPswComplete;
+  bool isImageComplete;
   bool isUploaded;
-  Profile profile;
+  User profile;
 
   ProfileState({
     @required this.isLoading,
-    @required this.isComplete,
+    @required this.isEmailComplete,
+    @required this.isPhoneComplete,
+    @required this.isPswComplete,
+    @required this.isImageComplete,
     @required this.isUploaded,
     @required this.profile,
   });
@@ -17,17 +23,20 @@ class ProfileState {
   factory ProfileState.empty() {
     return ProfileState(
       isLoading: false,
-      isComplete: false,
+      isEmailComplete: false,
+      isPhoneComplete: false,
+      isPswComplete: false,
+      isImageComplete: false,
       isUploaded: false,
-      profile: Profile(
+      profile: User(
+        id: '--',
+        fcmToken: '--',
           email: '--',
-        profid: '--',
         name: '--',
         position: 0,
         uid: '--',
         psw: '--',
         imgUrl: '--',
-        addr: '--',
         phone: 'xxx-xxxx-xxxx'
       ),
     );
@@ -35,13 +44,19 @@ class ProfileState {
 
   ProfileState copyWith({
     bool isLoading,
-    bool isComplete,
+    bool isEmailComplete,
+    bool isPhoneComplete,
+    bool isPswComplete,
+    bool isImageComplete,
     bool isUploaded,
-    Profile profile,
+    User profile,
   }) {
     return ProfileState(
       isLoading: isLoading ?? this.isLoading,
-      isComplete: isComplete ?? this.isComplete,
+      isEmailComplete: isEmailComplete ?? this.isEmailComplete,
+      isPhoneComplete: isPhoneComplete ?? this.isPhoneComplete,
+      isPswComplete: isPswComplete ?? this.isPswComplete,
+      isImageComplete: isImageComplete ?? this.isImageComplete,
       isUploaded: isUploaded ?? this.isUploaded,
       profile: profile ?? this.profile,
     );
@@ -49,13 +64,19 @@ class ProfileState {
 
   ProfileState update({
     bool isLoading,
-    bool isComplete,
+    bool isEmailComplete,
+    bool isPhoneComplete,
+    bool isPswComplete,
+    bool isImageComplete,
     bool isUploaded,
-    Profile profile,
+    User profile,
   }) {
     return copyWith(
       isLoading: isLoading,
-      isComplete: isComplete,
+      isEmailComplete: isEmailComplete,
+      isPhoneComplete: isPhoneComplete,
+      isPswComplete: isPswComplete,
+      isImageComplete: isImageComplete,
       isUploaded: isUploaded,
       profile: profile,
     );
@@ -65,7 +86,10 @@ class ProfileState {
   String toString() {
     return '''ProfileState{
     isLoading: $isLoading,
-    isComplete: $isComplete,
+    isEmailComplete: $isEmailComplete,
+    isPhoneComplete: $isPhoneComplete,
+    isPswComplete: $isPswComplete,
+    isImageComplete: $isImageComplete,
     isUploaded: $isUploaded,
     profile: $profile,
     }
