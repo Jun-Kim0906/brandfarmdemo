@@ -54,19 +54,6 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  List commentList = [
-    '최브팜',
-    '최브팜',
-    '최브팜',
-    '최브팜',
-    '최브팜',
-    '박브팜',
-    '박브팜',
-    '박브팜',
-    '박브팜',
-    '박브팜',
-    '박브팜',
-  ];
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -545,22 +532,12 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           SizedBox(
             height: 12,
           ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          //   child: _weatherCard(),
-          // ),
-          // SizedBox(
-          //   height: 41,
-          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
                 child: Text(
               '일일 활동내역',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: Theme.of(context).textTheme.headline5
             )),
           ),
           SizedBox(
@@ -635,17 +612,13 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   }
 
   Widget _journalDate({BuildContext context, JournalState state}) {
-    DateTime date = DateTime
-        .fromMicrosecondsSinceEpoch(widget.list[widget.index].date.microsecondsSinceEpoch);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
           child: Text(
-            '${date.year}년 ${date.month}월 ${date.day}일 --',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
+            '${DateFormat('yMMMMEEEEd', 'ko').format(widget.list[widget.index].date.toDate())}',
+            style: Theme.of(context).textTheme.subtitle2.copyWith(
+              fontSize: 16.0, color: Theme.of(context).primaryColor)
           )),
     );
   }
@@ -664,13 +637,17 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
               tilePadding: EdgeInsets.symmetric(horizontal: defaultPadding),
               collapsedBackgroundColor: Color(0xFFF3F3F3),
               backgroundColor: Color(0xFFF3F3F3),
-              title: Text(
-                '출하정보',
-                style: Theme.of(context)
-                    .textTheme
-                    .infoContainerTitleTextTheme
-                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+              title: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  '출하정보',
+                  style: Theme.of(context)
+                      .textTheme
+                      .infoContainerTitleTextTheme
+                      .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
+
               children: [
                 Container(
                   color: Colors.white,

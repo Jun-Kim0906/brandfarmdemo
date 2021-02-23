@@ -1,7 +1,9 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/comment/comment_bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_create_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -429,11 +431,12 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           onPressed: () {
                             if (_tab == 0) {
                               Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        SubJournalDetailScreen()),
-                              );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (BuildContext context) => JournalCreateBloc(),
+                                        child: SubJournalCreateScreen(),
+                                      )));
                             } else {
                               Navigator.push(
                                   context,
@@ -589,10 +592,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         )
                       : Text(
                           '전체',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 20,
-                              ),
+                          style: JournalListSearchBarStyle
                         ),
                   SizedBox(
                     width: 7,
@@ -644,10 +644,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           children: [
                             Text(
                               fieldListOptions,
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14,
-                              ),
+                              style: Theme.of(context).textTheme.bodyText2
                             ),
                             SizedBox(
                               width: 2,
@@ -689,10 +686,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 children: [
                   Text(
                     issueListOptions,
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        ),
+                    style: JournalListSearchBarStyle
                   ),
                   SizedBox(
                     width: 7,
@@ -1370,23 +1364,13 @@ class _JournalListScreenState extends State<JournalListScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            // SizedBox(
-            //   height: 31,
-            // ),
-            _monthWidget(
-                month: currentMonth,
-                year: DateFormat('yyyy').format(
-                    DateTime.fromMicrosecondsSinceEpoch(items[index]
-                        .date.microsecondsSinceEpoch)),
-                state: state,
-                index: index),
-            SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
+        _monthWidget(
+            month: currentMonth,
+            year: DateFormat('yyyy').format(
+                DateTime.fromMicrosecondsSinceEpoch(items[index]
+                    .date.microsecondsSinceEpoch)),
+            state: state,
+            index: index),
         _customListTile(
           date: int.parse(DateFormat('dd').format(
               DateTime.fromMicrosecondsSinceEpoch(items[index]
@@ -1404,7 +1388,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   Widget _monthWidget(
       {String month, String year, JournalState state, int index}) {
     return Container(
-      height: 22,
+      height: 52,
       child: Row(
         children: [
           SizedBox(
@@ -1428,7 +1412,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
       _pic = pic.where((element) => element.jid == list[index].jid).toList();
     }
     return Container(
-      height: 92,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -1486,10 +1469,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   ),
                   Divider(
-                          height: 20,
                           thickness: 1,
-                          // indent: 10,
-                          // endIndent: 10,
                         ),
                 ],
               ),
@@ -1507,17 +1487,14 @@ class _JournalListScreenState extends State<JournalListScreen> {
           children: [
             Text(
               '$date',
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w300,
-                  ),
+              style: DateIconNumberStyle,
             ),
             Text(
               week,
               style: Theme.of(context).textTheme.bodyText2.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.normal,
-                    color: Color(0x50000000),
+                    color: Color(0x80000000),
                   ),
             ),
           ],
@@ -1527,8 +1504,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   Widget titleNSubtitle({List list, int index}) {
-    DateTime title = DateTime.fromMicrosecondsSinceEpoch(list[index]
-        .date.microsecondsSinceEpoch);
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1537,11 +1512,8 @@ class _JournalListScreenState extends State<JournalListScreen> {
           Container(
             width: 192,
             child: Text(
-              '${title.year}년 ${title.month}월 ${title.day}일의 일지',
-              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    fontWeight: FontWeight.normal,
-                    color: Color(0xFF000000),
-                  ),
+              '${DateFormat('yMMMMd', 'ko').format(list[index].date.toDate())}일의 일지',
+              style: Theme.of(context).textTheme.bodyText1,
             ),
           ),
           SizedBox(
@@ -1557,7 +1529,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   '${list[index].content}' ?? '--',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.normal,
-                        color: Color(0xFF999999),
+                        color: Color(0xB3000000),
                       ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -1577,7 +1549,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Color(0x30000000),
+                      color: Color(0x4D000000),
                     ),
                   ),
                   SizedBox(
@@ -1588,7 +1560,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: Color(0x30000000),
+                          color: Color(0x4D000000),
                         ),
                   ),
                 ],

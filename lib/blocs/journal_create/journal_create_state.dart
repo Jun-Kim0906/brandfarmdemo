@@ -26,7 +26,6 @@ class JournalCreateState {
   final String content;
   final List<String> tag;
   final List<String> originalTag;
-  // final DateTime date;
 
   final List<Widgets> widgets;
   final List<String> widgetList;
@@ -44,7 +43,7 @@ class JournalCreateState {
   //=======================
   final List<Journal> journal;
   final bool isEditDate;
-  final DateTime picked;
+  // final DateTime picked;
   final bool isLoading;
 
   ///사진정보
@@ -182,7 +181,7 @@ class JournalCreateState {
     @required this.isSuggestion,
     @required this.journal,
     @required this.isEditDate,
-    @required this.picked,
+    // @required this.picked,
     @required this.isLoading,
 
     ///사진정보
@@ -337,7 +336,7 @@ class JournalCreateState {
 
       journal: [],
       isEditDate: false,
-      picked: DateTime.parse('${DateTime.now().year}${month}${day}'),
+      // picked: DateTime.parse('${DateTime.now().year}${month}${day}'),
       isLoading: false,
 
       ///사진정보
@@ -906,7 +905,7 @@ class JournalCreateState {
       isDeleted: isDeleted ?? false,
       isSuggestion: isSuggestion ?? false,
       isEditDate: isEditDate ?? this.isEditDate,
-      picked: picked ?? this.picked,
+      // picked: picked ?? this.picked,
 
       pastBtn: pastBtn ?? this.pastBtn,
       writeComplete: writeComplete ?? false,
@@ -1044,7 +1043,6 @@ class JournalCreateState {
       journal: $journal,
       selectDatePressed: $selectDatePressed,
       isEditDate: $isEditDate,
-      picked: $picked,
       category: $category,
     }''';
   }
