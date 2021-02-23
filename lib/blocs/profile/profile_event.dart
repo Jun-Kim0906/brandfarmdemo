@@ -14,7 +14,19 @@ class LoadProfile extends ProfileEvent {}
 
 class GetProfile extends ProfileEvent {}
 
-class CompletePressed extends ProfileEvent {}
+class CompletePressed extends ProfileEvent {
+  final int from;
+
+  const CompletePressed({@required this.from});
+
+  @override
+  List<Object> get props => [num];
+
+  @override
+  String toString() => '''CompletePressed { 
+    from: $from, 
+  }''';
+}
 
 class Reset extends ProfileEvent {}
 

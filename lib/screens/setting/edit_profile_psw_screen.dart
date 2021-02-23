@@ -34,10 +34,10 @@ class _EditProfilePswScreenState extends State<EditProfilePswScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state.isComplete == true && state.isUploaded == false) {
+        if (state.isPswComplete == true && state.isUploaded == false) {
           LoadingDialog.onLoading(context);
           _profileBloc.add(EditPassword(psw: _textEditingController.text));
-        } else if (state.isComplete == true && state.isUploaded == true) {
+        } else if (state.isPswComplete == true && state.isUploaded == true) {
           LoadingDialog.dismiss(context, () {
             Navigator.pop(context);
           });
@@ -93,7 +93,7 @@ class _EditProfilePswScreenState extends State<EditProfilePswScreen> {
                           });
                         },
                         onSubmitted: (text) {
-                          _profileBloc.add(CompletePressed());
+                          _profileBloc.add(CompletePressed(from: 4));
                         },
                         style: Theme.of(context).textTheme.bodyText1,
                         decoration: InputDecoration(

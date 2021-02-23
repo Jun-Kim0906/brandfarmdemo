@@ -8,6 +8,9 @@ class User {
   final String name;
   final int position;
   final String psw;
+  final String id;
+  final String imgUrl;
+  final String phone;
 
   User({
     @required this.email,
@@ -16,6 +19,9 @@ class User {
     @required this.position,
     @required this.uid,
     @required this.psw,
+    @required this.id,
+    @required this.imgUrl,
+    @required this.phone,
   });
 
   factory User.fromSnapshot(DocumentSnapshot ds) {
@@ -26,6 +32,9 @@ class User {
       position: ds['position'],
       uid: ds['uid'].toString(),
       psw: ds['psw'].toString(),
+      id: ds['id'].toString(),
+      imgUrl: ds['imgUrl'].toString(),
+      phone: ds['phone'].toString(),
     );
   }
 
@@ -37,6 +46,9 @@ class User {
       'position': position,
       'uid': uid,
       'psw': psw,
+      'id': id,
+      'imgUrl': imgUrl,
+      'phone': phone,
     };
   }
 }

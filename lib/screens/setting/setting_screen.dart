@@ -34,7 +34,7 @@ class _SettingScreenState extends State<SettingScreen> {
           style: Theme.of(context).textTheme.bodyText2.copyWith(
             fontSize: 18,
             color: Colors.black,
-        ),),
+          ),),
       ),
       body: Container(
         // padding: EdgeInsets.only(top: ),
@@ -44,10 +44,10 @@ class _SettingScreenState extends State<SettingScreen> {
             ListTile(
               onTap: (){
                 Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => BlocProvider(
-                    create: (BuildContext context) => ProfileBloc()..add(LoadProfile()),
-                    child: ProfileScreen(),
-                  ))
+                    MaterialPageRoute(builder: (context) => BlocProvider(
+                      create: (BuildContext context) => ProfileBloc(),
+                      child: ProfileScreen(),
+                    ))
                 );
               },
               leading: Text('프로필 / 계정 설정',

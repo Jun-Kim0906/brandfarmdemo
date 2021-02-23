@@ -9,6 +9,7 @@ class Field {
   final String lng;
   final String city;
   final String province;
+  final String name;
 
   Field({
     @required this.fid,
@@ -18,6 +19,7 @@ class Field {
     @required this.lng,
     @required this.city,
     @required this.province,
+    @required this.name,
   });
 
   factory Field.fromSnapshot(DocumentSnapshot ds) {
@@ -29,6 +31,7 @@ class Field {
       lng: ds['lng'],
       city: ds['city'],
       province: ds['province'],
+      name: ds['name'],
     );
   }
 
@@ -41,6 +44,7 @@ class Field {
       'lng' : lng,
       'city' : city,
       'province' : province,
+      'name' : name,
     };
   }
 }

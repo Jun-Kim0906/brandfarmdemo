@@ -2,14 +2,16 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/profile/bloc.dart';
-import 'package:BrandFarm/screens/setting/edit_profile_image_screen.dart';
 import 'package:BrandFarm/screens/setting/password_screen.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/profile/profile_util.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -20,10 +22,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ProfileBloc _profileBloc;
   bool isDefaultPressed = false;
   File profileImage;
+  DefaultCacheManager manager;
 
   @override
   void initState() {
     super.initState();
+    manager = DefaultCacheManager();
+    manager.emptyCache();
     _profileBloc = BlocProvider.of<ProfileBloc>(context);
     _profileBloc.add(GetProfile());
   }
@@ -32,12 +37,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state.isComplete == true && state.isUploaded == false) {
+        if (state.isImageComplete == true && state.isUploaded == false) {
           LoadingDialog.onLoading(context);
           (isDefaultPressed)
               ? _profileBloc.add(ChangeBackToDefaultImage())
               : _profileBloc.add(ChangeProfileImage(img: profileImage));
-        } else if (state.isComplete == true && state.isUploaded == true) {
+        } else if (state.isImageComplete == true && state.isUploaded == true) {
           LoadingDialog.dismiss(context, () {
             Navigator.pop(context);
           });
@@ -90,10 +95,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: Colors.grey,
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
-                                        image: (state.profile.imgUrl.isNotEmpty)
-                                            ? NetworkImage(
-                                                state.profile.imgUrl)
-                                            : AssetImage('assets/profile.png'),
+                                        image: (state.profile.imgUrl.isEmpty || state.profile.imgUrl == '--')
+                                            ? AssetImage('assets/profile.png')
+                                            : CachedNetworkImageProvider(
+                                            state.profile.imgUrl),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -179,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                 ),
                                 Text(
-                                  state.profile.addr ?? '주소',
+                                  '${FieldUtil.getField().name}' ?? '주소',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1
@@ -303,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             setState(() {
                               isDefaultPressed = true;
                             });
-                            _profileBloc.add(CompletePressed());
+                            _profileBloc.add(CompletePressed(from: 1));
                           },
                           title: Center(
                             child: Text(
@@ -329,7 +334,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               isDefaultPressed = false;
                               profileImage = image;
                             });
-                            _profileBloc.add(CompletePressed());
+                            if(image != null) {
+                              _profileBloc.add(CompletePressed(from: 1));
+                            }
                           },
                           title: Center(
                             child: Text(
@@ -355,7 +362,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               isDefaultPressed = false;
                               profileImage = image;
                             });
-                            _profileBloc.add(CompletePressed());
+                            if(image != null) {
+                              _profileBloc.add(CompletePressed(from: 1));
+                            }
                           },
                           title: Center(
                             child: Text(
