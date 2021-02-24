@@ -1,4 +1,3 @@
-
 import 'package:BrandFarm/models/journal/fertilize_model.dart';
 
 class FertilizerUtil {

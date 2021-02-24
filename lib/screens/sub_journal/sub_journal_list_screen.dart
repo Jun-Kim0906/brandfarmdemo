@@ -5,6 +5,7 @@ import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_detail_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_create_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
@@ -1258,10 +1259,8 @@ class _JournalListScreenState extends State<JournalListScreen> {
                               CommentBloc()..add(LoadComment()),
                         ),
                       ],
-                      child: SubJournalDetailScreen(
-                        from: 'issue',
-                        index: index,
-                        list: list,
+                      child: SubJournalIssueDetailScreen(
+                        subJournalIssue: list[index],
                         issueListOptions: issueListOptions,
                         issueOrder: issueOrder,
                       ),
@@ -1428,8 +1427,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         ),
                       ],
                       child: SubJournalDetailScreen(
-                        index: index,
-                        list: list,
+                        journal: list[index],
                       ),
                     )),
           );
@@ -1526,7 +1524,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${list[index].content}' ?? '--',
+                  '${list[index].title}' ?? '--',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.normal,
                         color: Color(0xB3000000),

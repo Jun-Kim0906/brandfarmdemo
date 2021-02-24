@@ -1,10 +1,12 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
-import 'package:BrandFarm/models/journal/journal_model.dart';
-import 'package:BrandFarm/screens/sub_journal/tableWidget/tableWidgets.dart';
-import 'package:BrandFarm/utils/column_builder.dart';
+import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,29 +14,32 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class SubJournalDetailScreen extends StatefulWidget {
-  SubJournalDetailScreen({
+class SubJournalIssueDetailScreen extends StatefulWidget {
+  SubJournalIssueDetailScreen({
     Key key,
-    this.journal,
+    this.subJournalIssue,
     this.issueListOptions,
     this.issueOrder,
-  }) : super(key: key);
+  })  :
+        super(key: key);
 
-  final Journal journal;
+  final SubJournalIssue subJournalIssue;
   final String issueListOptions;
   final int issueOrder;
 
   @override
-  _SubJournalDetailScreenState createState() => _SubJournalDetailScreenState();
+  _SubJournalIssueDetailScreenState createState() => _SubJournalIssueDetailScreenState();
 }
 
-class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
+class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScreen> {
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   TextEditingController _textEditingController;
   ScrollController _scrollController;
+  JournalBloc _journalBloc;
   CommentBloc _commentBloc;
+  SubJournalIssue subJournalIssue;
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -60,7 +65,12 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   @override
   void initState() {
     super.initState();
+    subJournalIssue = widget.subJournalIssue;
+    _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
+    _commentBloc.add(LoadComment());
+      _commentBloc.add(GetComment(issid: subJournalIssue.issid));
+      numOfComments = subJournalIssue.comments;
     Future.delayed(Duration.zero, () {
       height = MediaQuery.of(context).size.height / 2;
       print(height);
@@ -89,7 +99,6 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
         if (_isVisible == true) {
-          // print("**** ${_isVisible} up");
           if (this.mounted) {
             setState(() {
               _isVisible = false;
@@ -100,7 +109,6 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         if (_scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           if (_isVisible == false) {
-            // print("**** ${_isVisible} down");
             if (this.mounted) {
               setState(() {
                 _isVisible = true;
@@ -135,7 +143,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                     appBar: _appBar(context: context),
                     body: Stack(
                             children: [
-                              _journalBody(
+                              _issueBody(
                                 context: context,
                                 state: state,
                                 cstate: cstate,
@@ -152,7 +160,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                                 ),
                               ),
                             ],
-                          )
+                          ),
                   );
           },
         );
@@ -171,7 +179,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       ),
       centerTitle: true,
       title: Text(
-              '${widget.journal.title}',
+              '${subJournalIssue.title}',
               style: TextStyle(
                 fontWeight: FontWeight.normal,
                 fontSize: 16,
@@ -180,7 +188,28 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
             ),
       actions: [
         FlatButton(
-          onPressed: (){},
+          onPressed: () {Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (BuildContext context) =>
+                                JournalIssueModifyBloc(),
+                          ),
+                          BlocProvider.value(
+                            value: _journalBloc,
+                          ),
+                        ],
+                        child: SubJournalIssueModifyScreen(
+                          from: 'issue',
+                          issid: subJournalIssue.issid,
+                          obj: subJournalIssue,
+                          comments: numOfComments,
+                        ),
+                      )),
+            );
+          },
           child: Text(
             '편집',
             style: TextStyle(
@@ -194,6 +223,202 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
+  Widget _issueBody(
+      {BuildContext context, JournalState state, CommentState cstate}) {
+    List pic = state.imageList
+        .where((element) => element.issid == subJournalIssue.issid)
+        .toList();
+    return GestureDetector(
+      onTap: () {
+        myfocusNode.unfocus();
+        _textEditingController.clear();
+        setState(() {
+          _isSubCommentClicked = false;
+        });
+      },
+      child: ListView(
+        shrinkWrap: true,
+        controller: _scrollController,
+        children: [
+          SizedBox(
+            height: 13,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+            child: Container(
+              height: 150,
+              padding: EdgeInsets.fromLTRB(46, 23, 46, 25),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                  width: 1,
+                  color: Color(0x30000000),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 26,
+                        child: Text('날짜',
+                            style:
+                                Theme.of(context).textTheme.bodyText2.copyWith(
+                                      color: Color(0x70000000),
+                                    )),
+                      ),
+                      SizedBox(
+                        width: 14,
+                      ),
+                      Text(
+                        '${DateFormat('yMMMMEEEEd', 'ko').format(DateTime.fromMicrosecondsSinceEpoch(subJournalIssue.date.microsecondsSinceEpoch))}',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 19,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 52,
+                        child: Text('카테고리',
+                            style:
+                                Theme.of(context).textTheme.bodyText2.copyWith(
+                                      color: Color(0x70000000),
+                                    )),
+                      ),
+                      SizedBox(
+                        width: 11,
+                      ),
+                      Text(
+                        getCategoryInfo(
+                            category: subJournalIssue.category),
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              color: Color(0xFF219653),
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 19,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 52,
+                        child: Text('이슈상태',
+                            style:
+                                Theme.of(context).textTheme.bodyText2.copyWith(
+                                      color: Color(0x70000000),
+                                    )),
+                      ),
+                      SizedBox(
+                        width: 11,
+                      ),
+                      DepartmentBadge(
+                          department: getIssueState(
+                              state: subJournalIssue.issueState)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 32,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+            child: Text(
+              subJournalIssue.contents,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          (pic.isNotEmpty)
+              ? Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Color(0x20000000),
+                )
+              : Container(),
+          (pic.isNotEmpty)
+              ? SizedBox(
+                  height: 10,
+                )
+              : Container(),
+          (pic.isNotEmpty)
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Row(
+                    children: [
+                      Text(
+                        '사진',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                      ),
+                      SizedBox(
+                        width: 14,
+                      ),
+                      Text(
+                        '${pic.length}',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Color(0xFF15B85B),
+                            ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+          (pic.isNotEmpty)
+              ? SizedBox(
+                  height: 9,
+                )
+              : Container(),
+          (pic.isNotEmpty)
+              ? _addPictureBar(context: context, pic: pic)
+              : Container(),
+          (pic.isNotEmpty)
+              ? SizedBox(
+                  height: 17,
+                )
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Color(0x20000000),
+                )
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? SizedBox(
+                  height: 20,
+                )
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? _comment(context: context, state: cstate)
+              : Container(),
+          (cstate.comments.isNotEmpty)
+              ? SizedBox(
+                  height: 91,
+                )
+              : Container(),
+        ],
+      ),
+    );
+  }
 
   String getCategoryInfo({int category}) {
     switch (category) {
@@ -244,389 +469,70 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     }
   }
 
-  Widget _journalBody(
-      {BuildContext context, JournalState state, CommentState cstate}) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        TextEditingController().clear();
-      },
-      child: ListView(
-        children: [
-          SizedBox(
-            height: 24,
-          ),
-          _journalDate(context: context, state: state),
-          SizedBox(
-            height: 12,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-                child: Text('일일 활동내역',
-                    style: Theme.of(context).textTheme.headline5)),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          _infoContainer(context: context),
-          SizedBox(
-            height: 31,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              child: Row(
-                children: [
-                  Text(
-                    '사진',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF000000),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    '4',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF219653),
-                    ),
-                  ),
-                ],
+  Widget _addPictureBar({
+    BuildContext context,
+    List pic,
+  }) {
+    return Container(
+      height: 74,
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemCount: pic.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Row(
+            children: [
+              SizedBox(
+                width: defaultPadding,
               ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          _imageList(context: context),
-          SizedBox(
-            height: 35,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-                padding: EdgeInsets.only(left: 10),
-                child: Text(
-                  '과정 기록',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                )),
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          _record(context: context),
-          SizedBox(
-            height: 55,
-          ),
-          Divider(
-            height: 0,
-            thickness: 1,
-            color: Colors.grey,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _journalDate({BuildContext context, JournalState state}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Container(
-          child: Text(
-              '${DateFormat('yMMMMEEEEd', 'ko').format(widget.journal.date.toDate())}',
-              style: Theme.of(context).textTheme.subtitle2.copyWith(
-                  fontSize: 16.0, color: Theme.of(context).primaryColor))),
-    );
-  }
-
-  Widget _infoContainer({BuildContext context}) {
-    Journal selectedJournal = widget.journal;
-    return ColumnBuilder(
-        itemBuilder: (context, listIndex) {
-          return Column(
-            children: <Widget>[
-              if (selectedJournal.widgets[listIndex].name == "출하정보")
-                ShipmentTable(
-                    "출하정보",
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentPlant,
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentPath,
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentUnitSelect,
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentUnit
-                        .toString(),
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentAmount
-                        .toString(),
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentGrade,
-                    selectedJournal
-                        .shipment[selectedJournal.widgets[listIndex].index]
-                        .shipmentPrice
-                        .toString()),
-              if (selectedJournal.widgets[listIndex].name == "비료정보")
-                FertilizerTable(
-                    "비료정보",
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerMethod,
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerArea
-                        .toString(),
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerAreaUnit,
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerMaterialName,
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerMaterialUse,
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerMaterialUnit,
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerWater,
-                    selectedJournal
-                        .fertilize[selectedJournal.widgets[listIndex].index]
-                        .fertilizerWaterUnit),
-              if (selectedJournal.widgets[listIndex].name == "농약정보")
-                FertilizerTable(
-                    "농약정보",
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideMethod,
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideArea
-                        .toString(),
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideAreaUnit,
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideMaterialName,
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideMaterialUse,
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideMaterialUnit,
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideWater,
-                    selectedJournal
-                        .pesticide[selectedJournal.widgets[listIndex].index]
-                        .pesticideWaterUnit),
-              if (selectedJournal.widgets[listIndex].name == "병,해충정보")
-                PestTable(
-                    "병,해충정보",
-                    selectedJournal
-                        .pest[selectedJournal.widgets[listIndex].index]
-                        .pestKind,
-                    selectedJournal
-                        .pest[selectedJournal.widgets[listIndex].index]
-                        .spreadDegree
-                        .toString(),
-                    selectedJournal
-                        .pest[selectedJournal.widgets[listIndex].index]
-                        .spreadDegreeUnit),
-              if (selectedJournal.widgets[listIndex].name == "정식정보")
-                PlantingTable(
-                    "정식정보",
-                    selectedJournal
-                        .planting[selectedJournal.widgets[listIndex].index]
-                        .plantingArea
-                        .toString(),
-                    selectedJournal
-                        .planting[selectedJournal.widgets[listIndex].index]
-                        .plantingAreaUnit,
-                    selectedJournal
-                        .planting[selectedJournal.widgets[listIndex].index]
-                        .plantingCount,
-                    selectedJournal
-                        .planting[selectedJournal.widgets[listIndex].index]
-                        .plantingPrice
-                        .toString()),
-              if (selectedJournal.widgets[listIndex].name == "파종정보")
-                SeedingTable(
-                    "파종정보",
-                    selectedJournal
-                        .seeding[selectedJournal.widgets[listIndex].index]
-                        .seedingArea
-                        .toString(),
-                    selectedJournal
-                        .seeding[selectedJournal.widgets[listIndex].index]
-                        .seedingAreaUnit,
-                    selectedJournal
-                        .seeding[selectedJournal.widgets[listIndex].index]
-                        .seedingAmount
-                        .toString(),
-                    selectedJournal
-                        .seeding[selectedJournal.widgets[listIndex].index]
-                        .seedingAmountUnit),
-              if (selectedJournal.widgets[listIndex].name == "제초정보")
-                WeedingTable(
-                    "제초정보",
-                    selectedJournal
-                        .weeding[selectedJournal.widgets[listIndex].index]
-                        .weedingProgress
-                        .toString(),
-                    selectedJournal
-                        .weeding[selectedJournal.widgets[listIndex].index]
-                        .weedingUnit),
-              if (selectedJournal.widgets[listIndex].name == "관수정보")
-                WateringTable(
-                    "관수정보",
-                    selectedJournal
-                        .watering[selectedJournal.widgets[listIndex].index]
-                        .wateringArea
-                        .toString(),
-                    selectedJournal
-                        .watering[selectedJournal.widgets[listIndex].index]
-                        .wateringAreaUnit,
-                    selectedJournal
-                        .watering[selectedJournal.widgets[listIndex].index]
-                        .wateringAmount
-                        .toString(),
-                    selectedJournal
-                        .watering[selectedJournal.widgets[listIndex].index]
-                        .wateringAmountUnit),
-              if (selectedJournal.widgets[listIndex].name == "인력투입정보")
-                WorkForceTable(
-                    "인력투입정보",
-                    selectedJournal
-                        .workforce[selectedJournal.widgets[listIndex].index]
-                        .workforceNum
-                        .toString(),
-                    selectedJournal
-                        .workforce[selectedJournal.widgets[listIndex].index]
-                        .workforcePrice
-                        .toString()),
-              if (selectedJournal.widgets[listIndex].name == "경운정보")
-                FarmingTable(
-                  "경운정보",
-                  selectedJournal
-                      .farming[selectedJournal.widgets[listIndex].index]
-                      .farmingArea
-                      .toString(),
-                  selectedJournal
-                      .farming[selectedJournal.widgets[listIndex].index]
-                      .farmingAreaUnit,
-                  selectedJournal
-                      .farming[selectedJournal.widgets[listIndex].index]
-                      .farmingMethod,
-                  selectedJournal
-                      .farming[selectedJournal.widgets[listIndex].index]
-                      .farmingMethodUnit,
-                ),
+              _image(
+                context: context,
+                url: pic[index].url,
+              ),
+              (index == pic.length - 1)
+                  ? SizedBox(
+                      width: defaultPadding,
+                    )
+                  : Container(),
             ],
           );
         },
-        itemCount: selectedJournal.widgets.length);
+      ),
+    );
   }
 
-  Widget _imageList({BuildContext context}) {
+  Widget _image({BuildContext context, String url}) {
     return Container(
-      height: 85,
-      width: MediaQuery.of(context).size.width,
-      child: Center(
-        child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: 6,
-          itemBuilder: (context, index) {
-            return (index == 0)
-                ? Row(
-                    children: [
-                      SizedBox(
-                        width: defaultPadding,
-                      ),
-                      Container(
-                        height: 85,
-                        width: 85,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/strawberry.png'),
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.5),
-                                BlendMode.srcATop),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      SizedBox(
-                        width: 1,
-                        height: 85,
-                      ),
-                      Container(
-                        height: 85,
-                        width: 85,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/strawberry.png'),
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.5),
-                                BlendMode.srcATop),
-                          ),
-                        ),
-                      ),
-                      (index == 5)
-                          ? SizedBox(
-                              width: defaultPadding,
-                            )
-                          : Container(),
-                    ],
-                  );
-          },
+      height: 74.0,
+      width: 74.0,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: CachedNetworkImageProvider(
+            url,
+          ),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.5), BlendMode.srcATop),
         ),
       ),
     );
   }
 
-  Widget _record({BuildContext context}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(8, 11, 19, 11),
-          child: Text(
-            '포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항 포항항',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+  Widget _comment({BuildContext context, CommentState state}) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: List.generate(state.comments.length, (index) {
+          return Column(
+            children: [
+              commentTile(context: context, state: state, index: index),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -980,33 +886,32 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               });
                               if (_isSubCommentClicked) {
                                   _commentBloc.add(AddSubComment(
-                                    from: 'journal',
-                                    id: widget.journal.jid,
+                                    from: 'issue',
+                                    id: subJournalIssue.issid,
                                     comment: comment,
                                     cmtid: cmtid,
                                   ));
+
                               } else {
                                   _commentBloc.add(AddComment(
-                                    from: 'journal',
-                                    id: widget.journal.jid,
+                                    from: 'issue',
+                                    id: subJournalIssue.issid,
                                     comment: comment,
                                   ));
-
                               }
                               setState(() {
                                 _isSubCommentClicked = false;
                                 numOfComments += 1;
                               });
-                              // _commentBloc.add(LoadComment());
-                              // _commentBloc.add(GetComment(
-                              //     issid: widget.journal.jid));
-                              // _textEditingController.clear();
-                              // _journalBloc.add(AddIssueComment(
-                              //     index: widget.index,
-                              //     issueListOptions: widget.issueListOptions,
-                              //     issueOrder: widget.issueOrder,
-                              //     issid: widget.list[widget.index].issid)
-                              // );
+                              _commentBloc.add(LoadComment());
+                              _commentBloc.add(GetComment(
+                                  issid: subJournalIssue.issid));
+                              _textEditingController.clear();
+                              _journalBloc.add(AddIssueComment(
+                                  // index: widget.index,
+                                  issueListOptions: widget.issueListOptions,
+                                  issueOrder: widget.issueOrder,
+                                  issid: subJournalIssue.issid));
                             },
                             child: Container(
                                 width: 30,
