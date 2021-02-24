@@ -1526,7 +1526,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${list[index].content}' ?? '--',
+                  '${list[index].title}' ?? '--',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.normal,
                         color: Color(0xB3000000),

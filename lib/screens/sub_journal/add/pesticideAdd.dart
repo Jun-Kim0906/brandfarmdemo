@@ -80,7 +80,7 @@ class _PesticideAdd extends State<PesticideAdd> {
 
   @override
   Widget build(BuildContext context) {
-    return fertilizerWrite();
+    return pesticideWrite();
   }
 
   void methodPickBottomSheet(BuildContext context) {
@@ -98,42 +98,42 @@ class _PesticideAdd extends State<PesticideAdd> {
               children: [
                 InputModalSheetColumn(
                   onTap: () {
-                    _journalCreateBloc.add(FertilizerMethod(method: '옆면살포'));
+                    _journalCreateBloc.add(PesticideMethod(method: '옆면살포'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '옆면살포',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerMethod,
+                  _journalCreateBloc.state.pesticideMethod,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: () {
-                    _journalCreateBloc.add(FertilizerMethod(method: '관주'));
+                    _journalCreateBloc.add(PesticideMethod(method: '관주'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '관주',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerMethod,
+                  _journalCreateBloc.state.pesticideMethod,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: () {
-                    _journalCreateBloc.add(FertilizerMethod(method: '전충살포'));
+                    _journalCreateBloc.add(PesticideMethod(method: '전충살포'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '전충살포',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerMethod,
+                  _journalCreateBloc.state.pesticideMethod,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: () {
-                    _journalCreateBloc.add(FertilizerMethod(method: '기타'));
+                    _journalCreateBloc.add(PesticideMethod(method: '기타'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '기타',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerMethod,
+                  _journalCreateBloc.state.pesticideMethod,
                 ),
                 Divider(),
               ],
@@ -158,34 +158,34 @@ class _PesticideAdd extends State<PesticideAdd> {
                 InputModalSheetColumn(
                   onTap: () {
                     _journalCreateBloc
-                        .add(FertilizerAreaUnitChanged(areaUnit: '%'));
+                        .add(PesticideAreaUnitChanged(areaUnit: '%'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '%',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerAreaUnit,
+                  _journalCreateBloc.state.pesticideAreaUnit,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: () {
                     _journalCreateBloc
-                        .add(FertilizerAreaUnitChanged(areaUnit: 'm^2'));
+                        .add(PesticideAreaUnitChanged(areaUnit: 'm^2'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: 'm^2',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerAreaUnit,
+                  _journalCreateBloc.state.pesticideAreaUnit,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: () {
                     _journalCreateBloc
-                        .add(FertilizerAreaUnitChanged(areaUnit: '평'));
+                        .add(PesticideAreaUnitChanged(areaUnit: '평'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '평',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerAreaUnit,
+                  _journalCreateBloc.state.pesticideAreaUnit,
                 ),
                 Divider(),
               ],
@@ -210,23 +210,23 @@ class _PesticideAdd extends State<PesticideAdd> {
                 InputModalSheetColumn(
                   onTap: () {
                     _journalCreateBloc.add(
-                        FertilizerMaterialUnitChanged(materialUnit: 'g(ml)'));
+                        PesticideMaterialUnitChanged(materialUnit: 'g(ml)'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: 'g(ml)',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerMaterialUnit,
+                  _journalCreateBloc.state.pesticideMaterialUnit,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: () {
                     _journalCreateBloc.add(
-                        FertilizerMaterialUnitChanged(materialUnit: 'Kg(L)'));
+                        PesticideMaterialUnitChanged(materialUnit: 'Kg(L)'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: 'Kg(L)',
                   selectedColumnContent:
-                  _journalCreateBloc.state.fertilizerMaterialUnit,
+                  _journalCreateBloc.state.pesticideMaterialUnit,
                 ),
                 Divider(),
               ],
@@ -250,29 +250,29 @@ class _PesticideAdd extends State<PesticideAdd> {
               children: [
                 InputModalSheetColumn(
                   onTap: (){
-                    _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: '리터'));
+                    _journalCreateBloc.add(PesticideWaterUnitChanged(waterUnit: '리터'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '리터',
-                  selectedColumnContent: _journalCreateBloc.state.fertilizerWaterUnit,
+                  selectedColumnContent: _journalCreateBloc.state.pesticideWaterUnit,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: (){
-                    _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: '말'));
+                    _journalCreateBloc.add(PesticideWaterUnitChanged(waterUnit: '말'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '말',
-                  selectedColumnContent: _journalCreateBloc.state.fertilizerWaterUnit,
+                  selectedColumnContent: _journalCreateBloc.state.pesticideWaterUnit,
                 ),
                 Divider(),
                 InputModalSheetColumn(
                   onTap: (){
-                    _journalCreateBloc.add(FertilizerWaterUnitChanged(waterUnit: '톤'));
+                    _journalCreateBloc.add(PesticideWaterUnitChanged(waterUnit: '톤'));
                     Navigator.pop(context);
                   },
                   thisColumnContent: '톤',
-                  selectedColumnContent: _journalCreateBloc.state.fertilizerWaterUnit,
+                  selectedColumnContent: _journalCreateBloc.state.pesticideWaterUnit,
                 ),
                 Divider(),
               ],
@@ -281,7 +281,7 @@ class _PesticideAdd extends State<PesticideAdd> {
         });
   }
 
-  Widget fertilizerWrite() {
+  Widget pesticideWrite() {
     return BlocBuilder<JournalCreateBloc, JournalCreateState>(
         cubit: _journalCreateBloc,
         builder: (context, state) {
@@ -292,24 +292,24 @@ class _PesticideAdd extends State<PesticideAdd> {
                   buttonPressed: () {
                     methodPickBottomSheet(context);
                   },
-                  selected: _journalCreateBloc.state.fertilizerMethod),
+                  selected: _journalCreateBloc.state.pesticideMethod),
               InputForm2(
                   textEditingController: area,
                   changed: (value) {
                     validate();
                     _journalCreateBloc
-                        .add(FertilizerAreaChanged(area: double.parse(value)));
+                        .add(PesticideAreaChanged(area: double.parse(value)));
                   },
                   unitPickPressed: () {
                     areaPickBottomSheet(context);
                   },
-                  unitString: _journalCreateBloc.state.fertilizerAreaUnit,
+                  unitString: _journalCreateBloc.state.pesticideAreaUnit,
                   title: '면적'),
               InputForm1(
                   textEditingController: material,
                   changed: (value) {
                     _journalCreateBloc
-                        .add(FertilizerMaterialChanged(material: value));
+                        .add(PesticideMaterialChanged(material: value));
                     validate();
                   },
                   title: '자재이름',
@@ -317,24 +317,24 @@ class _PesticideAdd extends State<PesticideAdd> {
               InputForm2(
                   textEditingController: mUsing,
                   changed: (value) {
-                    _journalCreateBloc.add(FertilizerMaterialUseChanged(
+                    _journalCreateBloc.add(PesticideMaterialUseChanged(
                         materialUse: double.parse(value)));
                   },
                   unitPickPressed: () {
                     materialPickBottomSheet(context);
                   },
-                  unitString: _journalCreateBloc.state.fertilizerMaterialUnit,
+                  unitString: _journalCreateBloc.state.pesticideMaterialUnit,
                   title: '자재 사용량'),
               InputForm2(
                   textEditingController: wUsing,
                   changed: (value) {
                     _journalCreateBloc.add(
-                        FertilizerWaterUseChanged(waterUse: double.parse(value)));
+                        PesticideWaterUseChanged(waterUse: double.parse(value)));
                   },
                   unitPickPressed: () {
                     waterPickBottomSheet(context);
                   },
-                  unitString: _journalCreateBloc.state.fertilizerWaterUnit,
+                  unitString: _journalCreateBloc.state.pesticideWaterUnit,
                   title: '물 사용량'),
             ],
           );

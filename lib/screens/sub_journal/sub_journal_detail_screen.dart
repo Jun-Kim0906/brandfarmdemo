@@ -1,9 +1,11 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
+import 'package:BrandFarm/screens/sub_journal/tableWidget/tableWidgets.dart';
+import 'package:BrandFarm/utils/column_builder.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
-import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,26 +17,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class SubJournalDetailScreen extends StatefulWidget {
-  String from;
-  int index;
-  List list;
-  String issueListOptions;
-  int issueOrder;
+
 
   SubJournalDetailScreen({
     Key key,
     String from,
     int state,
     int index,
-    List list,
-    String issueListOptions,
-    int issueOrder,
+    this.list,
+    this.issueListOptions,
+    this.issueOrder,
   })  : from = from ?? 'journal',
         index = index ?? 0,
-        list = list,
-        issueListOptions = issueListOptions,
-        issueOrder = issueOrder,
         super(key: key);
+
+  final String from;
+  final int index;
+  final List list;
+  final String issueListOptions;
+  final int issueOrder;
 
   @override
   _SubJournalDetailScreenState createState() => _SubJournalDetailScreenState();
@@ -622,202 +623,266 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   }
 
   Widget _infoContainer({BuildContext context}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: ExpansionTile(
-              tilePadding: EdgeInsets.symmetric(horizontal: defaultPadding),
-              collapsedBackgroundColor: Color(0xFFF3F3F3),
-              backgroundColor: Color(0xFFF3F3F3),
-              title: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  '출하정보',
-                  style: Theme.of(context)
-                      .textTheme
-                      .infoContainerTitleTextTheme
-                      .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+    Journal selectedJournal = widget.list[widget.index];
+    return ColumnBuilder(
+        itemBuilder: (context, listIndex) {
+          return Column(
+            children: <Widget>[
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "출하정보")
+                ShipmentTable(
+                    "출하정보",
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentPlant,
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentPath,
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentUnitSelect,
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentUnit
+                        .toString(),
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentAmount
+                        .toString(),
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentGrade,
+                    selectedJournal
+                        .shipment[selectedJournal
+                        .widgets[listIndex].index]
+                        .shipmentPrice
+                        .toString()),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "비료정보")
+                FertilizerTable(
+                    "비료정보",
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerMethod,
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerArea
+                        .toString(),
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerAreaUnit,
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerMaterialName,
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerMaterialUse,
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerMaterialUnit,
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerWater,
+                    selectedJournal
+                        .fertilize[selectedJournal
+                        .widgets[listIndex].index]
+                        .fertilizerWaterUnit),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "농약정보")
+                FertilizerTable(
+                    "농약정보",
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideMethod,
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideArea
+                        .toString(),
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideAreaUnit,
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideMaterialName,
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideMaterialUse,
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideMaterialUnit,
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideWater,
+                    selectedJournal
+                        .pesticide[selectedJournal
+                        .widgets[listIndex].index]
+                        .pesticideWaterUnit),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "병,해충정보")
+                PestTable(
+                    "병,해충정보",
+                    selectedJournal
+                        .pest[selectedJournal
+                        .widgets[listIndex].index]
+                        .pestKind,
+                    selectedJournal
+                        .pest[selectedJournal
+                        .widgets[listIndex].index]
+                        .spreadDegree
+                        .toString(),
+                    selectedJournal
+                        .pest[selectedJournal
+                        .widgets[listIndex].index]
+                        .spreadDegreeUnit),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "정식정보")
+                PlantingTable(
+                    "정식정보",
+                    selectedJournal
+                        .planting[selectedJournal
+                        .widgets[listIndex].index]
+                        .plantingArea
+                        .toString(),
+                    selectedJournal
+                        .planting[selectedJournal
+                        .widgets[listIndex].index]
+                        .plantingAreaUnit,
+                    selectedJournal
+                        .planting[selectedJournal
+                        .widgets[listIndex].index]
+                        .plantingCount,
+                    selectedJournal
+                        .planting[selectedJournal
+                        .widgets[listIndex].index]
+                        .plantingPrice
+                        .toString()),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "파종정보")
+                SeedingTable(
+                    "파종정보",
+                    selectedJournal
+                        .seeding[selectedJournal
+                        .widgets[listIndex].index]
+                        .seedingArea
+                        .toString(),
+                    selectedJournal
+                        .seeding[selectedJournal
+                        .widgets[listIndex].index]
+                        .seedingAreaUnit,
+                    selectedJournal
+                        .seeding[selectedJournal
+                        .widgets[listIndex].index]
+                        .seedingAmount
+                        .toString(),
+                    selectedJournal
+                        .seeding[selectedJournal
+                        .widgets[listIndex].index]
+                        .seedingAmountUnit),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "제초정보")
+                WeedingTable(
+                    "제초정보",
+                    selectedJournal
+                        .weeding[selectedJournal
+                        .widgets[listIndex].index]
+                        .weedingProgress
+                        .toString(),
+                    selectedJournal
+                        .weeding[selectedJournal
+                        .widgets[listIndex].index]
+                        .weedingUnit),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "관수정보")
+                WateringTable(
+                    "관수정보",
+                    selectedJournal
+                        .watering[selectedJournal
+                        .widgets[listIndex].index]
+                        .wateringArea
+                        .toString(),
+                    selectedJournal
+                        .watering[selectedJournal
+                        .widgets[listIndex].index]
+                        .wateringAreaUnit,
+                    selectedJournal
+                        .watering[selectedJournal
+                        .widgets[listIndex].index]
+                        .wateringAmount
+                        .toString(),
+                    selectedJournal
+                        .watering[selectedJournal
+                        .widgets[listIndex].index]
+                        .wateringAmountUnit),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "인력투입정보")
+                WorkForceTable(
+                    "인력투입정보",
+                    selectedJournal
+                        .workforce[selectedJournal
+                        .widgets[listIndex].index]
+                        .workforceNum
+                        .toString(),
+                    selectedJournal
+                        .workforce[selectedJournal
+                        .widgets[listIndex].index]
+                        .workforcePrice
+                        .toString()),
+              if (selectedJournal
+                  .widgets[listIndex].name ==
+                  "경운정보")
+                FarmingTable(
+                  "경운정보",
+                  selectedJournal
+                      .farming[selectedJournal
+                      .widgets[listIndex].index]
+                      .farmingArea
+                      .toString(),
+                  selectedJournal
+                      .farming[selectedJournal
+                      .widgets[listIndex].index]
+                      .farmingAreaUnit,
+                  selectedJournal
+                      .farming[selectedJournal
+                      .widgets[listIndex].index]
+                      .farmingMethod,
+                  selectedJournal
+                      .farming[selectedJournal
+                      .widgets[listIndex].index]
+                      .farmingMethodUnit,
                 ),
-              ),
-
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 16,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                          Container(
-                            width: 52,
-                            child: Text(
-                              '출하작물',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .infoContainerTitleTextTheme,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            '딸기',
-                            style: Theme.of(context)
-                                .textTheme
-                                .infoContainerBodyTextTheme,
-                          ),
-                        ],
-                      ),
-                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                          Container(
-                            width: 52,
-                            child: Text(
-                              '출하경로',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .infoContainerTitleTextTheme,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            '얄리리 얄랑셩 얄라리 얄라',
-                            style: Theme.of(context)
-                                .textTheme
-                                .infoContainerBodyTextTheme,
-                          ),
-                        ],
-                      ),
-                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                          Container(
-                            width: 52,
-                            child: Text(
-                              '출하단위',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .infoContainerTitleTextTheme,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            '1',
-                            style: Theme.of(context)
-                                .textTheme
-                                .infoContainerBodyTextTheme,
-                          ),
-                        ],
-                      ),
-                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                          Container(
-                            width: 52,
-                            child: Text(
-                              '출하숫자',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .infoContainerTitleTextTheme,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            '50 kg',
-                            style: Theme.of(context)
-                                .textTheme
-                                .infoContainerBodyTextTheme,
-                          ),
-                        ],
-                      ),
-                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                          Container(
-                            width: 52,
-                            child: Text(
-                              '등급',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .infoContainerTitleTextTheme,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            '특',
-                            style: Theme.of(context)
-                                .textTheme
-                                .infoContainerBodyTextTheme,
-                          ),
-                        ],
-                      ),
-                      Divider(height: 32, thickness: 1, indent: 3, endIndent: 3,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                          Container(
-                            width: 52,
-                            child: Text(
-                              '단위가격',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .infoContainerTitleTextTheme,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            '9000 원',
-                            style: Theme.of(context)
-                                .textTheme
-                                .infoContainerBodyTextTheme,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: defaultPadding,),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 22,),
-        ],
-      ),
-    );
+            ],
+          );
+        },
+        itemCount: selectedJournal.widgets.length);
   }
 
   Widget _addPictureBar({
