@@ -2,9 +2,12 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/empty_screen.dart';
+import 'package:BrandFarm/fm_screens/home/fm_home_screen.dart';
 import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 
 //bloc
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,16 +85,16 @@ class _AppState extends State<App> {
     return BlocProvider.value(
       value: _authenticationBloc,
       child: MaterialApp(
-           localizationsDelegates: [
-             // ... app-specific localization delegate[s] here
-             GlobalMaterialLocalizations.delegate,
-             GlobalWidgetsLocalizations.delegate,
-           ],
-           supportedLocales: [
-             const Locale('en', 'EN'), // English
-             const Locale('ko', 'KO'), // Korean
-             // ... other locales the app supports
-           ],
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', 'EN'), // English
+          const Locale('ko', 'KO'), // Korean
+          // ... other locales the app supports
+        ],
 
         debugShowCheckedModeBanner: false,
         theme: FarmThemeData.lightThemeData,
@@ -106,14 +109,30 @@ class _AppState extends State<App> {
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is AuthenticationSuccess) {
-              return MultiBlocProvider(providers: [
-                BlocProvider<HomeBloc>(
-                  create: (BuildContext context) => HomeBloc(),
-                ),
-                BlocProvider<WeatherBloc>(
-                  create: (BuildContext context) => WeatherBloc(),
-                )
-              ], child: SubHomeScreen());
+              if(UserUtil.getUser().position == 3) {
+                return MultiBlocProvider(providers: [
+                  BlocProvider<HomeBloc>(
+                    create: (BuildContext context) => HomeBloc(),
+                  ),
+                  BlocProvider<WeatherBloc>(
+                    create: (BuildContext context) => WeatherBloc(),
+                  )
+                ], child: SubHomeScreen());
+              } else if(UserUtil.getUser().position == 2) {
+                return FMHomeScreen();
+              } else {
+                return EmptyScreen();
+              }
+              // return (UserUtil.getUser().position == 3)
+              //     ? MultiBlocProvider(providers: [
+              //         BlocProvider<HomeBloc>(
+              //           create: (BuildContext context) => HomeBloc(),
+              //         ),
+              //         BlocProvider<WeatherBloc>(
+              //           create: (BuildContext context) => WeatherBloc(),
+              //         )
+              //       ], child: SubHomeScreen())
+              //     : FMHomeScreen();
             } else if (state is AuthenticationInitial && !isDesktop) {
               return SplashScreen(duration: 2);
             } else {
