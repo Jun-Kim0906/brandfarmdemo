@@ -2,9 +2,10 @@ import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:flutter/material.dart';
 
 class SubHomeGreetingBar extends StatelessWidget {
-  const SubHomeGreetingBar({
-    Key key,
-  }) : super(key: key);
+  String defaultUrl = 'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70';
+  // const SubHomeGreetingBar({
+  //   Key key,
+  // }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +31,10 @@ class SubHomeGreetingBar extends StatelessWidget {
             ]),
             child: CircleAvatar(
                 radius: 34.0,
-                backgroundImage: NetworkImage(
-                    'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70')),
+                backgroundImage: (UserUtil.getUser().imgUrl.isEmpty
+                    || UserUtil.getUser().imgUrl == '--')
+                    ? AssetImage('assets/profile.png')
+                    : NetworkImage(UserUtil.getUser().imgUrl)),
           )
         ],
       ),

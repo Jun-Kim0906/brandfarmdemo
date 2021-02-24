@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:bloc/bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
@@ -71,28 +72,18 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     String sun_set;
 
     // testing values
-    String str_lat = '36.1031';
-    String str_lon = '129.3884';
-    String location = '포항';
-    // String lat_min = '3606';
-    // String lon_min = '12923';
-    String lat_min = '3601';
-    String lon_min = '12920';
-    // String base_date = '20210118';
-    String baseDate = base_date;
-    // String short_base_time = '0630';
-    // String long_base_time = '0500';
+    String str_lat = FieldUtil.getField().lat;
+    String str_lon = FieldUtil.getField().lng;
+    String location = FieldUtil.getField().city;
     String today_short;
     String today_long;
     String short_base_time;
     String long_base_time;
-    // String regId = '11H10201';
     String regId = regionCode(
-      region: '포항',
+      region: FieldUtil.getField().city,
     );
-    // String dt = '202101150600';
     String dt;
-    String regLnCode = regionLandCode(region: '경상북도');
+    String regLnCode = regionLandCode(region: FieldUtil.getField().province);
 
     double num_lat = double.parse(str_lat);
     double num_lon = double.parse(str_lon);

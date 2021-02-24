@@ -46,17 +46,32 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
 //    yield AuthenticationSuccess((await _userRepository.getUser()).email);
     try {
-      UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
+      await UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
           .collection('User')
           .doc((await UserRepository().getUser()).uid)
           .get()));
-      QuerySnapshot fieldList = await FirebaseFirestore.instance
-          .collection('Field')
-          .where('sfmid', isEqualTo: (await UserRepository().getUser()).uid).get();
-      FieldUtil.setField(Field.fromSnapshot(fieldList.docs.first));
-      print('Login User Field ID : ' + FieldUtil.getField().fid);
+
+      if(UserUtil.getUser().position == 3) {
+        QuerySnapshot fieldList = await FirebaseFirestore.instance
+            .collection('Field')
+            .where('sfmid', isEqualTo: (await UserRepository().getUser()).uid).get();
+        FieldUtil.setField(Field.fromSnapshot(fieldList.docs.first));
+        print('Login User Field ID : ' + FieldUtil.getField().fid);
+      }
+
       print('Login User Name : ' + UserUtil.getUser().name);
       yield AuthenticationSuccess(UserUtil.getUser().name);
+      // UserUtil.setUser(User.fromSnapshot(await FirebaseFirestore.instance
+      //     .collection('User')
+      //     .doc((await UserRepository().getUser()).uid)
+      //     .get()));
+      // QuerySnapshot fieldList = await FirebaseFirestore.instance
+      //     .collection('Field')
+      //     .where('sfmid', isEqualTo: (await UserRepository().getUser()).uid).get();
+      // FieldUtil.setField(Field.fromSnapshot(fieldList.docs.first));
+      // print('Login User Field ID : ' + FieldUtil.getField().fid);
+      // print('Login User Name : ' + UserUtil.getUser().name);
+      // yield AuthenticationSuccess(UserUtil.getUser().name);
       // yield AuthenticationSuccess('Username');
     } catch (e) {
       print(e);

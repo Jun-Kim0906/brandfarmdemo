@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/repository/weather/weather_repository.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
@@ -99,9 +100,9 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                 children: [
                                   Row(
                                     children: [
-                                      SizedBox(width: 27,),
+                                      SizedBox(width: 14,),
                                       Text(
-                                        fieldName,
+                                        FieldUtil.getField().name,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyText1
@@ -122,7 +123,7 @@ class _WeatherDetailState extends State<WeatherDetail> {
                                         padding: const EdgeInsets.only(right: 11.0),
                                         child: Center(
                                             child: Text(
-                                              curr_addr,
+                                              '${FieldUtil.getField().province} ${FieldUtil.getField().city}시',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1
