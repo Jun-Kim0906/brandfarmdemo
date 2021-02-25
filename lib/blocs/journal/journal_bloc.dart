@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/issue/issue_util.dart';
@@ -35,7 +36,6 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapWaitForLoadMoreToState();
     } else if (event is AddIssueComment) {
       yield* _mapAddIssueCommentToState(
-          index: event.index,
           issueListOptions: event.issueListOptions,
           issueOrder: event.issueOrder,
           issid: event.issid,);
@@ -47,11 +47,11 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
   }
 
   Stream<JournalState> _mapGetInitialListToState() async* {
-    List orderByRecent = [];
-    List orderByOldest = [];
-    List issueList = [];
-    List reverseIssueList = [];
-    List imageList = [];
+    List<Journal> orderByRecent = [];
+    List<Journal> orderByOldest = [];
+    List<SubJournalIssue> issueList = [];
+    List<SubJournalIssue> reverseIssueList = [];
+    List<ImagePicture> imageList = [];
 
     // get journal list
     ////////////////////////////////////////////////////////////////////////////
@@ -82,8 +82,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapGetListBySelectedDateToState(
       {String month, String year}) async* {
-    List listBySelection = [];
-    List fromExistingList = state.orderByRecent;
+    List<Journal> listBySelection = [];
+    List<Journal> fromExistingList = state.orderByRecent;
 
     listBySelection = fromExistingList
         .where((element) =>
@@ -100,7 +100,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapGetIssueListByTimeOrderToState(
       {String issueListOption, String issueListOrderOption}) async* {
-    List reverseIssueList = [];
+    List<SubJournalIssue> reverseIssueList = [];
 
     if (issueListOption == '전체') {
       reverseIssueList = state.issueList;
@@ -118,7 +118,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapGetIssueListByCategoryToState(
       {int issueState}) async* {
-    List issueListByCategorySelection = [];
+    List<SubJournalIssue> issueListByCategorySelection = [];
 
     // print(issueState);
 
@@ -136,26 +136,59 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
   }
 
   Stream<JournalState> _mapLoadMoretToState({int tab}) async* {
-    List currentList = [];
-    List newList = [];
-    List currentImageList = [];
-    List newImageList = [];
-    List combinedList = [];
-    List combinedImageList = [];
-    List reverseList = [];
+    List<Journal> currentJournalList = [];
+    List<SubJournalIssue> currentIssueList = [];
+    List<Journal> newJournalList = [];
+    List<SubJournalIssue> newIssueList = [];
+    List<ImagePicture> currentImageList = [];
+    List<ImagePicture> newImageList = [];
+    List<Journal> combinedJournalList = [];
+    List<SubJournalIssue> combinedIssueList = [];
+    List<ImagePicture> combinedImageList = [];
+    List<Journal> reverseJournalList = [];
+    List<SubJournalIssue> reverseIssueList = [];
 
     if (tab == 0) {
-      currentList = state.orderByRecent;
-      newList = List<DateTime>.generate(100, (i) {
-        return now.add(Duration(days: i + 100));
+      currentJournalList = state.orderByRecent;
+      currentImageList = state.imageList;
+      int length1 = state.orderByRecent.length - 1;
+      int length2 = state.imageList.length - 1;
+
+      QuerySnapshot _issue = await FirebaseFirestore.instance
+          .collection('Issue')
+          .where('uid', isEqualTo: UserUtil.getUser().uid)
+          .where('date', isLessThan: state.issueList[length1].date)
+          .orderBy('date', descending: true)
+          .limit(20)
+          .get();
+
+      _issue.docs.forEach((ds) {
+        newJournalList.add(Journal.fromDs(ds));
       });
+
+      QuerySnapshot pic = await FirebaseFirestore.instance
+          .collection('Picture')
+          .where('uid', isEqualTo: UserUtil.getUser().uid)
+          .where('dttm', isLessThan: state.imageList[length2].dttm)
+          .orderBy('dttm', descending: true)
+          .limit(20)
+          .get();
+      pic.docs.forEach((ds) {
+        newImageList.add(ImagePicture.fromSnapshot(ds));
+      });
+
+      combinedJournalList = [...currentJournalList, ...newJournalList];
+      combinedImageList = [...currentImageList, ...newImageList];
+      reverseJournalList = List.from(combinedJournalList.reversed);
 
       yield state.update(
         isLoadingToGetMore: false,
-        orderByRecent: [...currentList, ...newList],
+        orderByRecent: combinedJournalList,
+        imageList: combinedImageList,
+        orderByOldest: reverseJournalList,
       );
     } else {
-      currentList = state.issueList;
+      currentIssueList = state.issueList;
       currentImageList = state.imageList;
       int length1 = state.issueList.length - 1;
       int length2 = state.imageList.length - 1;
@@ -169,7 +202,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
           .get();
 
       _issue.docs.forEach((ds) {
-        newList.add(SubJournalIssue.fromSnapshot(ds));
+        newIssueList.add(SubJournalIssue.fromSnapshot(ds));
       });
 
       QuerySnapshot pic = await FirebaseFirestore.instance
@@ -177,22 +210,25 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
           .where('uid', isEqualTo: UserUtil.getUser().uid)
           .where('dttm', isLessThan: state.imageList[length2].dttm)
           .orderBy('dttm', descending: true)
+          .limit(20)
           .get();
       pic.docs.forEach((ds) {
         newImageList.add(ImagePicture.fromSnapshot(ds));
       });
 
-      combinedList = [...currentList, ...newList];
+      combinedIssueList = [...currentIssueList, ...newIssueList];
       combinedImageList = [...currentImageList, ...newImageList];
-      for (int i = combinedList.length - 1; i >= 0; i--) {
-        reverseList.add(combinedList[i]);
-      }
+      reverseIssueList = List.from(combinedIssueList.reversed);
+
+      // for (int i = combinedList.length - 1; i >= 0; i--) {
+      //   reverseList.add(combinedList[i]);
+      // }
 
       yield state.update(
         isLoadingToGetMore: false,
-        issueList: combinedList,
+        issueList: combinedIssueList,
         imageList: combinedImageList,
-        reverseIssueList: reverseList,
+        reverseIssueList: reverseIssueList,
       );
     }
   }
@@ -202,11 +238,11 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
   }
 
   Stream<JournalState> _mapAddIssueCommentToState({
-    int index, String issueListOptions, int issueOrder, String issid}) async* {
+    String issueListOptions, int issueOrder, String issid}) async* {
 
-    List issue = state.issueList;
-    List cat = state.issueListByCategorySelection;
-    List rev = state.reverseIssueList;
+    List<SubJournalIssue> issue = state.issueList;
+    List<SubJournalIssue> cat = state.issueListByCategorySelection;
+    List<SubJournalIssue> rev = state.reverseIssueList;
 
     int index1 = issue.indexWhere((data) => data.issid == issid) ?? -1;
     int index2 = cat.indexWhere((data) => data.issid == issid) ?? -1;
