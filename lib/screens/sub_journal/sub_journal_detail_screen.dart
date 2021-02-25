@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/tableWidget/tableWidgets.dart';
 import 'package:BrandFarm/utils/column_builder.dart';

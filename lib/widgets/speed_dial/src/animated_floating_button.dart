@@ -58,7 +58,7 @@ class AnimatedFloatingButton extends StatelessWidget {
                 controller: controller,
                 startTooltip: '일지 메뉴 보기',
                 endTooltip: '닫기',
-                duration: Duration(milliseconds: 600),
+                duration: Duration(milliseconds: 300),
                 clockwise: true,
                 color: Colors.deepPurple,
               ),
