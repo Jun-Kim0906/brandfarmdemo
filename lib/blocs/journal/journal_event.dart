@@ -74,13 +74,11 @@ class LoadMore extends JournalEvent {
 }
 
 class AddIssueComment extends JournalEvent {
-  final int index;
   final String issueListOptions;
   final int issueOrder;
   final String issid;
 
   const AddIssueComment({
-        @required this.index,
         @required this.issueListOptions,
         @required this.issueOrder,
         @required this.issid,
@@ -88,7 +86,6 @@ class AddIssueComment extends JournalEvent {
 
   @override
   List<Object> get props => [
-    index,
     issueListOptions,
     issueOrder,
     issid,
@@ -97,7 +94,6 @@ class AddIssueComment extends JournalEvent {
   @override
   String toString() =>
       '''AddComment { 
-      index: $index, 
       issueListOptions: $issueListOptions, 
       issueOrder: $issueOrder, 
       issid: $issid, 

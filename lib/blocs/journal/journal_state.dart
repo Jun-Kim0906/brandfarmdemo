@@ -1,4 +1,7 @@
 
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -6,14 +9,14 @@ class JournalState {
   bool isLoading;
   bool isLoadingToGetMore;
 
-  List orderByOldest;
-  List orderByRecent;
-  List listBySelection;
+  List<Journal> orderByOldest;
+  List<Journal> orderByRecent;
+  List<Journal> listBySelection;
 
-  List issueList;
-  List issueListByCategorySelection;
-  List reverseIssueList;
-  List imageList;
+  List<SubJournalIssue> issueList;
+  List<SubJournalIssue> issueListByCategorySelection;
+  List<SubJournalIssue> reverseIssueList;
+  List<ImagePicture> imageList;
 
   JournalState({
     @required this.isLoading,
@@ -44,13 +47,13 @@ class JournalState {
   JournalState copyWith({
     bool isLoading,
     bool isLoadingToGetMore,
-    List orderByOldest,
-    List orderByRecent,
-    List listBySelection,
-    List issueList,
-    List issueListByCategorySelection,
-    List reverseIssueList,
-    List imageList,
+    List<Journal> orderByOldest,
+    List<Journal> orderByRecent,
+    List<Journal> listBySelection,
+    List<SubJournalIssue> issueList,
+    List<SubJournalIssue> issueListByCategorySelection,
+    List<SubJournalIssue> reverseIssueList,
+    List<ImagePicture> imageList,
   }) {
     return JournalState(
       isLoading: isLoading ?? this.isLoading,
@@ -68,13 +71,13 @@ class JournalState {
   JournalState update({
     bool isLoading,
     bool isLoadingToGetMore,
-    List orderByOldest,
-    List orderByRecent,
-    List listBySelection,
-    List issueList,
-    List issueListByCategorySelection,
-    List reverseIssueList,
-    List imageList,
+    List<Journal> orderByOldest,
+    List<Journal> orderByRecent,
+    List<Journal> listBySelection,
+    List<SubJournalIssue> issueList,
+    List<SubJournalIssue> issueListByCategorySelection,
+    List<SubJournalIssue> reverseIssueList,
+    List<ImagePicture> imageList,
   }) {
     return copyWith(
       isLoading: isLoading,

@@ -10,8 +10,8 @@ class SubJournalRepository {
   // issue related
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  Future<List> getIssue() async {
-    List issueList = [];
+  Future<List<SubJournalIssue>> getIssue() async {
+    List<SubJournalIssue> issueList = [];
     QuerySnapshot _issue = await FirebaseFirestore.instance
         .collection('Issue')
         .where('uid', isEqualTo: UserUtil.getUser().uid)
@@ -50,13 +50,13 @@ class SubJournalRepository {
   // journal related
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  Future<List> getJournal() async {
-    List journal = [];
+  Future<List<Journal>> getJournal() async {
+    List<Journal> journal = [];
     QuerySnapshot jour = await FirebaseFirestore.instance
         .collection('Journal')
         .where('uid', isEqualTo: UserUtil.getUser().uid)
         .orderBy('date', descending: true)
-        .limit(100)
+        .limit(20)
         .get();
 
     jour.docs.forEach((ds) {
@@ -85,13 +85,13 @@ class SubJournalRepository {
   // image related
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  Future<List> getImage() async {
-    List image = [];
+  Future<List<ImagePicture>> getImage() async {
+    List<ImagePicture> image = [];
     QuerySnapshot img = await FirebaseFirestore.instance
         .collection('Picture')
         .where('uid', isEqualTo: UserUtil.getUser().uid)
         .orderBy('dttm', descending: true)
-        .limit(1000)
+        .limit(200)
         .get();
     img.docs.forEach((ds) {
       image.add(ImagePicture.fromSnapshot(ds));

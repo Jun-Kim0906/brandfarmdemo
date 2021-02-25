@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
-import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:BrandFarm/widgets/fm_home/home_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,21 +52,34 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
         title: Center(
           child: Row(
             children: [
-              SizedBox(
-                height: 31,
-                  child: FittedBox(
-                      child: Image.asset('assets/home_logo.png'))),
+              Image.asset('assets/fm_home_logo.png'),
               SizedBox(width: 114,),
-              Container(
-                padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(width: 1, color: Color(0xFFBCBCBC)),
-                ),
-              ),
+              _appBarNotification(context: context),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _appBarNotification({BuildContext context}) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(width: 1, color: Color(0xFFBCBCBC)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline_rounded, color: Color(0xFFFDD015),),
+          SizedBox(width: 13,),
+          Text('날씨가 아직 춥습니다. 매니저분들 모두 농작물 관리에 주의해 주시길 바랍니다',
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -75,7 +88,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     return Row(
       children: [
         _smallDrawer(context: context),
-        Expanded(child: Container(height: 100, color: Colors.red,)),
+        Expanded(
+          child: HomeBody(),
+        ),
       ],
     );
   }
@@ -84,7 +99,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     return Row(
       children: [
         _drawer(context: context),
-        Expanded(child: Container(height: 100, color: Colors.yellow,)),
+        Expanded(
+            child: HomeBody(),
+        ),
       ],
     );
   }
@@ -216,49 +233,6 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 fontSize: 13,
                 color: Color(0x80000000),
               ),),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FlatButton(
-                  onPressed: () {
-                    setState(() {
-                      showDrawer = false;
-                      Future.delayed(Duration(milliseconds: 201), () {
-                        setState(() {
-                          isVisible = false;
-                        });
-                      });
-                    });
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(
-                        Icons.arrow_back_ios,
-                        color: Color(0xFFBDBDBD),
-                        size: 18,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        '접기',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13,
-                          color: Color(0x80000000),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: defaultPadding,
-                ),
-              ],
-            ),
           ),
         ],
       ),

@@ -150,7 +150,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
-      await CommentRepository().updateComment(isThereSubComment: true);
+      await CommentRepository().updateComment(isThereSubComment: true, cmtid: cmtid);
 
       scomments.add(scmt);
     } else {
@@ -168,7 +168,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
-      await CommentRepository().updateComment(isThereSubComment: true);
+      await CommentRepository().updateComment(isThereSubComment: true, cmtid: cmtid);
 
       scomments.add(scmt);
     }

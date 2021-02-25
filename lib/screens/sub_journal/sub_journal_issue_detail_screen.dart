@@ -898,20 +898,21 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                                     id: subJournalIssue.issid,
                                     comment: comment,
                                   ));
+                                  setState(() {
+                                    numOfComments += 1;
+                                  });
+                                  _journalBloc.add(AddIssueComment(
+                                      issueListOptions: widget.issueListOptions,
+                                      issueOrder: widget.issueOrder,
+                                      issid: subJournalIssue.issid));
                               }
                               setState(() {
                                 _isSubCommentClicked = false;
-                                numOfComments += 1;
                               });
                               _commentBloc.add(LoadComment());
                               _commentBloc.add(GetComment(
                                   issid: subJournalIssue.issid));
                               _textEditingController.clear();
-                              _journalBloc.add(AddIssueComment(
-                                  // index: widget.index,
-                                  issueListOptions: widget.issueListOptions,
-                                  issueOrder: widget.issueOrder,
-                                  issid: subJournalIssue.issid));
                             },
                             child: Container(
                                 width: 30,
