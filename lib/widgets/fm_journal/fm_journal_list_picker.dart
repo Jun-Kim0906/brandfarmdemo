@@ -95,30 +95,42 @@ class _FMJournalListPickerState extends State<FMJournalListPicker> {
   }
 
   Widget _order() {
-    return DropdownButton(
-      value: order,
-      items: <String>['최신 순', '오래된 순']
-          .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-            color: Color(0xFF15B85B),
-          ),
-      icon: Icon(
-        Icons.keyboard_arrow_down_sharp,
-        color: Color(0x66000000),
+    return Container(
+      height: 24,
+      width: 74,
+      padding: EdgeInsets.fromLTRB(12, 4, 9, 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(width: 1, color: Color(0x4D000000)),
       ),
-      onChanged: (String value) {
-        setState(() {
-          order = value;
-        });
-      },
-      underline: Container(),
+      child: FittedBox(
+        child: DropdownButton(
+          isDense: true,
+          value: order,
+          items: <String>['최신 순', '오래된 순']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 13,
+                color: Color(0xB3000000),
+              ),
+          icon: Icon(
+            Icons.arrow_drop_down_outlined,
+            color: Color(0xFFBEBEBE),
+          ),
+          onChanged: (String value) {
+            setState(() {
+              order = value;
+            });
+          },
+          underline: Container(),
+        ),
+      ),
     );
   }
 }
