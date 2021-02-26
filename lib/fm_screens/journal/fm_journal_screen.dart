@@ -1,4 +1,5 @@
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_date_picker.dart';
+import 'package:BrandFarm/widgets/fm_journal/fm_journal_list.dart';
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_list_picker.dart';
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_title_bar.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,8 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                 FMJournalDatePicker(),
                 SizedBox(height: 27,),
                 FMJournalListPicker(),
+                SizedBox(height: 76,),
+                FMJournalList(),
               ],
             ),
           ),
