@@ -1,48 +1,65 @@
 
+import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CommentState {
   final bool isLoading;
 
-  final List comments;
-  final List scomments;
+  final List<Comment> comments;
+  final List<SubComment> subComments;
+
+  final List<User> commentsUser;
+  final List<User> subCommentsUser;
 
   CommentState({
     @required this.isLoading,
     @required this.comments,
-    @required this.scomments,
+    @required this.subComments,
+    @required this.commentsUser,
+    @required this.subCommentsUser,
   });
 
   factory CommentState.empty() {
     return CommentState(
       isLoading: false,
       comments: [],
-      scomments: [],
+      subComments: [],
+      commentsUser: [],
+      subCommentsUser: [],
     );
   }
 
   CommentState copyWith({
     bool isLoading,
-    List comments,
-    List scomments,
+    List<Comment> comments,
+    List<SubComment> subComments,
+    List<User> commentsUser,
+    List<User> subCommentsUser,
   }) {
     return CommentState(
       isLoading: isLoading ?? this.isLoading,
       comments: comments ?? this.comments,
-      scomments: scomments ?? this.scomments,
+      subComments: subComments ?? this.subComments,
+      commentsUser: commentsUser ?? this.commentsUser,
+      subCommentsUser: subCommentsUser ?? this.subCommentsUser,
     );
   }
 
   CommentState update({
     bool isLoading,
-    List comments,
-    List scomments,
+    List<Comment> comments,
+    List<SubComment> subComments,
+    List<User> commentsUser,
+    List<User> subCommentsUser,
   }) {
     return copyWith(
       isLoading: isLoading,
       comments: comments,
-      scomments: scomments,
+      subComments: subComments,
+      commentsUser: commentsUser,
+      subCommentsUser: subCommentsUser,
     );
   }
 
@@ -51,7 +68,9 @@ class CommentState {
     return '''CommentState{
     isLoading: $isLoading,
     comments: $comments,
-    scomments: $scomments,
+    subComments: $subComments,
+    commentsUser: $commentsUser,
+    subCommentsUser: $subCommentsUser,
     }
     ''';
   }

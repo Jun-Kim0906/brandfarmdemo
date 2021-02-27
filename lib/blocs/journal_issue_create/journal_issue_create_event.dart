@@ -12,6 +12,15 @@ abstract class JournalIssueCreateEvent extends Equatable{
   List<Object> get props => [];
 }
 
+class TitleChanged extends JournalIssueCreateEvent{
+  final String title;
+
+  const TitleChanged({@required this.title});
+
+  @override
+  String toString() => 'TitleChanged{title: $title}';
+}
+
 class SelectImage extends JournalIssueCreateEvent{
   final List<Asset> assetList;
 

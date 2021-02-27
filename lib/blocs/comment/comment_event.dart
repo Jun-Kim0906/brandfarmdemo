@@ -11,17 +11,19 @@ abstract class CommentEvent extends Equatable {
 class LoadComment extends CommentEvent {}
 
 class GetComment extends CommentEvent {
-  final String issid;
+  final String id;
+  final String from;
 
   const GetComment({
-    @required this.issid,
+    @required this.id,
+    @required this.from,
   });
 
   @override
-  List<Object> get props => [issid];
+  List<Object> get props => [id, from];
 
   @override
-  String toString() => 'GetComment { issid: $issid, }';
+  String toString() => 'GetComment { issid: $id, }';
 }
 
 class AddComment extends CommentEvent {

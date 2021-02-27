@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/comment/comment_repository.dart';
 import 'package:BrandFarm/utils/comment/comment_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -14,12 +15,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     if (event is LoadComment) {
       yield* _mapLoadCommentToState();
     } else if (event is GetComment) {
-      yield* _mapGetCommentToState(issid: event.issid);
+      yield* _mapGetCommentToState(event.id, event.from);
     } else if (event is AddComment) {
       yield* _mapAddCommentToState(
-          from: event.from,
-          id: event.id,
-          comment: event.comment);
+          from: event.from, id: event.id, comment: event.comment);
     } else if (event is AddSubComment) {
       yield* _mapAddSubCommentToState(
           from: event.from,
@@ -37,13 +36,15 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     yield state.update(isLoading: true);
   }
 
-  Stream<CommentState> _mapGetCommentToState({String issid}) async* {
-    List comments = [];
-    List scomments = [];
+  Stream<CommentState> _mapGetCommentToState(String id, String from) async* {
+    List<Comment> comments = [];
+    List<SubComment> subComments = [];
+    List<User> commentUser = [];
+    List<User> subCommentUser = [];
 
     QuerySnapshot _cmt = await FirebaseFirestore.instance
         .collection('Comment')
-        .where('issid', isEqualTo: issid)
+        .where(from, isEqualTo: id)
         .orderBy('date', descending: true)
         .get();
 
@@ -51,37 +52,50 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       comments.add(Comment.fromSnapshot(ds));
     });
 
-    // await Future.forEach(_cmt.docs, (ds) async {
-    //   comments.add(Comment.fromSnapshot(ds));
-    // });
+    await Future.forEach(comments, (comments)async{
+      QuerySnapshot _cmtUserUrl = await FirebaseFirestore.instance
+          .collection('User')
+          .where('uid', isEqualTo: comments.uid)
+          .get();
+
+
+      commentUser.add(User.fromSnapshot(_cmtUserUrl.docs.first));
+    });
 
     QuerySnapshot _scmt = await FirebaseFirestore.instance
         .collection('SubComment')
-        .where('issid', isEqualTo: issid)
+        .where(from, isEqualTo: id)
         .orderBy('date', descending: true)
         .get();
 
     _scmt.docs.forEach((ds) {
-      scomments.add(SubComment.fromSnapshot(ds));
+      subComments.add(SubComment.fromSnapshot(ds));
     });
 
-    // await Future.forEach(_scmt.docs, (ds) async {
-    //   scomments.add(SubComment.fromSnapshot(ds));
-    // });
 
-    print('${comments.length}');
-    print('${scomments.length}');
+    await Future.forEach(subComments, (subComments)async{
+      QuerySnapshot _scmtUserUrl = await FirebaseFirestore.instance
+          .collection('User')
+          .where('uid', isEqualTo: subComments.uid)
+          .get();
+
+
+      subCommentUser.add(User.fromSnapshot(_scmtUserUrl.docs.first));
+    });
+
 
     yield state.update(
       isLoading: false,
       comments: comments,
-      scomments: scomments,
+      subComments: subComments,
+      commentsUser: commentUser,
+      subCommentsUser: subCommentUser,
     );
   }
 
   Stream<CommentState> _mapAddCommentToState(
       {String from, String id, String comment}) async* {
-    List comments = [];
+    List<Comment> comments = [];
 
     comments = state.comments;
 
@@ -131,13 +145,12 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
   Stream<CommentState> _mapAddSubCommentToState(
       {String from, String id, String comment, String cmtid}) async* {
-    List scomments = [];
+    List<SubComment> subComments = [];
 
-    scomments = state.scomments;
+    subComments = state.subComments;
 
     if (from == 'journal') {
-      String scmtid = '';
-      scmtid = FirebaseFirestore.instance.collection('SubComment').doc().id;
+      String scmtid = FirebaseFirestore.instance.collection('SubComment').doc().id;
       SubComment scmt = SubComment(
         date: Timestamp.now(),
         jid: id,
@@ -150,9 +163,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
-      await CommentRepository().updateComment(isThereSubComment: true, cmtid: cmtid);
+      await CommentRepository()
+          .updateComment(isThereSubComment: true, cmtid: cmtid);
 
-      scomments.add(scmt);
+      subComments.add(scmt);
     } else {
       String scmtid = '';
       scmtid = FirebaseFirestore.instance.collection('SubComment').doc().id;
@@ -168,19 +182,20 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
-      await CommentRepository().updateComment(isThereSubComment: true, cmtid: cmtid);
+      await CommentRepository()
+          .updateComment(isThereSubComment: true, cmtid: cmtid);
 
-      scomments.add(scmt);
+      subComments.add(scmt);
     }
 
     yield state.update(
       isLoading: false,
-      scomments: scomments,
+      subComments: subComments,
     );
   }
 
   Stream<CommentState> _mapExpandCommentToState({int index}) async* {
-    List cmts = [];
+    List<Comment> cmts = [];
     cmts = state.comments;
 
     CommentUtil.setComment(Comment(
@@ -199,12 +214,12 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     cmts.insert(index, CommentUtil.getComment());
 
     yield state.update(
-        comments: cmts,
+      comments: cmts,
     );
   }
 
   Stream<CommentState> _mapCloseCommentToState({int index}) async* {
-    List cmts = [];
+    List<Comment> cmts = [];
     cmts = state.comments;
 
     await CommentUtil.setComment(Comment(
@@ -223,7 +238,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     cmts.insert(index, await CommentUtil.getComment());
 
     yield state.update(
-        comments: cmts,
+      comments: cmts,
     );
   }
 }

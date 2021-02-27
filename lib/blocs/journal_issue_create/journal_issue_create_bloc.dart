@@ -18,7 +18,9 @@ class JournalIssueCreateBloc
   @override
   Stream<JournalIssueCreateState> mapEventToState(
       JournalIssueCreateEvent event) async* {
-    if (event is AddImageFile) {
+    if(event is TitleChanged){
+      yield* _mapTitleChangedToState(event.title);
+    }else if (event is AddImageFile) {
       yield* _mapAddImageFileToState(
           imageFile: event.imageFile, index: event.index, from: event.from);
     } else if (event is SelectImage) {
@@ -38,6 +40,10 @@ class JournalIssueCreateBloc
         contents: event.contents,
       );
     }
+  }
+
+  Stream<JournalIssueCreateState> _mapTitleChangedToState(String title) async* {
+    yield state.update(title: title);
   }
 
   Stream<JournalIssueCreateState> _mapAddImageFileToState(

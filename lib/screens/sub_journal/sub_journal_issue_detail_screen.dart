@@ -1,9 +1,12 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,33 +23,26 @@ class SubJournalIssueDetailScreen extends StatefulWidget {
     this.subJournalIssue,
     this.issueListOptions,
     this.issueOrder,
-  })  :
-        super(key: key);
+  }) : super(key: key);
 
   final SubJournalIssue subJournalIssue;
   final String issueListOptions;
   final int issueOrder;
 
   @override
-  _SubJournalIssueDetailScreenState createState() => _SubJournalIssueDetailScreenState();
+  _SubJournalIssueDetailScreenState createState() =>
+      _SubJournalIssueDetailScreenState();
 }
 
-class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScreen> {
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+class _SubJournalIssueDetailScreenState
+    extends State<SubJournalIssueDetailScreen> {
+  /////////////////////////////////////////////////////////////////////////////
   TextEditingController _textEditingController;
   ScrollController _scrollController;
   JournalBloc _journalBloc;
   CommentBloc _commentBloc;
   SubJournalIssue subJournalIssue;
 
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   double height;
   bool _isVisible = true;
@@ -69,8 +65,8 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
     _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
     _commentBloc.add(LoadComment());
-      _commentBloc.add(GetComment(issid: subJournalIssue.issid));
-      numOfComments = subJournalIssue.comments;
+    _commentBloc.add(GetComment(id: subJournalIssue.issid, from: 'issid'));
+    numOfComments = subJournalIssue.comments;
     Future.delayed(Duration.zero, () {
       height = MediaQuery.of(context).size.height / 2;
       print(height);
@@ -142,25 +138,24 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                 : Scaffold(
                     appBar: _appBar(context: context),
                     body: Stack(
-                            children: [
-                              _issueBody(
-                                context: context,
-                                state: state,
-                                cstate: cstate,
-                              ),
-                              AnimatedContainer(
-                                duration: Duration(milliseconds: 500),
-                                // alignment: Alignment(0,1),
-                                alignment: _isVisible
-                                    ? Alignment(0, 1)
-                                    : Alignment(0, 1.5),
-                                child: _writeComment(
-                                  context: context,
-                                  state: cstate,
-                                ),
-                              ),
-                            ],
+                      children: [
+                        _issueBody(
+                          context: context,
+                          state: state,
+                          cstate: cstate,
+                        ),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 500),
+                          // alignment: Alignment(0,1),
+                          alignment:
+                              _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
+                          child: _writeComment(
+                            context: context,
+                            state: cstate,
                           ),
+                        ),
+                      ],
+                    ),
                   );
           },
         );
@@ -179,16 +174,17 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
       ),
       centerTitle: true,
       title: Text(
-              '${subJournalIssue.title}',
-              style: TextStyle(
-                fontWeight: FontWeight.normal,
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
+        '${subJournalIssue.title}',
+        style: TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
       actions: [
         FlatButton(
-          onPressed: () {Navigator.push(
+          onPressed: () {
+            Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => MultiBlocProvider(
@@ -295,8 +291,7 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                         width: 11,
                       ),
                       Text(
-                        getCategoryInfo(
-                            category: subJournalIssue.category),
+                        getCategoryInfo(category: subJournalIssue.category),
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               color: Color(0xFF219653),
                               fontWeight: FontWeight.w500,
@@ -321,8 +316,8 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                         width: 11,
                       ),
                       DepartmentBadge(
-                          department: getIssueState(
-                              state: subJournalIssue.issueState)),
+                          department:
+                              getIssueState(state: subJournalIssue.issueState)),
                     ],
                   ),
                 ],
@@ -512,8 +507,6 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
             url,
           ),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), BlendMode.srcATop),
         ),
       ),
     );
@@ -538,24 +531,29 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
   }
 
   Widget commentTile({BuildContext context, CommentState state, int index}) {
-    List scomments = state.scomments
+    List<SubComment> subComments = state.subComments
         .where((cmt) => cmt.cmtid == state.comments[index].cmtid)
         .toList();
+    List<User> subCommentsUser = [];
+    subComments.forEach((subComment) {
+      subCommentsUser.add(state.subCommentsUser
+          .firstWhere((element) => element.uid == subComment.uid));
+    });
+
     String time = getTime(date: state.comments[index].date);
+    print('commentsUserUrl = ${state.commentsUser.length}');
     return Container(
       child: Column(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Container(
-                height: 37,
-                width: 37,
-                decoration: new BoxDecoration(
-                  color: Colors.grey,
-                  shape: BoxShape.circle,
-                ),
-              ),
+              CircleAvatar(
+                  radius: 18.0,
+                  backgroundImage: (state.commentsUser.isEmpty ||
+                          state.commentsUser[index].imgUrl == '')
+                      ? AssetImage('assets/profile.png')
+                      : NetworkImage(state.commentsUser[index].imgUrl)),
               SizedBox(
                 width: 10,
               ),
@@ -655,12 +653,12 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
               ),
             ],
           ),
-          (scomments.isNotEmpty)
+          (subComments.isNotEmpty)
               ? SizedBox(
                   height: 10,
                 )
               : Container(),
-          (scomments.isNotEmpty && !state.comments[index].isExpanded)
+          (subComments.isNotEmpty && !state.comments[index].isExpanded)
               ? Row(
                   children: [
                     SizedBox(
@@ -674,7 +672,7 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                             _commentBloc.add(ExpandComment(index: index));
                           });
                         },
-                        child: Text('답글 ${scomments.length}개 펼치기',
+                        child: Text('답글 ${subComments.length}개 펼치기',
                             style: Theme.of(context).textTheme.bodyText2),
                       ),
                     ),
@@ -682,21 +680,31 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                 )
               : Container(),
           (state.comments[index].isExpanded)
-              ? showSubComments(context: context, scmts: scomments)
+              ? showSubComments(
+                  context: context,
+                  scmts: subComments,
+                  subCommentsUser: subCommentsUser)
               : Container(),
         ],
       ),
     );
   }
 
-  Widget showSubComments({BuildContext context, List scmts}) {
+  Widget showSubComments(
+      {BuildContext context,
+      List<SubComment> scmts,
+      List<User> subCommentsUser}) {
     return Container(
       // padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: List.generate(scmts.length, (index) {
           return Column(
             children: [
-              subComment(context: context, scmts: scmts, index: index),
+              subComment(
+                  context: context,
+                  scmts: scmts,
+                  index: index,
+                  subCommentsUser: subCommentsUser),
               (index != scmts.length - 1)
                   ? SizedBox(
                       height: 20,
@@ -709,7 +717,11 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
     );
   }
 
-  Widget subComment({BuildContext context, List scmts, int index}) {
+  Widget subComment(
+      {BuildContext context,
+      List<SubComment> scmts,
+      int index,
+      List<User> subCommentsUser}) {
     String time = getTime(date: scmts[index].date);
     return Container(
       child: Row(
@@ -724,14 +736,12 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
           SizedBox(
             width: 10,
           ),
-          Container(
-            height: 37,
-            width: 37,
-            decoration: new BoxDecoration(
-              color: Colors.grey,
-              shape: BoxShape.circle,
-            ),
-          ),
+          CircleAvatar(
+              radius: 18.0,
+              backgroundImage: (subCommentsUser[index].imgUrl == '' ||
+                      subCommentsUser.isEmpty)
+                  ? AssetImage('assets/profile.png')
+                  : NetworkImage(subCommentsUser[index].imgUrl)),
           SizedBox(
             width: 10,
           ),
@@ -852,14 +862,12 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
               ),
               Row(
                 children: [
-                  Container(
-                    height: 47,
-                    width: 47,
-                    decoration: new BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+                  CircleAvatar(
+                      radius: 23.0,
+                      backgroundImage: (UserUtil.getUser().imgUrl.isEmpty ||
+                              UserUtil.getUser().imgUrl == '--')
+                          ? AssetImage('assets/profile.png')
+                          : NetworkImage(UserUtil.getUser().imgUrl)),
                   SizedBox(
                     width: 9,
                   ),
@@ -885,33 +893,33 @@ class _SubJournalIssueDetailScreenState extends State<SubJournalIssueDetailScree
                                 comment = _textEditingController.text;
                               });
                               if (_isSubCommentClicked) {
-                                  _commentBloc.add(AddSubComment(
-                                    from: 'issue',
-                                    id: subJournalIssue.issid,
-                                    comment: comment,
-                                    cmtid: cmtid,
-                                  ));
-
+                                _commentBloc.add(AddSubComment(
+                                  from: 'issue',
+                                  id: subJournalIssue.issid,
+                                  comment: comment,
+                                  cmtid: cmtid,
+                                ));
                               } else {
-                                  _commentBloc.add(AddComment(
-                                    from: 'issue',
+                                _commentBloc.add(AddComment(
+                                  from: 'issue',
+                                  id: subJournalIssue.issid,
+                                  comment: comment,
+                                ));
+                                setState(() {
+                                  numOfComments += 1;
+                                });
+                                _journalBloc.add(AddIssueComment(
+                                    issueListOptions: widget.issueListOptions,
+                                    issueOrder: widget.issueOrder,
                                     id: subJournalIssue.issid,
-                                    comment: comment,
-                                  ));
-                                  setState(() {
-                                    numOfComments += 1;
-                                  });
-                                  _journalBloc.add(AddIssueComment(
-                                      issueListOptions: widget.issueListOptions,
-                                      issueOrder: widget.issueOrder,
-                                      issid: subJournalIssue.issid));
+                                    ));
                               }
                               setState(() {
                                 _isSubCommentClicked = false;
                               });
                               _commentBloc.add(LoadComment());
-                              _commentBloc.add(GetComment(
-                                  issid: subJournalIssue.issid));
+                              _commentBloc
+                                  .add(GetComment(id: subJournalIssue.issid, from: 'issid'));
                               _textEditingController.clear();
                             },
                             child: Container(
