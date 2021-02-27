@@ -3,6 +3,7 @@ import 'package:BrandFarm/blocs/comment/comment_bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_detail_screen.dart';
@@ -1238,9 +1239,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   Widget _issueListTile(
-      {String date, int issueState, List list, int index, List pic}) {
+      {String date, int issueState, List list, int index, List<ImagePicture> pic}) {
     String _issueState = getIssueState(state: issueState);
-    List _pic =
+    List<ImagePicture> _pic =
         pic.where((element) => element.issid == list[index].issid).toList();
     return Container(
       height: 96,
@@ -1406,7 +1407,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   Widget _customListTile({int date, String week, List list, int index, List pic}) {
-    List _pic = [];
+    List<ImagePicture> _pic = [];
     if(pic.isNotEmpty) {
       _pic = pic.where((element) => element.jid == list[index].jid).toList();
     }
@@ -1570,7 +1571,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget trailingIcon({List pic}) {
+  Widget trailingIcon({List<ImagePicture> pic}) {
     return (pic.isNotEmpty) ? Container(
       height: 55,
       width: 55,

@@ -182,9 +182,7 @@ class _SubJournalIssueCreateScreenState
               child: TextField(
             focusNode: _title,
             onChanged: (text) {
-              setState(() {
-                title = text;
-              });
+              _journalIssueCreateBloc.add(TitleChanged(title: text));
             },
             onTap: () {
               _title.requestFocus();

@@ -4,6 +4,7 @@ import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/issue/issue_util.dart';
+import 'package:BrandFarm/utils/journal/journal_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -36,9 +37,14 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapWaitForLoadMoreToState();
     } else if (event is AddIssueComment) {
       yield* _mapAddIssueCommentToState(
-          issueListOptions: event.issueListOptions,
-          issueOrder: event.issueOrder,
-          issid: event.issid,);
+        issueListOptions: event.issueListOptions,
+        issueOrder: event.issueOrder,
+        issid: event.id,);
+    } else if (event is AddJournalComment) {
+      yield* _mapAddJournalCommentToState(
+        journalListOptions: event.journalListOptions,
+        journalOrder: event.journalOrder,
+        jid: event.id,);
     }
   }
 
@@ -59,15 +65,11 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     orderByRecent = await SubJournalRepository().getJournal();
     orderByOldest = List.from(orderByRecent.reversed);
 
-    // get issue list
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    /// get issue list
     issueList = await SubJournalRepository().getIssue();
     reverseIssueList = List.from(issueList.reversed);
 
-    // get image
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    /// get image
     imageList = await SubJournalRepository().getImage();
 
     yield state.update(
@@ -281,6 +283,40 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       issueList: issue,
       issueListByCategorySelection: cat,
       reverseIssueList: rev,
+    );
+  }
+
+  Stream<JournalState> _mapAddJournalCommentToState({
+    String journalListOptions, int journalOrder, String jid}) async* {
+
+    List<Journal> journal = state.orderByRecent;
+    List<Journal> cat = state.listBySelection;
+    List<Journal> rev = state.orderByOldest;
+
+    int index1 = journal.indexWhere((data) => data.jid == jid) ?? -1;
+    int index2 = cat.indexWhere((data) => data.jid == jid) ?? -1;
+    int index3 = rev.indexWhere((data) => data.jid == jid) ?? -1;
+
+
+    await JournalUtil.setJournal(journal[index1]);
+
+    if(index1 != -1) {
+      journal.removeAt(index1);
+      journal.insert(index1, await JournalUtil.getJournal());
+    }
+    if(index2 != -1) {
+      cat.removeAt(index2);
+      cat.insert(index2, await JournalUtil.getJournal());
+    }
+    if(index3 != -1) {
+      rev.removeAt(index3);
+      rev.insert(index3, await JournalUtil.getJournal());
+    }
+
+    yield state.update(
+      orderByRecent: journal,
+      listBySelection: cat,
+      orderByOldest: rev,
     );
   }
 }

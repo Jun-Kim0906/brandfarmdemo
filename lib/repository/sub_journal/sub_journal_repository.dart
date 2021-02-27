@@ -7,9 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SubJournalRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // issue related
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  /// issue related
   Future<List<SubJournalIssue>> getIssue() async {
     List<SubJournalIssue> issueList = [];
     QuerySnapshot _issue = await FirebaseFirestore.instance
@@ -47,9 +45,7 @@ class SubJournalRepository {
     await reference.update({"comments": cmts});
   }
 
-  // journal related
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  /// journal related
   Future<List<Journal>> getJournal() async {
     List<Journal> journal = [];
     QuerySnapshot jour = await FirebaseFirestore.instance
@@ -82,9 +78,7 @@ class SubJournalRepository {
     await reference.update(journal.toMap());
   }
 
-  // image related
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  /// image related
   Future<List<ImagePicture>> getImage() async {
     List<ImagePicture> image = [];
     QuerySnapshot img = await FirebaseFirestore.instance

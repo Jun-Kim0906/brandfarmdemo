@@ -76,19 +76,19 @@ class LoadMore extends JournalEvent {
 class AddIssueComment extends JournalEvent {
   final String issueListOptions;
   final int issueOrder;
-  final String issid;
+  final String id;
 
   const AddIssueComment({
         @required this.issueListOptions,
         @required this.issueOrder,
-        @required this.issid,
+        @required this.id,
       });
 
   @override
   List<Object> get props => [
     issueListOptions,
     issueOrder,
-    issid,
+    id,
   ];
 
   @override
@@ -96,6 +96,33 @@ class AddIssueComment extends JournalEvent {
       '''AddComment { 
       issueListOptions: $issueListOptions, 
       issueOrder: $issueOrder, 
-      issid: $issid, 
+      id: $id, 
+      }''';
+}
+
+class AddJournalComment extends JournalEvent {
+  final String journalListOptions;
+  final int journalOrder;
+  final String id;
+
+  const AddJournalComment({
+    @required this.journalListOptions,
+    @required this.journalOrder,
+    @required this.id,
+  });
+
+  @override
+  List<Object> get props => [
+    journalListOptions,
+    journalOrder,
+    id,
+  ];
+
+  @override
+  String toString() =>
+      '''AddComment { 
+      journalListOptions: $journalListOptions, 
+      journalOrder: $journalOrder, 
+      id: $id, 
       }''';
 }
