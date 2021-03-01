@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_detail_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_detail_screen.dart';
@@ -1502,7 +1503,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget titleNSubtitle({List list, int index}) {
+  Widget titleNSubtitle({List<Journal> list, int index}) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1555,7 +1556,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     width: 3,
                   ),
                   Text(
-                    '0',
+                    '${list[index].comments}',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,

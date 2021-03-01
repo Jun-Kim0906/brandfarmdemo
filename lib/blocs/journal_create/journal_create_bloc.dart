@@ -431,6 +431,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       content: state.content,
       widgets: state.widgets,
       widgetList: state.widgetList,
+      comments: 0,
       shipment: state.shipmentList.isEmpty ? null : state.shipmentList,
       fertilize: state.fertilizerList.isEmpty ? null : state.fertilizerList,
       pesticide: state.pesticideList.isEmpty ? null : state.pesticideList,

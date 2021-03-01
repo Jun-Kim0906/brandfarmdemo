@@ -22,6 +22,7 @@ class Journal {
   final String content;
   final List<Widgets> widgets;
   final List<String> widgetList;
+  final int comments;
 
 
   ///출하정보
@@ -63,6 +64,7 @@ class Journal {
     @required this.content,
     @required this.widgets,
     @required this.widgetList,
+    @required this.comments,
     @required this.shipment,
     @required this.fertilize,
     @required this.pesticide,
@@ -92,6 +94,7 @@ class Journal {
       content: ds['content'],
       widgets: ds["widgets"] == null ? null : _temp,
       widgetList: List.from(ds["widgetList"]),
+      comments: ds['comments'],
       shipment: ds['shipment'] == null
           ? null
           : ds["shipment"]
@@ -270,6 +273,7 @@ class Journal {
       'content': this.content,
       'widgets': this.widgets == null ? null : widgets,
       'widgetList': this.widgetList,
+      'comments' : this.comments,
       'shipment': this.shipment == null ? null : shipment,
       'fertilize': this.fertilize == null ? null : fertilize,
       'pesticide': this.pesticide == null ? null : pesticide,
