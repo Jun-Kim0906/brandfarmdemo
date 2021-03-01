@@ -78,6 +78,11 @@ class SubJournalRepository {
     await reference.update(journal.toMap());
   }
 
+  Future<void> updateJournalComment({String jid, int cmts}) async {
+    DocumentReference reference = _firestore.collection('Journal').doc(jid);
+    await reference.update({"comments": cmts});
+  }
+
   /// image related
   Future<List<ImagePicture>> getImage() async {
     List<ImagePicture> image = [];

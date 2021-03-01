@@ -39,12 +39,14 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapAddIssueCommentToState(
         issueListOptions: event.issueListOptions,
         issueOrder: event.issueOrder,
-        issid: event.id,);
+        issid: event.id,
+      );
     } else if (event is AddJournalComment) {
       yield* _mapAddJournalCommentToState(
         journalListOptions: event.journalListOptions,
         journalOrder: event.journalOrder,
-        jid: event.id,);
+        jid: event.id,
+      );
     }
   }
 
@@ -239,9 +241,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     yield state.update(isLoadingToGetMore: true);
   }
 
-  Stream<JournalState> _mapAddIssueCommentToState({
-    String issueListOptions, int issueOrder, String issid}) async* {
-
+  Stream<JournalState> _mapAddIssueCommentToState(
+      {String issueListOptions, int issueOrder, String issid}) async* {
     List<SubJournalIssue> issue = state.issueList;
     List<SubJournalIssue> cat = state.issueListByCategorySelection;
     List<SubJournalIssue> rev = state.reverseIssueList;
@@ -250,8 +251,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     int index2 = cat.indexWhere((data) => data.issid == issid) ?? -1;
     int index3 = rev.indexWhere((data) => data.issid == issid) ?? -1;
 
-    await SubJournalRepository().updateIssueComment(
-        issid: issid, cmts: issue[index1].comments + 1);
+    await SubJournalRepository()
+        .updateIssueComment(issid: issid, cmts: issue[index1].comments + 1);
 
     await IssueUtil.setIssue(SubJournalIssue(
       category: issue[index1].category,
@@ -266,15 +267,15 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       issueState: issue[index1].issueState,
     ));
 
-    if(index1 != -1) {
+    if (index1 != -1) {
       issue.removeAt(index1);
       issue.insert(index1, await IssueUtil.getIssue());
     }
-    if(index2 != -1) {
+    if (index2 != -1) {
       cat.removeAt(index2);
       cat.insert(index2, await IssueUtil.getIssue());
     }
-    if(index3 != -1) {
+    if (index3 != -1) {
       rev.removeAt(index3);
       rev.insert(index3, await IssueUtil.getIssue());
     }
@@ -286,9 +287,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     );
   }
 
-  Stream<JournalState> _mapAddJournalCommentToState({
-    String journalListOptions, int journalOrder, String jid}) async* {
-
+  Stream<JournalState> _mapAddJournalCommentToState(
+      {String journalListOptions, int journalOrder, String jid}) async* {
     List<Journal> journal = state.orderByRecent;
     List<Journal> cat = state.listBySelection;
     List<Journal> rev = state.orderByOldest;
@@ -297,18 +297,40 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     int index2 = cat.indexWhere((data) => data.jid == jid) ?? -1;
     int index3 = rev.indexWhere((data) => data.jid == jid) ?? -1;
 
+    await SubJournalRepository()
+        .updateJournalComment(jid: jid, cmts: journal[index1].comments + 1);
 
-    await JournalUtil.setJournal(journal[index1]);
+    await JournalUtil.setJournal(Journal(
+      planting: journal[index1].planting,
+      pest: journal[index1].pest,
+      weeding: journal[index1].weeding,
+      pesticide: journal[index1].pesticide,
+      uid: journal[index1].uid,
+      comments: journal[index1].comments +1,
+      date: journal[index1].date,
+      title: journal[index1].title,
+      farming: journal[index1].farming,
+      jid: journal[index1].jid,
+      fid: journal[index1].fid,
+      fertilize: journal[index1].fertilize,
+      content: journal[index1].content,
+      workforce: journal[index1].workforce,
+      seeding: journal[index1].seeding,
+      shipment: journal[index1].shipment,
+      widgetList: journal[index1].widgetList,
+      widgets: journal[index1].widgets,
+      watering: journal[index1].watering,
+    ));
 
-    if(index1 != -1) {
+    if (index1 != -1) {
       journal.removeAt(index1);
       journal.insert(index1, await JournalUtil.getJournal());
     }
-    if(index2 != -1) {
+    if (index2 != -1) {
       cat.removeAt(index2);
       cat.insert(index2, await JournalUtil.getJournal());
     }
-    if(index3 != -1) {
+    if (index3 != -1) {
       rev.removeAt(index3);
       rev.insert(index3, await JournalUtil.getJournal());
     }
