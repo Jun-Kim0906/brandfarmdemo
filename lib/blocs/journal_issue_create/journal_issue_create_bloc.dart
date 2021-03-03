@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
@@ -38,6 +39,8 @@ class JournalIssueCreateBloc
         category: event.category,
         issueState: event.issueState,
         contents: event.contents,
+        isReadByFM: event.isReadByFM,
+        isReadByOffice: event.isReadByOffice,
       );
     }
   }
@@ -95,12 +98,14 @@ class JournalIssueCreateBloc
       String title,
       int category,
       int issueState,
-      String contents}) async* {
+      String contents,
+        bool isReadByFM,
+        bool isReadByOffice,}) async* {
     String issid = '';
     issid = FirebaseFirestore.instance.collection('Issue').doc().id;
     SubJournalIssue subJournalIssue = SubJournalIssue(
       date: Timestamp.now(),
-      fid: fid ?? '--',
+      fid: fid ?? await FieldUtil.getField().fid,
       sfmid: sfmid ?? '--',
       issid: issid ?? '--',
       uid: uid ?? '--',
@@ -109,6 +114,8 @@ class JournalIssueCreateBloc
       issueState: issueState,
       contents: contents,
       comments: 0,
+      isReadByOffice: isReadByOffice ?? false,
+      isReadByFM: isReadByFM ?? false,
     );
 
     await SubJournalRepository()

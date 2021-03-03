@@ -3,6 +3,7 @@ import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/comment/comment_repository.dart';
 import 'package:BrandFarm/utils/comment/comment_util.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -112,6 +113,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         comment: comment,
         isThereSubComment: false,
         isExpanded: false,
+        fid: FieldUtil.getField().fid,
       );
 
       await CommentRepository().uploadComment(comment: cmt);
@@ -130,6 +132,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         comment: comment,
         isThereSubComment: false,
         isExpanded: false,
+        fid: FieldUtil.getField().fid,
       );
 
       await CommentRepository().uploadComment(comment: cmt);
@@ -208,6 +211,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       comment: cmts[index].comment,
       isThereSubComment: cmts[index].isThereSubComment,
       isExpanded: true,
+      fid: cmts[index].fid,
     ));
 
     cmts.removeAt(index);
@@ -232,6 +236,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       comment: cmts[index].comment,
       isThereSubComment: cmts[index].isThereSubComment,
       isExpanded: false,
+      fid: cmts[index].fid,
     ));
 
     cmts.removeAt(index);

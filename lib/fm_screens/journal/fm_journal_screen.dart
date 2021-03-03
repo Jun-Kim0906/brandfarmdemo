@@ -27,7 +27,6 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
   ScrollController _scrollController;
   bool isIssue;
   String order;
-  int nav;
 
   @override
   void initState() {
@@ -35,56 +34,57 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
     _scrollController = ScrollController();
-    nav = 1;
     isIssue = false;
     order = '최신 순';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFEEEEEE),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 11, 20, 0),
-        child: Container(
-          // height: 800,
-          width: 814,
-          padding: EdgeInsets.fromLTRB(19, 29, 24, 0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+    return BlocConsumer<FMJournalBloc, FMJournalState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Color(0xFFEEEEEE),
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 11, 20, 11),
+              child: Container(
+                // height: 800,
+                width: 814,
+                padding: EdgeInsets.fromLTRB(19, 29, 24, 0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: (state.navTo == 1)
+                    ? _homeList()
+                    : (state.navTo == 2)
+                        ? BlocProvider.value(
+                            value: _fmJournalBloc,
+                            child: FMJournalDetailScreen(),
+                          )
+                        : MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(
+                                value: _fmIssueBloc,
+                              ),
+                              BlocProvider.value(
+                                value: _fmJournalBloc,
+                              ),
+                            ],
+                            child: FMIssueDetailScreen(),
+                          ),
+              ),
+            ),
           ),
-          child: BlocConsumer<FMJournalBloc, FMJournalState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              return (state.navTo == 1)
-                  ? _homeList()
-                  : (state.navTo == 2)
-                      ? BlocProvider.value(
-                          value: _fmJournalBloc,
-                          child: FMJournalDetailScreen(),
-                        )
-                      : MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(
-                              value: _fmIssueBloc,
-                            ),
-                            BlocProvider.value(
-                              value: _fmJournalBloc,
-                            ),
-                          ],
-                          child: FMIssueDetailScreen(),
-                        );
-            },
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Widget _homeList() {
     return ListView(
-      controller: _scrollController,
       shrinkWrap: true,
       children: [
         FMJournalTitle(),

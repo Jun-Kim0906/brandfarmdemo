@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
@@ -68,13 +69,15 @@ class _SubJournalIssueCreateScreenState
           print('isUpload false');
           LoadingDialog.onLoading(context);
           _journalIssueCreateBloc.add(UploadJournal(
-            fid: '--',
+            fid: FieldUtil.getField().fid,
             category: category,
-            sfmid: '--',
+            sfmid: FieldUtil.getField().sfmid,
             contents: contents,
-            title: title,
+            title: state.title,
             uid: UserUtil.getUser().uid,
             issueState: issueState,
+            isReadByOffice: false,
+            isReadByFM: false,
           ));
         } else if (state.isComplete == true && state.isUploaded == true) {
           print('isUpload true');

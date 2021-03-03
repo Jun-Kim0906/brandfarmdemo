@@ -56,6 +56,8 @@ class UpdateJournal extends JournalIssueModifyEvent {
   final int issueState; // 예상 1 / 진행 2 / 완료 3
   final String contents;
   final int comments;
+  final bool isReadByFM;
+  final bool isReadByOffice;
 
   const UpdateJournal({
     @required this.fid,
@@ -67,6 +69,8 @@ class UpdateJournal extends JournalIssueModifyEvent {
     @required this.issueState,
     @required this.contents,
     @required this.comments,
+    @required this.isReadByFM,
+    @required this.isReadByOffice,
   });
 
   @override
@@ -81,6 +85,8 @@ class UpdateJournal extends JournalIssueModifyEvent {
       issueState: $issueState,
       contents: $contents,
       comments: $comments,
+      isReadByFM: $isReadByFM,
+      isReadByOffice: $isReadByOffice,
     }''';
   }
 }
