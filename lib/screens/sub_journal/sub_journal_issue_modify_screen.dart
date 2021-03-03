@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
@@ -95,15 +96,17 @@ class _SubJournalIssueModifyScreenState
           // print('isUpload false');
           LoadingDialog.onLoading(context);
           _journalIssueModifyBloc.add(UpdateJournal(
-            fid: '--',
+            fid: FieldUtil.getField().fid,
             category: category,
-            sfmid: '--',
+            sfmid: FieldUtil.getField().sfmid,
             issid: widget.issid,
             contents: _content.text,
             title: _title.text,
             uid: UserUtil.getUser().uid,
             issueState: issueState,
             comments: widget.comments,
+            isReadByFM: widget.obj.isReadByFM,
+            isReadByOffice: widget.obj.isReadByOffice,
           ));
         } else if (state.isComplete == true && state.isUploaded == true) {
           // print('isUpload true');

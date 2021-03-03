@@ -43,6 +43,7 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
     '알량성 얄리리 얄라 ㅈㄷㄹ',
     '알량성 얄리리 얄라 ㅈㄷㄹ',
   ];
+  int occurrence = 0;
 
   @override
   void initState() {
@@ -54,13 +55,14 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
     fixedmonth = DateFormat('M').format(fixedNow);
     getMonth(now: now);
     monthList.forEach((month) {
-      if (month.date == int.parse(DateFormat('d').format(now))) {
+      if (month.date == int.parse(DateFormat('d').format(now)) && occurrence == 0) {
         var index = monthList.indexOf(month);
         PickDate pd = PickDate(date: month.date, isPicked: !month.isPicked);
         setState(() {
           prevSelectedIndex = index;
           monthList.removeAt(index);
           monthList.insert(index, pd);
+          occurrence += 1;
         });
       }
     });
@@ -368,6 +370,8 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                   decoration: BoxDecoration(
                     color: (monthList[index + 28].isPicked)
                         ? Color(0xFF15B85B)
+                        : (monthList[index + 28].date < 8)
+                        ? Colors.white
                         : (monthList[index + 28].date == currentDay &&
                         fixedmonth == month &&
                         fixedYear == year)

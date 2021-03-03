@@ -47,6 +47,8 @@ class SubJournalIssue {
   final int issueState; // 예상 1 / 진행 2 / 완료 3
   final String contents;
   final int comments;
+  final bool isReadByFM;
+  final bool isReadByOffice;
 
   SubJournalIssue({
     @required this.date,
@@ -59,6 +61,8 @@ class SubJournalIssue {
     @required this.issueState,
     @required this.contents,
     @required this.comments,
+    @required this.isReadByFM,
+    @required this.isReadByOffice,
   });
 
   factory SubJournalIssue.fromSnapshot(DocumentSnapshot ds) {
@@ -73,6 +77,8 @@ class SubJournalIssue {
       issueState: ds['issueState'],
       contents: ds['contents'],
       comments: ds['comments'],
+      isReadByFM: ds['isReadByFM'],
+      isReadByOffice: ds['isReadByOffice'],
     );
   }
 
@@ -88,6 +94,8 @@ class SubJournalIssue {
       'issueState': issueState,
       'contents': contents,
       'comments': comments,
+      'isReadByFM': isReadByFM,
+      'isReadByOffice': isReadByOffice,
     };
   }
 }

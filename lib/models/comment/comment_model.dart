@@ -14,6 +14,7 @@ class Comment {
   final String comment;
   final bool isThereSubComment;
   final bool isExpanded;
+  final String fid;
 
   Comment({
     @required this.date,
@@ -25,6 +26,7 @@ class Comment {
     @required this.comment,
     @required this.isThereSubComment,
     @required this.isExpanded,
+    @required this.fid,
   });
 
   factory Comment.fromSnapshot(DocumentSnapshot ds) {
@@ -38,6 +40,7 @@ class Comment {
       comment: ds['comment'].toString(),
       isThereSubComment: ds['isThereSubComment'],
       isExpanded: ds['isExpanded'],
+      fid: ds['fid'],
     );
   }
 
@@ -52,6 +55,7 @@ class Comment {
       'comment': comment,
       'isThereSubComment': isThereSubComment,
       'isExpanded': isExpanded,
+      'fid': fid,
     };
   }
 }

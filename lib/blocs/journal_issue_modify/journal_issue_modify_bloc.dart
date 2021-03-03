@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
@@ -38,6 +39,8 @@ class JournalIssueModifyBloc
         contents: event.contents,
         issid: event.issid,
         comments: event.comments,
+        isReadByOffice: event.isReadByOffice,
+        isReadByFM: event.isReadByFM,
       );
     } else if (event is GetImageList) {
       yield* _mapGetImageListToState(
@@ -99,7 +102,9 @@ class JournalIssueModifyBloc
         int issueState,
         String issid,
         String contents,
-        int comments,}) async* {
+        int comments,
+        bool isReadByFM,
+        bool isReadByOffice}) async* {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -112,7 +117,7 @@ class JournalIssueModifyBloc
 
     SubJournalIssue subJournalIssue = SubJournalIssue(
       date: Timestamp.now(),
-      fid: fid ?? '--',
+      fid: fid ?? await FieldUtil.getField().fid,
       sfmid: sfmid ?? '--',
       issid: issid ?? '--',
       uid: uid ?? '--',
@@ -121,6 +126,8 @@ class JournalIssueModifyBloc
       issueState: issueState,
       contents: contents,
       comments: comments ?? 0,
+      isReadByFM: isReadByFM ?? false,
+      isReadByOffice: isReadByOffice ?? false,
     );
 
     await SubJournalRepository()
