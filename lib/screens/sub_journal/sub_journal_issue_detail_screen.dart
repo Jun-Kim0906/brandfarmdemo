@@ -204,7 +204,11 @@ class _SubJournalIssueDetailScreenState
                           comments: numOfComments,
                         ),
                       )),
-            );
+            ).then((value) {
+              setState(() {
+                subJournalIssue = value;
+              });
+            });
           },
           child: Text(
             '편집',

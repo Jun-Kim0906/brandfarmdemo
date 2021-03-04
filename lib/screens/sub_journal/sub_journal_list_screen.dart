@@ -437,9 +437,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => BlocProvider(
-                                        create: (BuildContext context) => JournalCreateBloc(),
-                                        child: SubJournalCreateScreen(),
-                                      )));
+                                            create: (BuildContext context) =>
+                                                JournalCreateBloc(),
+                                            child: SubJournalCreateScreen(),
+                                          )));
                             } else {
                               Navigator.push(
                                   context,
@@ -449,7 +450,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                                 JournalIssueCreateBloc(),
                                             child:
                                                 SubJournalIssueCreateScreen(),
-                                          )));
+                                          ))).then((value) {
+                                _journalBloc.add(LoadJournal());
+                                _journalBloc.add(GetInitialList());
+                              });
                             }
                           },
                         ),
@@ -593,10 +597,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                                 fontSize: 20,
                               ),
                         )
-                      : Text(
-                          '전체',
-                          style: JournalListSearchBarStyle
-                        ),
+                      : Text('전체', style: JournalListSearchBarStyle),
                   SizedBox(
                     width: 7,
                   ),
@@ -645,10 +646,8 @@ class _JournalListScreenState extends State<JournalListScreen> {
                       child: FittedBox(
                         child: Row(
                           children: [
-                            Text(
-                              fieldListOptions,
-                              style: Theme.of(context).textTheme.bodyText2
-                            ),
+                            Text(fieldListOptions,
+                                style: Theme.of(context).textTheme.bodyText2),
                             SizedBox(
                               width: 2,
                             ),
@@ -687,10 +686,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
               },
               child: Row(
                 children: [
-                  Text(
-                    issueListOptions,
-                    style: JournalListSearchBarStyle
-                  ),
+                  Text(issueListOptions, style: JournalListSearchBarStyle),
                   SizedBox(
                     width: 7,
                   ),
@@ -789,10 +785,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   );
                 } else {
-                  monthBefore =
-                      DateFormat('MM').format(
-                          DateTime.fromMicrosecondsSinceEpoch(state
-                              .orderByRecent[index - 1].date.microsecondsSinceEpoch));
+                  monthBefore = DateFormat('MM').format(
+                      DateTime.fromMicrosecondsSinceEpoch(state
+                          .orderByRecent[index - 1]
+                          .date
+                          .microsecondsSinceEpoch));
 
                   // if (index + 1 < state.orderByRecent.length) {
                   //   monthAfter =
@@ -813,13 +810,17 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         items: state.orderByRecent);
                   } else {
                     return _customListTile(
-                      date: int.parse(
-                          DateFormat('dd').format(
-                              DateTime.fromMicrosecondsSinceEpoch(state
-                                  .orderByRecent[index].date.microsecondsSinceEpoch))),
-                      week:
-                          daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(state
-                              .orderByRecent[index].date.microsecondsSinceEpoch).weekday),
+                      date: int.parse(DateFormat('dd').format(
+                          DateTime.fromMicrosecondsSinceEpoch(state
+                              .orderByRecent[index]
+                              .date
+                              .microsecondsSinceEpoch))),
+                      week: daysOfWeek(
+                          index: DateTime.fromMicrosecondsSinceEpoch(state
+                                  .orderByRecent[index]
+                                  .date
+                                  .microsecondsSinceEpoch)
+                              .weekday),
                       list: state.orderByRecent,
                       index: index,
                       pic: state.imageList,
@@ -866,10 +867,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                 String monthBefore;
                 String currentMonth;
                 // String monthAfter;
-                currentMonth =
-                    DateFormat('MM').format(
-                        DateTime.fromMicrosecondsSinceEpoch(state
-                            .orderByOldest[index].date.microsecondsSinceEpoch));
+                currentMonth = DateFormat('MM').format(
+                    DateTime.fromMicrosecondsSinceEpoch(state
+                        .orderByOldest[index].date.microsecondsSinceEpoch));
                 if (index == 0) {
                   return Column(
                     children: [
@@ -884,10 +884,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   );
                 } else {
-                  monthBefore =
-                      DateFormat('MM').format(
-                          DateTime.fromMicrosecondsSinceEpoch(state
-                              .orderByOldest[index - 1].date.microsecondsSinceEpoch));
+                  monthBefore = DateFormat('MM').format(
+                      DateTime.fromMicrosecondsSinceEpoch(state
+                          .orderByOldest[index - 1]
+                          .date
+                          .microsecondsSinceEpoch));
 
                   // if (index + 1 < state.orderByOldest.length) {
                   //   monthAfter =
@@ -908,13 +909,17 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         items: state.orderByOldest);
                   } else {
                     return _customListTile(
-                      date: int.parse(
-                          DateFormat('dd').format(
-                              DateTime.fromMicrosecondsSinceEpoch(state
-                                  .orderByOldest[index].date.microsecondsSinceEpoch))),
-                      week:
-                          daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(state
-                              .orderByOldest[index].date.microsecondsSinceEpoch).weekday),
+                      date: int.parse(DateFormat('dd').format(
+                          DateTime.fromMicrosecondsSinceEpoch(state
+                              .orderByOldest[index]
+                              .date
+                              .microsecondsSinceEpoch))),
+                      week: daysOfWeek(
+                          index: DateTime.fromMicrosecondsSinceEpoch(state
+                                  .orderByOldest[index]
+                                  .date
+                                  .microsecondsSinceEpoch)
+                              .weekday),
                       list: state.orderByOldest,
                       index: index,
                       pic: state.imageList,
@@ -967,10 +972,15 @@ class _JournalListScreenState extends State<JournalListScreen> {
                       _customListTile(
                         date: int.parse(DateFormat('dd').format(
                             DateTime.fromMicrosecondsSinceEpoch(state
-                                .listBySelection[index].date.microsecondsSinceEpoch))),
+                                .listBySelection[index]
+                                .date
+                                .microsecondsSinceEpoch))),
                         week: daysOfWeek(
                             index: DateTime.fromMicrosecondsSinceEpoch(state
-                                .listBySelection[index].date.microsecondsSinceEpoch).weekday),
+                                    .listBySelection[index]
+                                    .date
+                                    .microsecondsSinceEpoch)
+                                .weekday),
                         list: state.listBySelection,
                         index: index,
                         pic: state.imageList,
@@ -979,13 +989,17 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   );
                 } else {
                   return _customListTile(
-                    date: int.parse(
-                        DateFormat('dd').format(
-                            DateTime.fromMicrosecondsSinceEpoch(state
-                                .listBySelection[index].date.microsecondsSinceEpoch))),
-                    week:
-                        daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(state
-                            .listBySelection[index].date.microsecondsSinceEpoch).weekday),
+                    date: int.parse(DateFormat('dd').format(
+                        DateTime.fromMicrosecondsSinceEpoch(state
+                            .listBySelection[index]
+                            .date
+                            .microsecondsSinceEpoch))),
+                    week: daysOfWeek(
+                        index: DateTime.fromMicrosecondsSinceEpoch(state
+                                .listBySelection[index]
+                                .date
+                                .microsecondsSinceEpoch)
+                            .weekday),
                     list: state.listBySelection,
                     index: index,
                     pic: state.imageList,
@@ -1240,7 +1254,11 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   Widget _issueListTile(
-      {String date, int issueState, List list, int index, List<ImagePicture> pic}) {
+      {String date,
+      int issueState,
+      List list,
+      int index,
+      List<ImagePicture> pic}) {
     String _issueState = getIssueState(state: issueState);
     List<ImagePicture> _pic =
         pic.where((element) => element.issid == list[index].issid).toList();
@@ -1367,17 +1385,19 @@ class _JournalListScreenState extends State<JournalListScreen> {
       children: [
         _monthWidget(
             month: currentMonth,
-            year: DateFormat('yyyy').format(
-                DateTime.fromMicrosecondsSinceEpoch(items[index]
-                    .date.microsecondsSinceEpoch)),
+            year: DateFormat('yyyy').format(DateTime.fromMicrosecondsSinceEpoch(
+                items[index].date.microsecondsSinceEpoch)),
             state: state,
             index: index),
         _customListTile(
-          date: int.parse(DateFormat('dd').format(
-              DateTime.fromMicrosecondsSinceEpoch(items[index]
-                  .date.microsecondsSinceEpoch)),),
-          week: daysOfWeek(index: DateTime.fromMicrosecondsSinceEpoch(items[index]
-              .date.microsecondsSinceEpoch).weekday),
+          date: int.parse(
+            DateFormat('dd').format(DateTime.fromMicrosecondsSinceEpoch(
+                items[index].date.microsecondsSinceEpoch)),
+          ),
+          week: daysOfWeek(
+              index: DateTime.fromMicrosecondsSinceEpoch(
+                      items[index].date.microsecondsSinceEpoch)
+                  .weekday),
           list: items,
           index: index,
           pic: state.imageList,
@@ -1407,9 +1427,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
     );
   }
 
-  Widget _customListTile({int date, String week, List list, int index, List pic}) {
+  Widget _customListTile(
+      {int date, String week, List list, int index, List pic}) {
     List<ImagePicture> _pic = [];
-    if(pic.isNotEmpty) {
+    if (pic.isNotEmpty) {
       _pic = pic.where((element) => element.jid == list[index].jid).toList();
     }
     return Container(
@@ -1469,8 +1490,8 @@ class _JournalListScreenState extends State<JournalListScreen> {
                     ],
                   ),
                   Divider(
-                          thickness: 1,
-                        ),
+                    thickness: 1,
+                  ),
                 ],
               ),
             ),
@@ -1547,10 +1568,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   Text(
                     '댓글',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0x4D000000),
-                    ),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0x4D000000),
+                        ),
                   ),
                   SizedBox(
                     width: 3,
@@ -1573,27 +1594,29 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   Widget trailingIcon({List<ImagePicture> pic}) {
-    return (pic.isNotEmpty) ? Container(
-      height: 55,
-      width: 55,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: CachedNetworkImageProvider(pic[0].url),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), BlendMode.srcATop),
-        ),
-      ),
-      child: Center(
-        child: Text(
-          '+${pic.length}',
-          style: Theme.of(context).textTheme.headline3.copyWith(
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.background,
+    return (pic.isNotEmpty)
+        ? Container(
+            height: 55,
+            width: 55,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(pic[0].url),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.5), BlendMode.srcATop),
               ),
-        ),
-      ),
-    ) : Container();
+            ),
+            child: Center(
+              child: Text(
+                '+${pic.length}',
+                style: Theme.of(context).textTheme.headline3.copyWith(
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.background,
+                    ),
+              ),
+            ),
+          )
+        : Container();
   }
 
   void _settingModalBottomSheet({BuildContext context}) {
