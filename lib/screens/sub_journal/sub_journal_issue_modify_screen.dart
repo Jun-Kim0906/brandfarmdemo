@@ -112,7 +112,21 @@ class _SubJournalIssueModifyScreenState
           // print('isUpload true');
           _journalBloc.add(GetInitialList());
           LoadingDialog.dismiss(context, () {
-            Navigator.pop(context);
+            Navigator.pop(context,
+                SubJournalIssue(
+                  date: Timestamp.now(),
+                  fid: FieldUtil.getField().fid,
+                  category: category,
+                  sfmid: FieldUtil.getField().sfmid,
+                  issid: widget.issid,
+                  contents: _content.text,
+                  title: _title.text,
+                  uid: UserUtil.getUser().uid,
+                  issueState: issueState,
+                  comments: widget.comments,
+                  isReadByFM: widget.obj.isReadByFM,
+                  isReadByOffice: widget.obj.isReadByOffice,
+                ));
           });
         }
       },
