@@ -1,96 +1,322 @@
+import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
+import 'package:BrandFarm/blocs/fm_issue/fm_issue_event.dart';
+import 'package:BrandFarm/blocs/fm_issue/fm_issue_state.dart';
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMJournalDatePicker extends StatefulWidget {
+  bool isIssue;
+
+  FMJournalDatePicker({Key key, this.isIssue}) : super(key: key);
+
   @override
   _FMJournalDatePickerState createState() => _FMJournalDatePickerState();
 }
 
 class _FMJournalDatePickerState extends State<FMJournalDatePicker> {
+  FMJournalBloc _fmJournalBloc;
+  FMIssueBloc _fmIssueBloc;
+
   DateTime now = DateTime.now();
-  String year;
-  String month;
+
+  @override
+  void initState() {
+    super.initState();
+    _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
+    _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FMJournalBloc, FMJournalState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return (widget.isIssue)
+            ? BlocProvider.value(
+                value: _fmIssueBloc,
+                child: IssueDatePicker(fid: state.field.fid),
+              )
+            : BlocProvider.value(
+                value: _fmJournalBloc,
+                child: JournalDatePicker(),
+              );
+      },
+    );
+  }
+}
+
+class Util {
+  List<String> generateYear() {
+    List<String> yList = List.generate(10, (index) {
+      int initial = 2020;
+      int num = initial + index;
+      return num.toString();
+    });
+    return yList;
+  }
+
+  List<String> generateMonth() {
+    List<String> mList = List.generate(12, (index) {
+      int initial = 1;
+      int num = initial + index;
+      return num.toString();
+    });
+    return mList;
+  }
+}
+
+class JournalDatePicker extends StatefulWidget {
+  @override
+  _JournalDatePickerState createState() => _JournalDatePickerState();
+}
+
+class _JournalDatePickerState extends State<JournalDatePicker> {
+  FMJournalBloc _fmJournalBloc;
   List<String> yearList;
   List<String> monthList;
 
   @override
   void initState() {
     super.initState();
-    generateYearMonth();
-    year = now.year.toString();
-    month = now.month.toString();
-  }
-
-  void generateYearMonth() {
-    List<String> yList = List.generate(10, (index) {
-      int initial = 2020;
-      int num = initial + index;
-      return num.toString();
-    });
-    List<String> mList = List.generate(12, (index) {
-      int initial = 1;
-      int num = initial + index;
-      return num.toString();
-    });
-    setState(() {
-      yearList = yList;
-      monthList = mList;
-    });
+    _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
+    yearList = Util().generateYear();
+    monthList = Util().generateMonth();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _selectYear(),
-        SizedBox(width: 24,),
-        _selectMonth(),
-      ],
+    return BlocConsumer<FMJournalBloc, FMJournalState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Row(
+          children: [
+            _selectYear(state),
+            SizedBox(
+              width: 24,
+            ),
+            _selectMonth(state),
+            SizedBox(
+              width: 24,
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.double_arrow_outlined,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _selectYear() {
-    return DropdownButton(
-      value: year,
+  Widget _selectYear(FMJournalState state) {
+    return DropdownBelow(
+      value: state.year,
       items: yearList.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
         );
       }).toList(),
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
-        fontSize: 18,
-        color: Color(0x66000000),
-      ),
-      icon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0x66000000),),
+      // style: Theme.of(context).textTheme.bodyText2.copyWith(
+      //       fontSize: 18,
+      //       color: Color(0x66000000),
+      //     ),
+      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      itemWidth: 90,
+      boxPadding: EdgeInsets.symmetric(horizontal: 6),
+      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      boxWidth: 90,
+      boxHeight: 45,
+      // icon: Icon(
+      //   Icons.keyboard_arrow_down_sharp,
+      //   color: Color(0x66000000),
+      // ),
       onChanged: (String value) {
         setState(() {
-          year = value;
+          _fmJournalBloc.add(SetJourYear(year: value));
         });
       },
-      underline: Container(),
+      // underline: Container(),
     );
   }
 
-  Widget _selectMonth() {
-    return DropdownButton(
-      value: month,
+  Widget _selectMonth(FMJournalState state) {
+    return DropdownBelow(
+      value: state.month,
       items: monthList.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
         );
       }).toList(),
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
-        fontSize: 18,
-        color: Color(0x66000000),
-      ),
-      icon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0x66000000),),
+      // style: Theme.of(context).textTheme.bodyText2.copyWith(
+      //       fontSize: 18,
+      //       color: Color(0x66000000),
+      //     ),
+      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      itemWidth: 90,
+      boxPadding: EdgeInsets.symmetric(horizontal: 6),
+      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      boxWidth: 90,
+      boxHeight: 45,
+      // icon: Icon(
+      //   Icons.keyboard_arrow_down_sharp,
+      //   color: Color(0x66000000),
+      // ),
       onChanged: (String value) {
         setState(() {
-          month = value;
+          _fmJournalBloc.add(SetJourMonth(month: value));
         });
       },
-      underline: Container(),
+      // underline: Container(),
+    );
+  }
+}
+
+class IssueDatePicker extends StatefulWidget {
+  String fid;
+
+  IssueDatePicker({Key key, this.fid}) : super(key: key);
+
+  @override
+  _IssueDatePickerState createState() => _IssueDatePickerState();
+}
+
+class _IssueDatePickerState extends State<IssueDatePicker> {
+  FMIssueBloc _fmIssueBloc;
+  List<String> yearList;
+  List<String> monthList;
+
+  @override
+  void initState() {
+    super.initState();
+    _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
+    yearList = Util().generateYear();
+    monthList = Util().generateMonth();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FMIssueBloc, FMIssueState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Row(
+          children: [
+            _selectYear(state),
+            SizedBox(
+              width: 24,
+            ),
+            _selectMonth(state),
+            SizedBox(
+              width: 24,
+            ),
+            IconButton(
+              onPressed: () {
+                _fmIssueBloc.add(GetIssueList(fid: widget.fid));
+              },
+              icon: Icon(
+                Icons.double_arrow_outlined,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _selectYear(FMIssueState state) {
+    return DropdownBelow(
+      value: state.year,
+      items: yearList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      // style: Theme.of(context).textTheme.bodyText2.copyWith(
+      //       fontSize: 18,
+      //       color: Color(0x66000000),
+      //     ),
+      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      itemWidth: 90,
+      boxPadding: EdgeInsets.symmetric(horizontal: 6),
+      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      boxWidth: 90,
+      boxHeight: 45,
+      // icon: Icon(
+      //   Icons.keyboard_arrow_down_sharp,
+      //   color: Color(0x66000000),
+      // ),
+      onChanged: (String value) {
+        setState(() {
+          _fmIssueBloc.add(SetIssYear(year: value));
+        });
+      },
+      // underline: Container(),
+    );
+  }
+
+  Widget _selectMonth(FMIssueState state) {
+    return DropdownBelow(
+      value: state.month,
+      items: monthList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      // style: Theme.of(context).textTheme.bodyText2.copyWith(
+      //       fontSize: 18,
+      //       color: Color(0x66000000),
+      //     ),
+      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      itemWidth: 90,
+      boxPadding: EdgeInsets.symmetric(horizontal: 6),
+      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 18,
+            color: Color(0x66000000),
+          ),
+      boxWidth: 90,
+      boxHeight: 45,
+      // icon: Icon(
+      //   Icons.keyboard_arrow_down_sharp,
+      //   color: Color(0x66000000),
+      // ),
+      onChanged: (String value) {
+        setState(() {
+          _fmIssueBloc.add(SetIssMonth(month: value));
+        });
+      },
+      // underline: Container(),
     );
   }
 }

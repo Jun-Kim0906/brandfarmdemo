@@ -1,4 +1,10 @@
+
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:BrandFarm/models/field_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMJournalTitle extends StatefulWidget {
   @override
@@ -6,50 +12,51 @@ class FMJournalTitle extends StatefulWidget {
 }
 
 class _FMJournalTitleState extends State<FMJournalTitle> {
-  String field;
-  List<String> fList = [
-    '필드A',
-    '필드B',
-    '필드C',
-  ];
+  FMJournalBloc _fmJournalBloc;
 
   @override
   void initState() {
     super.initState();
-    field = fList[0];
+    _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
+    _fmJournalBloc.add(GetFieldList()); // get + set
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          '일지목록',
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyText1
-              .copyWith(
-            fontSize: 28,
-            fontWeight: FontWeight.w200,
-            color: Colors.black,
-          ),
-        ),
-        SizedBox(height: 28,),
-        _selectFieldDropdown(),
-        Divider(height: 36, thickness: 1, color: Color(0xFFDFDFDF),),
-      ],
+    return BlocConsumer<FMJournalBloc, FMJournalState>(
+        listener: (context, state) {},
+      builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                '일지목록',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w200,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 28,),
+              _selectFieldDropdown(state: state),
+              Divider(height: 36, thickness: 1, color: Color(0xFFDFDFDF),),
+            ],
+          );
+      },
     );
   }
 
-  Widget _selectFieldDropdown() {
+  Widget _selectFieldDropdown({FMJournalState state}) {
     return DropdownButton(
-      value: field,
-      items: fList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
+      value: state.field,
+      items: state.fieldList.map<DropdownMenuItem<Field>>((Field value) {
+        return DropdownMenuItem<Field>(
           value: value,
-          child: Text(value),
+          child: Text(value.name),
         );
       }).toList(),
       style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -58,9 +65,9 @@ class _FMJournalTitleState extends State<FMJournalTitle> {
         color: Color(0xFF15B85B),
       ),
       icon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0x66000000),),
-      onChanged: (String value) {
+      onChanged: (Field value) {
         setState(() {
-          field = value;
+          _fmJournalBloc.add(SetField(field: value));
         });
       },
       underline: Container(),

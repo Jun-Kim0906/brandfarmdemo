@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/fm_issue/bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
+import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_detail_screen.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_screen.dart';
@@ -25,7 +26,6 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
   FMJournalBloc _fmJournalBloc;
   FMIssueBloc _fmIssueBloc;
   ScrollController _scrollController;
-  bool isIssue;
   String order;
 
   @override
@@ -34,7 +34,6 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
     _scrollController = ScrollController();
-    isIssue = false;
     order = '최신 순';
   }
 
@@ -58,7 +57,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: (state.navTo == 1)
-                    ? _homeList()
+                    ? _homeList(state)
                     : (state.navTo == 2)
                         ? BlocProvider.value(
                             value: _fmJournalBloc,
@@ -83,28 +82,41 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     );
   }
 
-  Widget _homeList() {
+  Widget _homeList(FMJournalState state) {
     return ListView(
       shrinkWrap: true,
       children: [
-        FMJournalTitle(),
-        FMJournalDatePicker(),
+        BlocProvider.value(
+          value: _fmJournalBloc,
+          child: FMJournalTitle(),
+        ),
+        MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: _fmIssueBloc..add(GetIssueList(fid: state.field.fid)),
+            ),
+            BlocProvider.value(
+              value: _fmJournalBloc,
+            ),
+          ],
+          child: FMJournalDatePicker(isIssue: state.isIssue,),
+        ),
         SizedBox(
           height: 27,
         ),
         // FMJournalListPicker(),
-        _fmJournalListPicker(),
+        _fmJournalListPicker(state),
         SizedBox(
           height: 76,
         ),
         // (!isIssue) ? FMJournalList() : FMIssueList(),
-        switchList(),
+        switchList(state),
       ],
     );
   }
 
-  Widget switchList() {
-    switch (isIssue) {
+  Widget switchList(FMJournalState state) {
+    switch (state.isIssue) {
       case true:
         {
           return MultiBlocProvider(
@@ -131,11 +143,11 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     }
   }
 
-  Widget _fmJournalListPicker() {
+  Widget _fmJournalListPicker(FMJournalState state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        _journalSwitch(),
+        _journalSwitch(state),
         SizedBox(
           width: 180,
         ),
@@ -151,7 +163,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     );
   }
 
-  Widget _journalSwitch() {
+  Widget _journalSwitch(FMJournalState state) {
     return Container(
       height: 30,
       width: 212,
@@ -163,7 +175,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
         children: [
           AnimatedContainer(
             duration: Duration(milliseconds: 300),
-            alignment: (isIssue) ? Alignment(1, 0) : Alignment(-1, 0),
+            alignment: (state.isIssue) ? Alignment(1, 0) : Alignment(-1, 0),
             child: Container(
               height: 30,
               width: 115,
@@ -181,14 +193,14 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                 InkResponse(
                   onTap: () {
                     setState(() {
-                      isIssue = false;
+                      _fmJournalBloc.add(ChangeSwitchState());
                     });
                   },
                   child: Text(
                     '성장일지',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontWeight: FontWeight.bold, // normal
-                          color: (isIssue)
+                          color: (state.isIssue)
                               ? Color(0x4D000000)
                               : Colors.white, // Color(0x4D000000) or white
                         ),
@@ -197,14 +209,14 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                 InkResponse(
                   onTap: () {
                     setState(() {
-                      isIssue = true;
+                      _fmJournalBloc.add(ChangeSwitchState());
                     });
                   },
                   child: Text(
                     '이슈일지',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontWeight: FontWeight.bold, // normal
-                          color: (isIssue)
+                          color: (state.isIssue)
                               ? Colors.white
                               : Color(0x4D000000), // Color(0x4D000000) or white
                         ),

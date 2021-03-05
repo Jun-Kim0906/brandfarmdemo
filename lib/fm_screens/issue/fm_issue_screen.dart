@@ -26,27 +26,34 @@ class _FMIssueListState extends State<FMIssueList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Card(
-                elevation: 3,
-                child: InkResponse(
-                  onTap: (){
-                    _fmJournalBloc.add(ChangeScreen(navTo: 3));
-                  },
-                  child: CardBody(),
+    return BlocConsumer<FMIssueBloc, FMIssueState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Card(
+                    elevation: 3,
+                    child: InkResponse(
+                      onTap: () {
+                        _fmJournalBloc.add(ChangeScreen(navTo: 3));
+                      },
+                      child: CardBody(),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SizedBox(height: 17,),
-          ],
+                SizedBox(
+                  height: 17,
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -90,7 +97,9 @@ class CardBody extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(width: 3.28,),
+          SizedBox(
+            width: 3.28,
+          ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 14),
             child: Container(
@@ -105,41 +114,52 @@ class CardBody extends StatelessWidget {
                         width: 43,
                         height: 22,
                         child: FittedBox(
-                          child: DepartmentBadge(department: getIssueState(state: 1),),
+                          child: DepartmentBadge(
+                            department: getIssueState(state: 1),
+                          ),
                         ),
                       ),
-                      SizedBox(width: 5,),
-                      Text('2021_04_05_작물영양이슈',
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        '2021_04_05_작물영양이슈',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black,
+                            ),
+                      ),
                     ],
                   ),
-                  Text('얄리리 얄리리 얄리리 얄리리얄리리얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리',
+                  Text(
+                    '얄리리 얄리리 얄리리 얄리리얄리리얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리 얄리리',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w200,
-                      color: Color(0xB3000000),
-                    ),
+                          fontWeight: FontWeight.w200,
+                          color: Color(0xB3000000),
+                        ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Row(
                     children: [
-                      Text('댓글 ${4} ${dot} 2021-04-05',
+                      Text(
+                        '댓글 ${4} ${dot} 2021-04-05',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontWeight: FontWeight.w200,
-                          fontSize: 12,
-                          color: Color(0x80000000),
-                        ),),
+                              fontWeight: FontWeight.w200,
+                              fontSize: 12,
+                              color: Color(0x80000000),
+                            ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-          SizedBox(width: 28,),
+          SizedBox(
+            width: 28,
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -149,12 +169,13 @@ class CardBody extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/strawberry.png'),
-                      fit: BoxFit.cover,
-                    )
-                ),
+                  image: AssetImage('assets/strawberry.png'),
+                  fit: BoxFit.cover,
+                )),
               ),
-              SizedBox(width: 16,),
+              SizedBox(
+                width: 16,
+              ),
             ],
           ),
         ],
@@ -163,19 +184,22 @@ class CardBody extends StatelessWidget {
   }
 
   String getIssueState({int state}) {
-    switch(state) {
-      case 1 : {
-        return 'todo';
-      }
-      break;
-      case 2 : {
-        return 'doing';
-      }
-      break;
-      case 3 : {
-        return 'done';
-      }
-      break;
+    switch (state) {
+      case 1:
+        {
+          return 'todo';
+        }
+        break;
+      case 2:
+        {
+          return 'doing';
+        }
+        break;
+      case 3:
+        {
+          return 'done';
+        }
+        break;
     }
   }
 }
