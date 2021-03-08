@@ -11,18 +11,41 @@ abstract class FMJournalEvent extends Equatable{
 
 class LoadFMJournalList extends FMJournalEvent {}
 
-class ChangeScreen extends FMJournalEvent {
-  final int navTo;
+class ReloadFMJournal extends FMJournalEvent {}
 
-  const ChangeScreen({
-    @required this.navTo,
+class ChangeListOrder extends FMJournalEvent {
+  final String order;
+
+  const ChangeListOrder({
+    @required this.order,
   });
 
   // @override
   // List<Object> get props => [navTo];
 
   @override
-  String toString() => 'ChangeScreen { navTo : $navTo}';
+  String toString() => '''ChangeListOrder { 
+    order : $order,
+  }''';
+}
+
+class ChangeScreen extends FMJournalEvent {
+  final int navTo;
+  final int index;
+
+  const ChangeScreen({
+    @required this.navTo,
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''ChangeScreen { 
+    navTo : $navTo, 
+    index : $index, 
+  }''';
 }
 
 class ChangeSwitchState extends FMJournalEvent {}

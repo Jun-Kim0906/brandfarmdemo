@@ -1,6 +1,7 @@
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_event.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_state.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/fm_issue/fm_issue_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +19,8 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
       yield* _mapSetIssYearToState(event.year);
     } else if (event is SetIssMonth) {
       yield* _mapSetIssMonthToState(event.month);
+    } else if (event is GetDetailUserInfo) {
+      yield* _mapGetDetailUserInfoToState(event.sfmid);
     }
   }
 
@@ -58,5 +61,10 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
   Stream<FMIssueState> _mapSetIssMonthToState(String month) async* {
     // month
     yield state.update(month: month);
+  }
+
+  Stream<FMIssueState> _mapGetDetailUserInfoToState(String sfmid) async* {
+    User detailUser = await FMIssueRepository().getDetailUserInfo(sfmid);
+    yield state.update(detailUser: detailUser);
   }
 }

@@ -14,6 +14,7 @@ import 'package:BrandFarm/widgets/fm_journal/fm_journal_list.dart';
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_list_picker.dart';
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_title_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,6 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
   FMJournalBloc _fmJournalBloc;
   FMIssueBloc _fmIssueBloc;
   ScrollController _scrollController;
-  String order;
 
   @override
   void initState() {
@@ -34,49 +34,55 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
     _scrollController = ScrollController();
-    order = '최신 순';
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMJournalBloc, FMJournalState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: Color(0xFFEEEEEE),
-          body: SingleChildScrollView(
-            controller: _scrollController,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 11, 20, 11),
-              child: Container(
-                // height: 800,
-                width: 814,
-                padding: EdgeInsets.fromLTRB(19, 29, 24, 0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: (state.navTo == 1)
-                    ? _homeList(state)
-                    : (state.navTo == 2)
-                        ? BlocProvider.value(
-                            value: _fmJournalBloc,
-                            child: FMJournalDetailScreen(),
-                          )
-                        : MultiBlocProvider(
-                            providers: [
-                              BlocProvider.value(
-                                value: _fmIssueBloc,
-                              ),
-                              BlocProvider.value(
+    return BlocConsumer<FMIssueBloc, FMIssueState>(
+      listener: (context, istate) {},
+      builder: (context, istate) {
+        return BlocConsumer<FMJournalBloc, FMJournalState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+              backgroundColor: Color(0xFFEEEEEE),
+              body: SingleChildScrollView(
+                controller: _scrollController,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 11, 20, 11),
+                  child: Container(
+                    // height: 800,
+                    width: 814,
+                    padding: EdgeInsets.fromLTRB(19, 29, 24, 0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: (state.navTo == 1)
+                        ? _homeList(state)
+                        : (state.navTo == 2)
+                            ? BlocProvider.value(
                                 value: _fmJournalBloc,
+                                child: FMJournalDetailScreen(),
+                              )
+                            : MultiBlocProvider(
+                                providers: [
+                                  BlocProvider.value(
+                                    value: _fmIssueBloc,
+                                  ),
+                                  BlocProvider.value(
+                                    value: _fmJournalBloc,
+                                  ),
+                                ],
+                                child: (state.order == '최신 순')
+                                    ? FMIssueDetailScreen(obj: istate.issueList[state.index], sfmid: state.field.sfmid)
+                                    : FMIssueDetailScreen(obj: istate.reverseList[state.index], sfmid: state.field.sfmid),
                               ),
-                            ],
-                            child: FMIssueDetailScreen(),
-                          ),
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -88,18 +94,20 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
       children: [
         BlocProvider.value(
           value: _fmJournalBloc,
-          child: FMJournalTitle(),
+          child: FMJournalTitle(shouldReload: state.shouldReload),
         ),
         MultiBlocProvider(
           providers: [
             BlocProvider.value(
-              value: _fmIssueBloc..add(GetIssueList(fid: state.field.fid)),
+              value: _fmIssueBloc,
             ),
             BlocProvider.value(
               value: _fmJournalBloc,
             ),
           ],
-          child: FMJournalDatePicker(isIssue: state.isIssue,),
+          child: FMJournalDatePicker(
+            isIssue: state.isIssue,
+          ),
         ),
         SizedBox(
           height: 27,
@@ -128,7 +136,8 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                 value: _fmJournalBloc,
               ),
             ],
-            child: FMIssueList(),
+            child: FMIssueList(
+                fid: state.field.fid, shouldReload: state.shouldReload),
           );
         }
         break;
@@ -153,7 +162,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
         ),
         Row(
           children: [
-            _order(),
+            _order(state: state),
             SizedBox(
               width: 30,
             ),
@@ -186,7 +195,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(26, 7, 26, 4),
+            padding: EdgeInsets.fromLTRB(26, 4, 26, 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -230,43 +239,44 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     );
   }
 
-  Widget _order() {
-    return Container(
-      height: 24,
-      width: 74,
-      padding: EdgeInsets.fromLTRB(12, 4, 9, 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(width: 1, color: Color(0x4D000000)),
-      ),
-      child: FittedBox(
-        child: DropdownButton(
-          isDense: true,
-          value: order,
-          items: <String>['최신 순', '오래된 순']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontWeight: FontWeight.normal,
-                fontSize: 13,
-                color: Color(0xB3000000),
-              ),
-          icon: Icon(
-            Icons.arrow_drop_down_outlined,
-            color: Color(0xFFBEBEBE),
+  Widget _order({FMJournalState state}) {
+    return DropdownBelow(
+      // isDense: true,
+      value: state.order,
+      items: <String>['최신 순', '오래된 순']
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      // style: Theme.of(context).textTheme.bodyText2.copyWith(
+      //       fontWeight: FontWeight.normal,
+      //       fontSize: 13,
+      //       color: Color(0xB3000000),
+      //     ),
+      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 13,
+            color: Color(0xB3000000),
           ),
-          onChanged: (String value) {
-            setState(() {
-              order = value;
-            });
-          },
-          underline: Container(),
-        ),
-      ),
+      itemWidth: 120,
+      boxPadding: EdgeInsets.symmetric(horizontal: 6),
+      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 13,
+            color: Color(0xB3000000),
+          ),
+      boxWidth: 100,
+      boxHeight: 24,
+      // icon: Icon(
+      //   Icons.arrow_drop_down_outlined,
+      //   color: Color(0xFFBEBEBE),
+      // ),
+      onChanged: (String value) {
+        setState(() {
+          _fmJournalBloc.add(ChangeListOrder(order: value));
+        });
+      },
+      // underline: Container(),
     );
   }
 }

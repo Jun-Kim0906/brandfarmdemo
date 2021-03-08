@@ -1,5 +1,6 @@
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
@@ -12,6 +13,7 @@ class FMIssueState {
 
   String year;
   String month;
+  User detailUser;
 
   FMIssueState({
     @required this.isLoading,
@@ -20,6 +22,7 @@ class FMIssueState {
     @required this.issueList,
     @required this.reverseList,
     @required this.imageList,
+    @required this.detailUser,
   });
 
   factory FMIssueState.empty() {
@@ -30,6 +33,17 @@ class FMIssueState {
       issueList: [],
       reverseList: [],
       imageList: [],
+      detailUser: User(
+        email: '',
+        fcmToken: '',
+        imgUrl: '',
+        id: '',
+        name: '',
+        psw: '',
+        phone: '',
+        position: 0,
+        uid: '',
+      ),
     );
   }
 
@@ -40,6 +54,7 @@ class FMIssueState {
     List<SubJournalIssue> issueList,
     List<SubJournalIssue> reverseList,
     List<ImagePicture> imageList,
+    User detailUser,
   }) {
     return FMIssueState(
       isLoading: isLoading ?? this.isLoading,
@@ -48,6 +63,7 @@ class FMIssueState {
       issueList: issueList ?? this.issueList,
       reverseList: reverseList ?? this.reverseList,
       imageList: imageList ?? this.imageList,
+      detailUser: detailUser ?? this.detailUser,
     );
   }
 
@@ -58,6 +74,7 @@ class FMIssueState {
     List<SubJournalIssue> issueList,
     List<SubJournalIssue> reverseList,
     List<ImagePicture> imageList,
+    User detailUser,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -66,6 +83,7 @@ class FMIssueState {
       issueList: issueList,
       reverseList: reverseList,
       imageList: imageList,
+      detailUser: detailUser,
     );
   }
 
@@ -78,6 +96,7 @@ class FMIssueState {
     issueList: ${issueList.length},
     reverseList: ${reverseList.length},
     imageList: ${imageList.length},
+    detailUser: ${detailUser},
     }
     ''';
   }
