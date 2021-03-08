@@ -51,3 +51,17 @@ class SetIssMonth extends FMIssueEvent {
   @override
   String toString() => 'SetIssMonth { month : $month}';
 }
+
+class GetDetailUserInfo extends FMIssueEvent {
+  final String sfmid;
+
+  const GetDetailUserInfo({
+    @required this.sfmid,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => 'GetDetailUserInfo { sfmid : $sfmid}';
+}

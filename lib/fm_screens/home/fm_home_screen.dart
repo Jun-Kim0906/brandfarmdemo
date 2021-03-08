@@ -120,7 +120,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   Widget _drawer({BuildContext context, ThemeData theme}) {
     return Theme(
       data: Theme.of(context).copyWith(
-        canvasColor: Colors.transparent,
+        canvasColor: Color(0xFFEEEEEE),
       ),
       child: Drawer(
         elevation: 3,

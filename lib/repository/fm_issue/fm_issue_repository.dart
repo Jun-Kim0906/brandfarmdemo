@@ -1,23 +1,24 @@
 
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FMIssueRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Future<Farm> getFarmInfo() async {
-  //   Farm farm;
-  //   await _firestore
-  //       .collection('Farm')
-  //       .where('managerID', isEqualTo: UserUtil.getUser().uid)
-  //       .get()
-  //       .then((qs) {
-  //     qs.docs.forEach((ds) {
-  //       farm = Farm.fromSnapshot(ds);
-  //     });
-  //   });
-  //   return farm;
-  // }
+  Future<User> getDetailUserInfo(uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
 
   Future<List<SubJournalIssue>> getIssueList(
       String fid, Timestamp firstDayOfMonth, Timestamp lastDayOfMonth) async {
@@ -27,6 +28,7 @@ class FMIssueRepository {
         .where('fid', isEqualTo: fid)
         .where('date', isGreaterThanOrEqualTo: firstDayOfMonth)
         .where('date', isLessThanOrEqualTo: lastDayOfMonth)
+        .orderBy('date', descending: true)
         .get();
 
     _issue.docs.forEach((ds) {

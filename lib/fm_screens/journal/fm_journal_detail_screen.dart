@@ -121,7 +121,7 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
                   children: [
                     FlatButton(
                       onPressed: (){
-                        _fmJournalBloc.add(ChangeScreen(navTo: 1));
+                        _fmJournalBloc.add(ChangeScreen(navTo: 1, index: 0));
                       },
                       child: Text('이전'),
                     ),

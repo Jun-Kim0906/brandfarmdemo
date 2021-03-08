@@ -36,8 +36,15 @@ class _FMJournalDatePickerState extends State<FMJournalDatePicker> {
       listener: (context, state) {},
       builder: (context, state) {
         return (widget.isIssue)
-            ? BlocProvider.value(
-                value: _fmIssueBloc,
+            ? MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: _fmIssueBloc,
+                  ),
+                  BlocProvider.value(
+                    value: _fmJournalBloc,
+                  ),
+                ],
                 child: IssueDatePicker(fid: state.field.fid),
               )
             : BlocProvider.value(
@@ -202,6 +209,7 @@ class IssueDatePicker extends StatefulWidget {
 }
 
 class _IssueDatePickerState extends State<IssueDatePicker> {
+  FMJournalBloc _fmJournalBloc;
   FMIssueBloc _fmIssueBloc;
   List<String> yearList;
   List<String> monthList;
@@ -209,6 +217,7 @@ class _IssueDatePickerState extends State<IssueDatePicker> {
   @override
   void initState() {
     super.initState();
+    _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
     yearList = Util().generateYear();
     monthList = Util().generateMonth();
@@ -231,6 +240,7 @@ class _IssueDatePickerState extends State<IssueDatePicker> {
             ),
             IconButton(
               onPressed: () {
+                _fmJournalBloc.add(ReloadFMJournal());
                 _fmIssueBloc.add(GetIssueList(fid: widget.fid));
               },
               icon: Icon(

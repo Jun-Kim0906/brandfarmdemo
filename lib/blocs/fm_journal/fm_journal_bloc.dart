@@ -2,6 +2,8 @@ import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/fm_journal/fm_journal_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
@@ -14,7 +16,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     if (event is LoadFMJournalList) {
       yield* _mapLoadFMJournalListToState();
     } else if (event is ChangeScreen) {
-      yield* _mapChangeScreenToState(event.navTo);
+      yield* _mapChangeScreenToState(event.navTo, event.index);
     } else if (event is SetField) {
       yield* _mapSetFieldToState(event.field);
     } else if (event is GetFieldList) {
@@ -25,6 +27,10 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       yield* _mapSetJourMonthToState(event.month);
     } else if (event is ChangeSwitchState) {
       yield* _mapChangeSwitchStateToState();
+    } else if (event is ReloadFMJournal) {
+      yield* _mapReloadFMJournalToState();
+    } else if (event is ChangeListOrder) {
+      yield* _mapChangeListOrderToState(event.order);
     }
   }
 
@@ -32,8 +38,12 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     yield state.update(isLoading: true);
   }
 
-  Stream<FMJournalState> _mapChangeScreenToState(int navTo) async* {
-    yield state.update(isLoading: false, navTo: navTo);
+  Stream<FMJournalState> _mapChangeScreenToState(int navTo, int index) async* {
+    yield state.update(
+        shouldReload: false,
+        navTo: navTo,
+        index: index,
+    );
   }
 
   Stream<FMJournalState> _mapSetFieldToState(Field field) async* {
@@ -70,6 +80,20 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     // switch
     yield state.update(
       isIssue: !state.isIssue,
+    );
+  }
+
+  Stream<FMJournalState> _mapReloadFMJournalToState() async* {
+    // reload
+    yield state.update(
+      shouldReload: true,
+    );
+  }
+
+  Stream<FMJournalState> _mapChangeListOrderToState(String order) async* {
+    // list order by recent / oldest
+    yield state.update(
+      order: order,
     );
   }
 }
