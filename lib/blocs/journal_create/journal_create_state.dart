@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/farming_model.dart';
 import 'package:BrandFarm/models/journal/fertilize_model.dart';
 import 'package:BrandFarm/models/journal/gallery_model.dart';
@@ -18,9 +19,9 @@ import 'package:meta/meta.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class JournalCreateState {
-  Timestamp selectedDate;
-  String title;
-  int category;
+  final Timestamp selectedDate;
+  final String title;
+  final int category;
   final bool checkData;
   final String jid;
   final String content;
@@ -40,15 +41,18 @@ class JournalCreateState {
   final bool isDeleted;
   final bool isSuggestion;
 
-  //=======================
   final List<Journal> journal;
   final bool isEditDate;
-  // final DateTime picked;
   final bool isLoading;
+
+  ///Edit Journal
+  final Journal existJournal;
 
   ///사진정보
   final List<File> imageList;
   final List<Asset> assetList;
+  final List<ImagePicture> existImageList;
+  final List<ImagePicture> removedImageList;
 
   ///출하정보
   final String shipmentPlant;
@@ -156,7 +160,6 @@ class JournalCreateState {
   final Farming farming;
   final List<Farming> farmingList;
 
-
   JournalCreateState({
     @required this.selectedDate,
     @required this.title,
@@ -181,12 +184,16 @@ class JournalCreateState {
     @required this.isSuggestion,
     @required this.journal,
     @required this.isEditDate,
-    // @required this.picked,
     @required this.isLoading,
+
+    ///Edit Journal
+    @required this.existJournal,
 
     ///사진정보
     @required this.imageList,
     @required this.assetList,
+    @required this.existImageList,
+    @required this.removedImageList,
 
     ///출하정보
     @required this.shipmentPlant,
@@ -293,21 +300,20 @@ class JournalCreateState {
     @required this.farmingExpansion,
     @required this.farming,
     @required this.farmingList,
-
   });
 
   factory JournalCreateState.empty() {
     String month;
     String day;
-    if(DateTime.now().month<10){
-      month='0${DateTime.now().month}';
-    }else{
-      month='${DateTime.now().month}';
+    if (DateTime.now().month < 10) {
+      month = '0${DateTime.now().month}';
+    } else {
+      month = '${DateTime.now().month}';
     }
-    if(DateTime.now().day<10){
-      day='0${DateTime.now().day}';
-    }else{
-      day='${DateTime.now().day}';
+    if (DateTime.now().day < 10) {
+      day = '0${DateTime.now().day}';
+    } else {
+      day = '${DateTime.now().day}';
     }
     return JournalCreateState(
       selectedDate: Timestamp.fromMillisecondsSinceEpoch(
@@ -336,12 +342,16 @@ class JournalCreateState {
 
       journal: [],
       isEditDate: false,
-      // picked: DateTime.parse('${DateTime.now().year}${month}${day}'),
       isLoading: false,
+
+      ///Edit Journal
+      existJournal: Journal.empty(),
 
       ///사진정보
       imageList: [],
       assetList: [],
+      existImageList: [],
+      removedImageList: [],
 
       ///출하정보
       shipmentPlant: "",
@@ -479,14 +489,14 @@ class JournalCreateState {
     DateTime picked,
     bool isLoading,
 
+    ///Edit Journal
+    Journal existJournal,
+
     ///사진정보
     List<File> imageList,
-    bool imageExpansion,
-    List<GalleryModel> galleryList,
-    List<String> filePath,
-    List<String> originalFilePath,
     List<Asset> assetList,
-    int progress,
+    List<ImagePicture> existImageList,
+    List<ImagePicture> removedImageList,
 
     ///출하정보
     String shipmentPlant,
@@ -593,7 +603,6 @@ class JournalCreateState {
     bool farmingExpansion,
     Farming farming,
     List<Farming> farmingList,
-
   }) {
     return copyWith(
       selectedDate: selectedDate,
@@ -623,14 +632,14 @@ class JournalCreateState {
       picked: picked,
       isLoading: isLoading,
 
+      ///Edit Journal
+      existJournal: existJournal,
+
       ///사진정보
       imageList: imageList,
-      imageExpansion: imageExpansion,
-      galleryList: galleryList,
-      filePath: filePath,
-      originalFilePath: originalFilePath,
       assetList: assetList,
-      progress: progress,
+      existImageList: existImageList,
+      removedImageList: removedImageList,
 
       ///출하정보
       shipmentPlant: shipmentPlant,
@@ -737,7 +746,6 @@ class JournalCreateState {
       farmingExpansion: farmingExpansion,
       farming: farming,
       farmingList: farmingList,
-
     );
   }
 
@@ -769,16 +777,15 @@ class JournalCreateState {
     DateTime picked,
     bool isLoading,
 
+    ///Edit Journal
+    Journal existJournal,
+
     ///사진정보
     List<File> imageList,
-    bool imageExpansion,
-    List<GalleryModel> galleryList,
-    List<String> filePath,
-    List<String> originalFilePath,
     List<Asset> assetList,
-    int progress,
+    List<ImagePicture> existImageList,
+    List<ImagePicture> removedImageList,
 
-    ///출하정보
     ///출하정보
     String shipmentPlant,
     String shipmentPath,
@@ -884,7 +891,6 @@ class JournalCreateState {
     bool farmingExpansion,
     Farming farming,
     List<Farming> farmingList,
-
   }) {
     return JournalCreateState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -915,9 +921,14 @@ class JournalCreateState {
       journal: journal ?? this.journal,
       isLoading: isLoading ?? this.isLoading,
 
+      ///Edit Journal
+      existJournal: existJournal ?? this.existJournal,
+
       ///사진정보
       imageList: imageList ?? this.imageList,
       assetList: assetList ?? this.assetList,
+      existImageList: existImageList ?? this.existImageList,
+      removedImageList: removedImageList ?? this.removedImageList,
 
       ///출하정보
       shipmentPlant: shipmentPlant ?? this.shipmentPlant,
@@ -937,11 +948,11 @@ class JournalCreateState {
       fertilizerArea: fertilizerArea ?? this.fertilizerArea,
       fertilizerAreaUnit: fertilizerAreaUnit ?? this.fertilizerAreaUnit,
       fertilizerMaterialName:
-      fertilizerMaterialName ?? this.fertilizerMaterialName,
+          fertilizerMaterialName ?? this.fertilizerMaterialName,
       fertilizerMaterialUse:
-      fertilizerMaterialUse ?? this.fertilizerMaterialUse,
+          fertilizerMaterialUse ?? this.fertilizerMaterialUse,
       fertilizerMaterialUnit:
-      fertilizerMaterialUnit ?? this.fertilizerMaterialUnit,
+          fertilizerMaterialUnit ?? this.fertilizerMaterialUnit,
       fertilizerWater: fertilizerWater ?? this.fertilizerWater,
       fertilizerWaterUnit: fertilizerWaterUnit ?? this.fertilizerWaterUnit,
       fertilizerValid: fertilizerValid ?? this.fertilizerValid,
@@ -954,10 +965,10 @@ class JournalCreateState {
       pesticideArea: pesticideArea ?? this.pesticideArea,
       pesticideAreaUnit: pesticideAreaUnit ?? this.pesticideAreaUnit,
       pesticideMaterialName:
-      pesticideMaterialName ?? this.pesticideMaterialName,
+          pesticideMaterialName ?? this.pesticideMaterialName,
       pesticideMaterialUse: pesticideMaterialUse ?? this.pesticideMaterialUse,
       pesticideMaterialUnit:
-      pesticideMaterialUnit ?? this.pesticideMaterialUnit,
+          pesticideMaterialUnit ?? this.pesticideMaterialUnit,
       pesticideWater: pesticideWater ?? this.pesticideWater,
       pesticideWaterUnit: pesticideWaterUnit ?? this.pesticideWaterUnit,
       pesticideValid: pesticideValid ?? this.pesticideValid,
@@ -1029,7 +1040,6 @@ class JournalCreateState {
       farmingExpansion: farmingExpansion ?? this.farmingExpansion,
       farming: farming ?? this.farming,
       farmingList: farmingList ?? this.farmingList,
-
     );
   }
 

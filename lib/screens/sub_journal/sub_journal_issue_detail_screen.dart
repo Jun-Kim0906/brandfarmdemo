@@ -909,8 +909,6 @@ class _SubJournalIssueDetailScreenState
                                   numOfComments += 1;
                                 });
                                 _journalBloc.add(AddIssueComment(
-                                    issueListOptions: widget.issueListOptions,
-                                    issueOrder: widget.issueOrder,
                                     id: subJournalIssue.issid,
                                     ));
                               }

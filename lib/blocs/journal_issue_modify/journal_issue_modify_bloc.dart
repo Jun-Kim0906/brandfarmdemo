@@ -154,7 +154,7 @@ class JournalIssueModifyBloc
   }
 
   Stream<JournalIssueModifyState> _mapGetImageListToState({String issid}) async* {
-    List img = [];
+    List<ImagePicture> img = [];
 
     QuerySnapshot pic = await FirebaseFirestore.instance
         .collection('Picture')
@@ -171,7 +171,7 @@ class JournalIssueModifyBloc
   }
 
   Stream<JournalIssueModifyState> _mapDeleteExistingImageToState({ImagePicture obj}) async* {
-    List img = [];
+    List<ImagePicture> img = [];
     img = state.deletedFromExistingImageList;
 
     // delete from bloc state list
