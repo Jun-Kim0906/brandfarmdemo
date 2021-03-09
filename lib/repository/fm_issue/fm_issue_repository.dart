@@ -1,4 +1,7 @@
 
+import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,6 +41,56 @@ class FMIssueRepository {
     return issueList;
   }
 
+  Future<void> updateIssue({
+    SubJournalIssue obj,
+  }) async {
+    DocumentReference reference =
+    _firestore.collection('Issue').doc(obj.issid);
+    await reference.update(obj.toMap());
+  }
+
+  Future<List<ImagePicture>> getImage(Field field) async {
+    List<ImagePicture> image = [];
+    QuerySnapshot img = await _firestore
+        .collection('Picture')
+        .where('uid', isEqualTo: field.sfmid)
+        .where('jid', isEqualTo: '--')
+        .get();
+    img.docs.forEach((ds) {
+      image.add(ImagePicture.fromSnapshot(ds));
+    });
+
+    return image;
+  }
+
+  Future<List<Comment>> getComment(String fid) async {
+    List<Comment> cmt = [];
+    QuerySnapshot _cmt = await _firestore
+        .collection('Comment')
+        .where('fid', isEqualTo: fid)
+        .get();
+
+    _cmt.docs.forEach((ds) {
+      cmt.add(Comment.fromSnapshot(ds));
+    });
+
+    return cmt;
+  }
+
+  Future<List<SubComment>> getSubComment(String fid) async {
+    List<SubComment> scmt = [];
+    QuerySnapshot _scmt = await _firestore
+        .collection('SubComment')
+        .where('fid', isEqualTo: fid)
+        .get();
+
+    _scmt.docs.forEach((ds) {
+      scmt.add(SubComment.fromSnapshot(ds));
+    });
+
+    return scmt;
+  }
+
 // Future<void> uploadIssue({
 //   SubJournalIssue subJournalIssue,
 // }) async {
@@ -45,15 +98,8 @@ class FMIssueRepository {
 //   _firestore.collection('Issue').doc(subJournalIssue.issid);
 //   await reference.set(subJournalIssue.toMap());
 // }
-//
-// Future<void> updateIssue({
-//   SubJournalIssue subJournalIssue,
-// }) async {
-//   DocumentReference reference =
-//   _firestore.collection('Issue').doc(subJournalIssue.issid);
-//   await reference.update(subJournalIssue.toMap());
-// }
-//
+
+
 // Future<void> updateIssueComment({String issid, int cmts}) async {
 //   DocumentReference reference = _firestore.collection('Issue').doc(issid);
 //   await reference.update({"comments": cmts});

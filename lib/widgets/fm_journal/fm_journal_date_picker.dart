@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/fm_issue/fm_issue_state.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:BrandFarm/models/field_model.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,7 +46,7 @@ class _FMJournalDatePickerState extends State<FMJournalDatePicker> {
                     value: _fmJournalBloc,
                   ),
                 ],
-                child: IssueDatePicker(fid: state.field.fid),
+                child: IssueDatePicker(field: state.field),
               )
             : BlocProvider.value(
                 value: _fmJournalBloc,
@@ -200,9 +201,9 @@ class _JournalDatePickerState extends State<JournalDatePicker> {
 }
 
 class IssueDatePicker extends StatefulWidget {
-  String fid;
+  Field field;
 
-  IssueDatePicker({Key key, this.fid}) : super(key: key);
+  IssueDatePicker({Key key, this.field}) : super(key: key);
 
   @override
   _IssueDatePickerState createState() => _IssueDatePickerState();
@@ -241,7 +242,7 @@ class _IssueDatePickerState extends State<IssueDatePicker> {
             IconButton(
               onPressed: () {
                 _fmJournalBloc.add(ReloadFMJournal());
-                _fmIssueBloc.add(GetIssueList(fid: widget.fid));
+                _fmIssueBloc.add(GetIssueList(field: widget.field));
               },
               icon: Icon(
                 Icons.double_arrow_outlined,

@@ -114,6 +114,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         isThereSubComment: false,
         isExpanded: false,
         fid: FieldUtil.getField().fid,
+        imgUrl: UserUtil.getUser().imgUrl,
       );
 
       await CommentRepository().uploadComment(comment: cmt);
@@ -133,6 +134,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         isThereSubComment: false,
         isExpanded: false,
         fid: FieldUtil.getField().fid,
+        imgUrl: UserUtil.getUser().imgUrl,
       );
 
       await CommentRepository().uploadComment(comment: cmt);
@@ -163,6 +165,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         cmtid: cmtid,
         name: UserUtil.getUser().name,
         scomment: comment,
+        imgUrl: UserUtil.getUser().imgUrl,
+        fid: FieldUtil.getField().fid,
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
@@ -182,6 +186,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         cmtid: cmtid,
         name: UserUtil.getUser().name,
         scomment: comment,
+        imgUrl: UserUtil.getUser().imgUrl,
+        fid: FieldUtil.getField().fid,
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
@@ -212,6 +218,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       isThereSubComment: cmts[index].isThereSubComment,
       isExpanded: true,
       fid: cmts[index].fid,
+      imgUrl: cmts[index].imgUrl,
     ));
 
     cmts.removeAt(index);
@@ -237,6 +244,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       isThereSubComment: cmts[index].isThereSubComment,
       isExpanded: false,
       fid: cmts[index].fid,
+      imgUrl: cmts[index].imgUrl,
     ));
 
     cmts.removeAt(index);
