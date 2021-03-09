@@ -15,6 +15,7 @@ class Comment {
   final bool isThereSubComment;
   final bool isExpanded;
   final String fid;
+  final String imgUrl;
 
   Comment({
     @required this.date,
@@ -27,6 +28,7 @@ class Comment {
     @required this.isThereSubComment,
     @required this.isExpanded,
     @required this.fid,
+    @required this.imgUrl,
   });
 
   factory Comment.fromSnapshot(DocumentSnapshot ds) {
@@ -41,6 +43,7 @@ class Comment {
       isThereSubComment: ds['isThereSubComment'],
       isExpanded: ds['isExpanded'],
       fid: ds['fid'],
+      imgUrl: ds['imgUrl'],
     );
   }
 
@@ -56,6 +59,7 @@ class Comment {
       'isThereSubComment': isThereSubComment,
       'isExpanded': isExpanded,
       'fid': fid,
+      'imgUrl': imgUrl,
     };
   }
 }
@@ -71,6 +75,8 @@ class SubComment {
   final String scmtid;
   final String cmtid;
   final String scomment;
+  final String imgUrl;
+  final String fid;
 
   SubComment({
     @required this.date,
@@ -81,6 +87,8 @@ class SubComment {
     @required this.scmtid,
     @required this.cmtid,
     @required this.scomment,
+    @required this.imgUrl,
+    @required this.fid,
   });
 
   factory SubComment.fromSnapshot(DocumentSnapshot ds) {
@@ -93,6 +101,8 @@ class SubComment {
       scmtid: ds['scmtid'].toString(),
       cmtid: ds['cmtid'].toString(),
       scomment: ds['scomment'].toString(),
+      imgUrl: ds['imgUrl'].toString(),
+      fid: ds['fid'].toString(),
     );
   }
 
@@ -106,6 +116,8 @@ class SubComment {
       'scmtid': scmtid,
       'cmtid': cmtid,
       'scomment': scomment,
+      'imgUrl': imgUrl,
+      'fid': fid,
     };
   }
 }

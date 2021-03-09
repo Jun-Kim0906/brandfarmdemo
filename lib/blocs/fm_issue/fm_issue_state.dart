@@ -1,3 +1,4 @@
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
@@ -10,6 +11,8 @@ class FMIssueState {
   List<SubJournalIssue> issueList;
   List<SubJournalIssue> reverseList;
   List<ImagePicture> imageList;
+  List<Comment> commentList;
+  List<SubComment> subCommentList;
 
   String year;
   String month;
@@ -23,6 +26,8 @@ class FMIssueState {
     @required this.reverseList,
     @required this.imageList,
     @required this.detailUser,
+    @required this.commentList,
+    @required this.subCommentList,
   });
 
   factory FMIssueState.empty() {
@@ -44,6 +49,8 @@ class FMIssueState {
         position: 0,
         uid: '',
       ),
+      commentList: [],
+      subCommentList: [],
     );
   }
 
@@ -55,6 +62,8 @@ class FMIssueState {
     List<SubJournalIssue> reverseList,
     List<ImagePicture> imageList,
     User detailUser,
+    List<Comment> commentList,
+    List<SubComment> subCommentList,
   }) {
     return FMIssueState(
       isLoading: isLoading ?? this.isLoading,
@@ -64,6 +73,8 @@ class FMIssueState {
       reverseList: reverseList ?? this.reverseList,
       imageList: imageList ?? this.imageList,
       detailUser: detailUser ?? this.detailUser,
+      commentList: commentList ?? this.commentList,
+      subCommentList: subCommentList ?? this.subCommentList,
     );
   }
 
@@ -75,6 +86,8 @@ class FMIssueState {
     List<SubJournalIssue> reverseList,
     List<ImagePicture> imageList,
     User detailUser,
+    List<Comment> commentList,
+    List<SubComment> subCommentList,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -84,6 +97,8 @@ class FMIssueState {
       reverseList: reverseList,
       imageList: imageList,
       detailUser: detailUser,
+      commentList: commentList,
+      subCommentList: subCommentList,
     );
   }
 
@@ -97,6 +112,8 @@ class FMIssueState {
     reverseList: ${reverseList.length},
     imageList: ${imageList.length},
     detailUser: ${detailUser},
+    commentList: ${commentList},
+    subCommentList: ${subCommentList},
     }
     ''';
   }

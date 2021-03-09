@@ -901,7 +901,7 @@ class CustomBottomButton extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     return Container(
       height: height * 0.086,
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text(
           _title ?? '다음',
           style: Theme.of(context).textTheme.bodyText1.copyWith(

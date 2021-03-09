@@ -129,7 +129,7 @@ class JournalIssueCreateBloc
         pid = FirebaseFirestore.instance.collection('Picture').doc().id;
         ImagePicture _picture = ImagePicture(
           fid: subJournalIssue.fid,
-          jid: subJournalIssue.sfmid,
+          jid: '--',
           uid: UserUtil.getUser().uid,
           issid: subJournalIssue.issid,
           pid: pid,

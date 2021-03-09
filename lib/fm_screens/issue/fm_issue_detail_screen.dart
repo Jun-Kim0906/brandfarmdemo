@@ -2,6 +2,7 @@ import 'package:BrandFarm/blocs/fm_issue/bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
@@ -14,15 +15,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class FMIssueDetailScreen extends StatefulWidget {
   SubJournalIssue obj;
-  String sfmid;
+  String order;
+  int index;
 
   FMIssueDetailScreen({
     Key key,
     this.obj,
-    this.sfmid,
+    this.order,
+    this.index,
   }) : super(key: key);
 
   @override
@@ -50,7 +54,15 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
     super.initState();
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
-    _fmIssueBloc.add(GetDetailUserInfo(sfmid: widget.sfmid));
+    _fmIssueBloc.add(GetDetailUserInfo(sfmid: widget.obj.sfmid));
+    _fmIssueBloc.add(GetCommentList(obj: widget.obj));
+    if (!widget.obj.isReadByFM) {
+      _fmIssueBloc.add(CheckAsRead(
+        obj: widget.obj,
+        index: widget.index,
+        order: widget.order,
+      ));
+    }
     _textEditingController = TextEditingController();
     _focusNode = FocusNode();
     date = getDate(date: widget.obj.date);
@@ -141,28 +153,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                           SizedBox(
                             height: 18,
                           ),
-                          Container(
-                            height: 31,
-                            width: 75,
-                            padding: EdgeInsets.fromLTRB(15, 7, 15, 5),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1, color: Color(0x80000000)),
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                            child: FittedBox(
-                              child: Text(
-                                '댓글 ${5}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(
-                                      fontWeight: FontWeight.w300,
-                                      color: Color(0x80000000),
-                                    ),
-                              ),
-                            ),
-                          ),
+                          _showComments(state: state),
                           Divider(
                             height: 44,
                             thickness: 1,
@@ -184,7 +175,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                               onPressed: () {
                                 _fmJournalBloc.add(ChangeScreen(
                                     navTo: 1, index: jstate.index));
-                                if(wroteComments) {
+                                if (wroteComments) {
                                   _fmJournalBloc.add(ReloadFMJournal());
                                 }
                               },
@@ -456,6 +447,275 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _showComments({FMIssueState state}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 31,
+          width: 75,
+          padding: EdgeInsets.fromLTRB(15, 7, 15, 5),
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Color(0x80000000)),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: FittedBox(
+            child: Text(
+              '댓글 ${widget.obj.comments}',
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    fontWeight: FontWeight.w300,
+                    color: Color(0x80000000),
+                  ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 22,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(state.commentList.length, (index) =>
+              _commentTile(state: state, index: index),),
+        )
+      ],
+    );
+  }
+
+  String getTime({Timestamp date}) {
+    DateTime now = DateTime.now();
+    DateTime _date =
+        DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
+    int diffDays = now.difference(_date).inDays;
+    if (diffDays < 1) {
+      int diffHours = now.difference(_date).inHours;
+      if (diffHours < 1) {
+        int diffMinutes = now.difference(_date).inMinutes;
+        if (diffMinutes < 1) {
+          int diffSeconds = now.difference(_date).inSeconds;
+          return '${diffSeconds}초 전';
+        } else {
+          return '${diffMinutes}분 전';
+        }
+      } else {
+        return '${diffHours}시간 전';
+      }
+    } else if (diffDays >= 1 && diffDays <= 365) {
+      int monthNow = int.parse(DateFormat('MM').format(now));
+      int monthBefore = int.parse(DateFormat('MM').format(
+          DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch)));
+      int diffMonths = monthNow - monthBefore;
+      if (diffMonths == 0) {
+        return '${diffDays}일 전';
+      } else {
+        return '${diffMonths}달 전';
+      }
+    } else {
+      double tmp = diffDays / 365;
+      int diffYears = tmp.toInt();
+      return '${diffYears}년 전';
+    }
+  }
+
+  Widget _commentTile({FMIssueState state, int index}) {
+    List<SubComment> subComments = state.subCommentList
+        .where((scmt) => scmt.cmtid == state.commentList[index].cmtid)
+        .toList();
+    String time = getTime(date: state.commentList[index].date);
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 46,
+                width: 46,
+                child: CircleAvatar(
+                  backgroundImage: (state.commentList[index].imgUrl.isNotEmpty)
+                      ? CachedNetworkImageProvider(state.commentList[index].imgUrl)
+                      : AssetImage('assets/profile.png'),
+                  radius: 46,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.commentList[index].name,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    time,
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 7,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.commentList[index].comment,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 11,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {});
+                        },
+                        child: Text(
+                          '답글 달기',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          (subComments.isNotEmpty)
+              ? SizedBox(
+                  height: 10,
+                )
+              : Container(),
+          (subComments.isNotEmpty)
+              ? Row(
+                  children: [
+                    SizedBox(
+                      width: 56,
+                    ),
+                    Container(
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            _fmIssueBloc.add(ChangeExpandState(index: index));
+                          });
+                        },
+                        child: (!state.commentList[index].isExpanded)
+                            ? Text('--- 답글 ${subComments.length}개 펼치기',
+                                style: Theme.of(context).textTheme.bodyText2)
+                            : Text('--- 답글 ${subComments.length}개 숨기기',
+                                style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                    ),
+                  ],
+                )
+              : Container(),
+          (state.commentList[index].isExpanded)
+              ? Column(
+                children: [
+                  SizedBox(height: 10,),
+                  showSubComments(scmts: subComments),
+                ],
+              )
+              : Container(),
+        ],
+      ),
+    );
+  }
+
+  Widget showSubComments({List<SubComment> scmts}) {
+    return Container(
+      child: Column(
+        children: List.generate(scmts.length, (index) {
+          return Column(
+            children: [
+              subComment(
+                  scmts: scmts,
+                  index: index),
+              (index != scmts.length - 1)
+                  ? SizedBox(height: 20,)
+                  : Container(),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget subComment({List<SubComment> scmts, int index,}) {
+    String time = getTime(date: scmts[index].date);
+    return Container(
+      child: Row(
+        children: [
+          SizedBox(
+            width: 56,
+          ),
+          Container(
+            height: 42,
+            width: 42,
+            child: CircleAvatar(
+                radius: 42.0,
+                backgroundImage: (scmts[index].imgUrl.isNotEmpty)
+                    ? CachedNetworkImageProvider(scmts[index].imgUrl)
+                    : AssetImage('assets/profile.png'),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '${scmts[index].name}',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    '${time}',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 3,
+              ),
+              Text(
+                '${scmts[index].scomment}',
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

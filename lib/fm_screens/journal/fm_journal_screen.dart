@@ -75,8 +75,14 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                                   ),
                                 ],
                                 child: (state.order == '최신 순')
-                                    ? FMIssueDetailScreen(obj: istate.issueList[state.index], sfmid: state.field.sfmid)
-                                    : FMIssueDetailScreen(obj: istate.reverseList[state.index], sfmid: state.field.sfmid),
+                                    ? FMIssueDetailScreen(
+                                    obj: istate.issueList[state.index],
+                                    index: state.index,
+                                    order: state.order)
+                                    : FMIssueDetailScreen(
+                                    obj: istate.reverseList[state.index],
+                                    index: state.index,
+                                    order: state.order),
                               ),
                   ),
                 ),
@@ -137,7 +143,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
               ),
             ],
             child: FMIssueList(
-                fid: state.field.fid, shouldReload: state.shouldReload),
+                field: state.field, shouldReload: state.shouldReload,),
           );
         }
         break;

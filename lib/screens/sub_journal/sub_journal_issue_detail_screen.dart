@@ -182,7 +182,7 @@ class _SubJournalIssueDetailScreenState
         ),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: () {
             Navigator.push(
               context,

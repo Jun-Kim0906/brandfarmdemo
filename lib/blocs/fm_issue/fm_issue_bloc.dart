@@ -1,5 +1,8 @@
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_event.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_state.dart';
+import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/fm_issue/fm_issue_repository.dart';
@@ -14,13 +17,19 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     if (event is LoadFMIssueList) {
       yield* _mapLoadFMIssueListToState();
     } else if (event is GetIssueList) {
-      yield* _mapGetIssueListToState(event.fid);
+      yield* _mapGetIssueListToState(event.field);
     } else if (event is SetIssYear) {
       yield* _mapSetIssYearToState(event.year);
     } else if (event is SetIssMonth) {
       yield* _mapSetIssMonthToState(event.month);
     } else if (event is GetDetailUserInfo) {
       yield* _mapGetDetailUserInfoToState(event.sfmid);
+    } else if (event is CheckAsRead) {
+      yield* _mapCheckAsReadToState(event.obj, event.index, event.order);
+    } else if (event is GetCommentList) {
+      yield* _mapGetCommentListToState(event.obj);
+    } else if (event is ChangeExpandState) {
+      yield* _mapChangeExpandStateToState(event.index);
     }
   }
 
@@ -29,7 +38,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     yield state.update(isLoading: true);
   }
 
-  Stream<FMIssueState> _mapGetIssueListToState(String fid) async* {
+  Stream<FMIssueState> _mapGetIssueListToState(Field field) async* {
     // get list
     int year = int.parse(state.year);
     int month = int.parse(state.month);
@@ -38,18 +47,18 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     Timestamp fDay = Timestamp.fromDate(firstDay);
     Timestamp lDay = Timestamp.fromDate(lastDay);
 
-    print(fDay);
-    print(lDay);
-
     List<SubJournalIssue> issueList =
-        await FMIssueRepository().getIssueList(fid, fDay, lDay);
+        await FMIssueRepository().getIssueList(field.fid, fDay, lDay);
 
     List<SubJournalIssue> reverseList = List.from(issueList.reversed);
+
+    List<ImagePicture> pictureList = await FMIssueRepository().getImage(field);
 
     yield state.update(
       isLoading: false,
       issueList: issueList,
       reverseList: reverseList,
+      imageList: pictureList,
     );
   }
 
@@ -64,7 +73,76 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
   }
 
   Stream<FMIssueState> _mapGetDetailUserInfoToState(String sfmid) async* {
+    // get info of issue writer
     User detailUser = await FMIssueRepository().getDetailUserInfo(sfmid);
     yield state.update(detailUser: detailUser);
+  }
+
+  Stream<FMIssueState> _mapCheckAsReadToState(
+      SubJournalIssue obj, int index, String order) async* {
+    // check as read
+    List<SubJournalIssue> ModifiedList = [];
+    (order == '최신 순') ? ModifiedList = state.issueList : ModifiedList = state.reverseList;
+
+    SubJournalIssue _obj = SubJournalIssue(
+      date: obj.date,
+      fid: obj.fid,
+      sfmid: obj.sfmid,
+      issid: obj.issid,
+      uid: obj.uid,
+      title: obj.title,
+      category: obj.category,
+      issueState: obj.issueState,
+      contents: obj.contents,
+      comments: obj.comments,
+      isReadByFM: true,
+      isReadByOffice: obj.isReadByOffice,
+    );
+
+    ModifiedList.removeAt(index);
+    ModifiedList.insert(index, _obj);
+
+    FMIssueRepository().updateIssue(obj: _obj);
+
+    if(order == '최신 순') {
+      yield state.update(issueList: ModifiedList);
+    } else {
+      yield state.update(reverseList: ModifiedList);
+    }
+  }
+
+  Stream<FMIssueState> _mapGetCommentListToState(SubJournalIssue obj) async* {
+    // get comment / sub comment
+    List<Comment> cmt = await FMIssueRepository().getComment(obj.fid);
+    List<SubComment> scmt = await FMIssueRepository().getSubComment(obj.fid);
+
+    yield state.update(
+      commentList: cmt,
+      subCommentList: scmt,
+    );
+  }
+
+  Stream<FMIssueState> _mapChangeExpandStateToState(int index) async* {
+    // comment expand state
+    Comment obj = state.commentList[index];
+    List<Comment> cmt = state.commentList;
+    Comment _cmt = Comment(
+      date: obj.date,
+      name: obj.name,
+      uid: obj.uid,
+      issid: obj.issid,
+      jid: obj.jid,
+      cmtid: obj.cmtid,
+      comment: obj.comment,
+      isThereSubComment: obj.isThereSubComment,
+      isExpanded: !obj.isExpanded,
+      fid: obj.fid,
+      imgUrl: obj.imgUrl,
+    );
+
+    cmt.removeAt(index);
+    cmt.insert(index, _cmt);
+
+    yield state.update(commentList: cmt);
   }
 }

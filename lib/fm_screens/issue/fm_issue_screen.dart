@@ -3,20 +3,23 @@ import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_detail_screen.dart';
+import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMIssueList extends StatefulWidget {
-  String fid;
+  Field field;
   bool shouldReload;
 
   FMIssueList({
     Key key,
-    this.fid,
+    this.field,
     this.shouldReload,
   }) : super(key: key);
 
@@ -34,7 +37,7 @@ class _FMIssueListState extends State<FMIssueList> {
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     if (widget.shouldReload) {
-      _fmIssueBloc.add(GetIssueList(fid: widget.fid));
+      _fmIssueBloc.add(GetIssueList(field: widget.field));
     }
   }
 
@@ -46,35 +49,44 @@ class _FMIssueListState extends State<FMIssueList> {
         return BlocConsumer<FMIssueBloc, FMIssueState>(
           listener: (context, state) {},
           builder: (context, state) {
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemCount: (jstate.order == '최신 순')
-                  ? state.issueList.length : state.reverseList.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Card(
-                        elevation: 3,
-                        child: InkResponse(
-                          onTap: () {
-                            _fmJournalBloc.add(ChangeScreen(navTo: 3, index: index));
-                          },
-                          child: (jstate.order == '최신 순')
-                              ? CardBody(obj: state.issueList[index])
-                              : CardBody(obj: state.reverseList[index]),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 17,
-                    ),
-                  ],
-                );
-              },
-            );
+            return (state.imageList.isNotEmpty)
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemCount: (jstate.order == '최신 순')
+                        ? state.issueList.length
+                        : state.reverseList.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Card(
+                                    elevation: 3,
+                                    child: InkResponse(
+                                      onTap: () {
+                                        _fmJournalBloc.add(ChangeScreen(
+                                            navTo: 3, index: index));
+                                      },
+                                      child: (jstate.order == '최신 순')
+                                          ? CardBody(
+                                              obj: state.issueList[index],
+                                              state: state)
+                                          : CardBody(
+                                              obj: state.reverseList[index],
+                                              state: state),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 17,
+                                ),
+                              ],
+                            );
+                    },
+                  )
+                : Container();
           },
         );
       },
@@ -96,10 +108,26 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(TriangleClipper oldClipper) => false;
 }
 
-class CardBody extends StatelessWidget {
+class CardBody extends StatefulWidget {
   SubJournalIssue obj;
+  FMIssueState state;
 
-  CardBody({this.obj});
+  CardBody({Key key, this.obj, this.state}) : super(key: key);
+
+  @override
+  _CardBodyState createState() => _CardBodyState();
+}
+
+class _CardBodyState extends State<CardBody> {
+  List<ImagePicture> url;
+
+  @override
+  void initState() {
+    super.initState();
+    url = widget.state.imageList
+        .where((element) => element.issid == widget.obj.issid)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +136,10 @@ class CardBody extends StatelessWidget {
       width: 706,
       child: Row(
         children: [
-          (obj.isReadByFM)
-              ? Container()
+          (widget.obj.isReadByFM)
+              ? Container(
+                  width: 34,
+                )
               : Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -143,7 +173,8 @@ class CardBody extends StatelessWidget {
                         height: 22,
                         child: FittedBox(
                           child: DepartmentBadge(
-                            department: getIssueState(state: obj.issueState),
+                            department:
+                                getIssueState(state: widget.obj.issueState),
                           ),
                         ),
                       ),
@@ -151,7 +182,7 @@ class CardBody extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        '${obj.title}',
+                        '${widget.obj.title}',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontSize: 18,
                               fontWeight: FontWeight.w200,
@@ -161,7 +192,7 @@ class CardBody extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '${obj.contents}',
+                    '${widget.obj.contents}',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontWeight: FontWeight.w200,
                           color: Color(0xB3000000),
@@ -172,7 +203,7 @@ class CardBody extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '댓글 ${obj.comments} ${dot} ${obj.date.toDate().year}-${obj.date.toDate().month}-${obj.date.toDate().day}',
+                        '댓글 ${widget.obj.comments} ${dot} ${widget.obj.date.toDate().year}-${widget.obj.date.toDate().month}-${widget.obj.date.toDate().day}',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w200,
                               fontSize: 12,
@@ -197,8 +228,11 @@ class CardBody extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                  image: AssetImage('assets/strawberry.png'),
-                  fit: BoxFit.cover,
+                  image: (url.isNotEmpty)
+                      ? NetworkImage(url[0].url)
+                      : AssetImage('assets/brandfarm.png'),
+                  // image: AssetImage('assets/strawberry.png'),
+                  fit: (url.isNotEmpty) ? BoxFit.cover : BoxFit.fitHeight,
                 )),
               ),
               SizedBox(
@@ -209,6 +243,12 @@ class CardBody extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getImageUrl({List<ImagePicture> pic, SubJournalIssue obj}) {
+    List<ImagePicture> img =
+        pic.where((element) => element.issid == obj.issid).toList();
+    return img[0].url;
   }
 
   String getIssueState({int state}) {
