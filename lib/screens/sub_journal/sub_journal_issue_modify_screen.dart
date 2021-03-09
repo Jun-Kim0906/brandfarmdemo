@@ -1,4 +1,3 @@
-
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
@@ -25,11 +24,12 @@ class SubJournalIssueModifyScreen extends StatefulWidget {
   SubJournalIssue obj;
   int comments;
 
-  SubJournalIssueModifyScreen({Key key,
-    @required String issid,
-    String from,
-    SubJournalIssue obj,
-    int comments})
+  SubJournalIssueModifyScreen(
+      {Key key,
+      @required String issid,
+      String from,
+      SubJournalIssue obj,
+      int comments})
       : issid = issid,
         from = from ?? 'journal',
         obj = obj,
@@ -53,6 +53,7 @@ class _SubJournalIssueModifyScreenState
   JournalIssueModifyBloc _journalIssueModifyBloc;
   JournalBloc _journalBloc;
   List list;
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -148,7 +149,7 @@ class _SubJournalIssueModifyScreenState
                 centerTitle: true,
               ),
               body: GestureDetector(
-                onTap: (){
+                onTap: () {
                   _focusTitle.unfocus();
                   _focusContent.unfocus();
                 },
@@ -181,7 +182,9 @@ class _SubJournalIssueModifyScreenState
                         height: 43.0,
                       ),
                       _inputIssueContents(),
-                      SizedBox(height: 72,),
+                      SizedBox(
+                        height: 72,
+                      ),
                     ],
                   ),
                 ),
@@ -204,8 +207,8 @@ class _SubJournalIssueModifyScreenState
       padding: EdgeInsets.symmetric(horizontal: defaultPadding),
       child: Row(
         children: [
-          Text('${DateFormat('yMMMMEEEEd', 'ko')
-              .format(widget.obj.date.toDate())}',
+          Text(
+              '${DateFormat('yMMMMEEEEd', 'ko').format(widget.obj.date.toDate())}',
               style: Theme.of(context).textTheme.subtitle2.copyWith(
                   fontSize: 16.0, color: Theme.of(context).primaryColor)),
           Spacer(),
@@ -229,22 +232,22 @@ class _SubJournalIssueModifyScreenState
           SizedBox(width: 8.0),
           Expanded(
               child: TextField(
-                controller: _title,
-                focusNode: _focusTitle,
-                onTap: (){
-                  _focusTitle.requestFocus();
-                },
-                style:
+            controller: _title,
+            focusNode: _focusTitle,
+            onTap: () {
+              _focusTitle.requestFocus();
+            },
+            style:
                 Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
-                decoration: InputDecoration(
-                    hintText: '2021_0405_한동이네딸기농장',
-                    hintStyle: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
-                    isDense: true,
-                    contentPadding: EdgeInsets.all(5.0)),
-              ))
+            decoration: InputDecoration(
+                hintText: '2021_0405_한동이네딸기농장',
+                hintStyle: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(fontSize: 18.0, color: Color(0x2C000000)),
+                isDense: true,
+                contentPadding: EdgeInsets.all(5.0)),
+          ))
         ],
       ),
     );
@@ -272,10 +275,10 @@ class _SubJournalIssueModifyScreenState
             child: Text(
               '작물',
               style: Theme.of(context).textTheme.headline5.copyWith(
-                fontWeight: FontWeight.w500,
-                color:
-                (category == 1) ? Color(0xFF219653) : Color(0x40000000),
-              ),
+                    fontWeight: FontWeight.w500,
+                    color:
+                        (category == 1) ? Color(0xFF219653) : Color(0x40000000),
+                  ),
             ),
           ),
           // SizedBox(width: 29,),
@@ -291,10 +294,10 @@ class _SubJournalIssueModifyScreenState
             child: Text(
               '시설',
               style: Theme.of(context).textTheme.headline5.copyWith(
-                fontWeight: FontWeight.w500,
-                color:
-                (category == 2) ? Color(0xFF219653) : Color(0x40000000),
-              ),
+                    fontWeight: FontWeight.w500,
+                    color:
+                        (category == 2) ? Color(0xFF219653) : Color(0x40000000),
+                  ),
             ),
           ),
           // SizedBox(width: 28,),
@@ -310,10 +313,10 @@ class _SubJournalIssueModifyScreenState
             child: Text(
               '기타',
               style: Theme.of(context).textTheme.headline5.copyWith(
-                fontWeight: FontWeight.w500,
-                color:
-                (category == 3) ? Color(0xFF219653) : Color(0x40000000),
-              ),
+                    fontWeight: FontWeight.w500,
+                    color:
+                        (category == 3) ? Color(0xFF219653) : Color(0x40000000),
+                  ),
             ),
           ),
           SizedBox(
@@ -346,11 +349,11 @@ class _SubJournalIssueModifyScreenState
             child: Text(
               '예상',
               style: Theme.of(context).textTheme.headline5.copyWith(
-                fontWeight: FontWeight.w500,
-                color: (issueState == 1)
-                    ? Color(0xFF219653)
-                    : Color(0x40000000),
-              ),
+                    fontWeight: FontWeight.w500,
+                    color: (issueState == 1)
+                        ? Color(0xFF219653)
+                        : Color(0x40000000),
+                  ),
             ),
           ),
           // SizedBox(width: 29,),
@@ -366,11 +369,11 @@ class _SubJournalIssueModifyScreenState
             child: Text(
               '진행',
               style: Theme.of(context).textTheme.headline5.copyWith(
-                fontWeight: FontWeight.w500,
-                color: (issueState == 2)
-                    ? Color(0xFF219653)
-                    : Color(0x40000000),
-              ),
+                    fontWeight: FontWeight.w500,
+                    color: (issueState == 2)
+                        ? Color(0xFF219653)
+                        : Color(0x40000000),
+                  ),
             ),
           ),
           // SizedBox(width: 28,),
@@ -386,11 +389,11 @@ class _SubJournalIssueModifyScreenState
             child: Text(
               '완료',
               style: Theme.of(context).textTheme.headline5.copyWith(
-                fontWeight: FontWeight.w500,
-                color: (issueState == 3)
-                    ? Color(0xFF219653)
-                    : Color(0x40000000),
-              ),
+                    fontWeight: FontWeight.w500,
+                    color: (issueState == 3)
+                        ? Color(0xFF219653)
+                        : Color(0x40000000),
+                  ),
             ),
           ),
           SizedBox(
@@ -402,7 +405,9 @@ class _SubJournalIssueModifyScreenState
   }
 
   Widget _addPictureBar({BuildContext context, JournalIssueModifyState state}) {
-    List pic = state.existingImageList.where((image) => image.issid == widget.issid).toList();
+    List<ImagePicture> pic = state.existingImageList
+        .where((image) => image.issid == widget.issid)
+        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -426,55 +431,64 @@ class _SubJournalIssueModifyScreenState
                 children: [
                   (index == 0)
                       ? SizedBox(
-                    width: defaultPadding,
-                  )
+                          width: defaultPadding,
+                        )
                       : Container(),
                   (index == 0)
                       ? Center(
-                    child: InkWell(
-                        onTap: () {
-                          _pickImage(context: context, state: state);
-                        },
-                        child: Container(
-                          height: 74.0,
-                          width: 74.0,
-                          decoration:
-                          BoxDecoration(color: Color(0x1a000000)),
-                          child: Center(
-                            child: Icon(
-                              Icons.add,
-                              size: 34.0,
-                            ),
-                          ),
-                        )),
-                  )
+                          child: InkWell(
+                              onTap: () {
+                                _pickImage(context: context, state: state);
+                              },
+                              child: Container(
+                                height: 74.0,
+                                width: 74.0,
+                                decoration:
+                                    BoxDecoration(color: Color(0x1a000000)),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 34.0,
+                                  ),
+                                ),
+                              )),
+                        )
                       : Container(),
-                  (index == 0) ? SizedBox(width: defaultPadding,) : Container(),
+                  (index == 0)
+                      ? SizedBox(
+                          width: defaultPadding,
+                        )
+                      : Container(),
                   (state?.imageList?.isNotEmpty ?? true)
                       ? Row(
-                        children: [
-                          _image(
-                    context: context,
-                    state: state,
-                    index: index,
-                  ),
-                          SizedBox(
-                            width: defaultPadding,
-                          ),
-                        ],
-                      )
+                          children: [
+                            _image(
+                              context: context,
+                              state: state,
+                              index: index,
+                            ),
+                            SizedBox(
+                              width: defaultPadding,
+                            ),
+                          ],
+                        )
                       : Container(),
                   (index == 0 && pic.isNotEmpty)
                       ? Row(
-                    children: List.generate(pic.length, (index) {
-                      return Row(
-                        children: [
-                          _existingImage(context: context, url: pic[index].url, obj: pic[index]),
-                          SizedBox(width: defaultPadding,),
-                        ],
-                      );
-                    }),
-                  )
+                          children: List.generate(pic.length, (index) {
+                            return Row(
+                              children: [
+                                _existingImage(
+                                    context: context,
+                                    url: pic[index].url,
+                                    obj: pic[index]),
+                                SizedBox(
+                                  width: defaultPadding,
+                                ),
+                              ],
+                            );
+                          }),
+                        )
                       : Container(),
                 ],
               );
@@ -485,15 +499,13 @@ class _SubJournalIssueModifyScreenState
     );
   }
 
-  Widget _existingImage(
-      {BuildContext context, String url, ImagePicture obj}) {
+  Widget _existingImage({BuildContext context, String url, ImagePicture obj}) {
     return Badge(
       // padding: EdgeInsets.zero,
       toAnimate: false,
       badgeContent: InkResponse(
         onTap: () {
-          _journalIssueModifyBloc
-              .add(DeleteExistingImage(obj: obj));
+          _journalIssueModifyBloc.add(DeleteExistingImage(obj: obj));
         },
         child: Icon(
           Icons.close,
@@ -508,10 +520,10 @@ class _SubJournalIssueModifyScreenState
         width: 74.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: CachedNetworkImageProvider(url,),
+            image: CachedNetworkImageProvider(
+              url,
+            ),
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5), BlendMode.srcATop),
           ),
         ),
       ),
@@ -539,29 +551,27 @@ class _SubJournalIssueModifyScreenState
       shape: BadgeShape.circle,
       child: isNull
           ? Container(
-        height: 74.0,
-        width: 74.0,
-        color: Colors.grey,
-        child: Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Color.fromARGB(255, 0, 61, 165)),
-            )),
-      )
+              height: 74.0,
+              width: 74.0,
+              color: Colors.grey,
+              child: Center(
+                  child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Color.fromARGB(255, 0, 61, 165)),
+              )),
+            )
           : Container(
-        height: 74.0,
-        width: 74.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: FileImage(
-              state.imageList[index],
+              height: 74.0,
+              width: 74.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(
+                    state.imageList[index],
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5), BlendMode.srcATop),
-          ),
-        ),
-      ),
     );
   }
 
@@ -579,7 +589,7 @@ class _SubJournalIssueModifyScreenState
             child: TextField(
               controller: _content,
               focusNode: _focusContent,
-              onTap: (){
+              onTap: () {
                 _focusContent.requestFocus();
               },
               scrollPhysics: ClampingScrollPhysics(),
@@ -636,10 +646,11 @@ class _SubJournalIssueModifyScreenState
                         Center(
                           child: Text(
                             '사진 첨부',
-                            style: Theme.of(context).textTheme.bodyText1.copyWith(
-                              color: Color(0xFF868686),
-                              fontSize: 15,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      color: Color(0xFF868686),
+                                      fontSize: 15,
+                                    ),
                           ),
                         ),
                         SizedBox(
@@ -661,10 +672,13 @@ class _SubJournalIssueModifyScreenState
                           title: Center(
                             child: Text(
                               '사진촬영',
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                fontSize: 20,
-                                color: Color(0xFF3183E3),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    fontSize: 20,
+                                    color: Color(0xFF3183E3),
+                                  ),
                             ),
                           ),
                         ),
@@ -684,10 +698,13 @@ class _SubJournalIssueModifyScreenState
                           title: Center(
                             child: Text(
                               '앨범에서 사진 선택',
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                fontSize: 20,
-                                color: Color(0xFF3183E3),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    fontSize: 20,
+                                    color: Color(0xFF3183E3),
+                                  ),
                             ),
                           ),
                         ),
@@ -711,10 +728,10 @@ class _SubJournalIssueModifyScreenState
                       title: Text(
                         '취소',
                         style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                          color: Color(0xFF3183E3),
-                        ),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Color(0xFF3183E3),
+                            ),
                         textAlign: TextAlign.center,
                       ),
                     ),

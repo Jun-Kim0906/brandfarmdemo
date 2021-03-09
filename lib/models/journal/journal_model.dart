@@ -77,6 +77,30 @@ class Journal {
     @required this.farming,
   });
 
+  factory Journal.empty(){
+    return Journal(
+      fid: '',
+      jid: '',
+      uid: '',
+      date: Timestamp.now(),
+      title: '',
+      content: '',
+      widgetList: [],
+      widgets: [],
+      comments: 0,
+      shipment: [],
+      farming: [],
+      fertilize: [],
+      watering: [],
+      weeding: [],
+      workforce: [],
+      planting: [],
+      pest: [],
+      pesticide: [],
+      seeding: [],
+    );
+  }
+
   factory Journal.fromDs(DocumentSnapshot ds) {
     List<Widgets> _temp = ds["widgets"]
         .map((dynamic widget) {

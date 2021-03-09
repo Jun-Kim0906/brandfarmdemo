@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
@@ -7,8 +8,8 @@ class JournalIssueModifyState {
   final String title;
   final List<File> imageList;
   final List<Asset> assetList;
-  final List existingImageList;
-  final List deletedFromExistingImageList;
+  final List<ImagePicture> existingImageList;
+  final List<ImagePicture> deletedFromExistingImageList;
   final bool isComplete;
   final bool isUploaded;
 
@@ -38,8 +39,8 @@ class JournalIssueModifyState {
     String title,
     List<File> imageList,
     List<Asset> assetList,
-    List existingImageList,
-    List deletedFromExistingImageList,
+    List<ImagePicture> existingImageList,
+    List<ImagePicture> deletedFromExistingImageList,
     bool isComplete,
     bool isUploaded,
   }) {
@@ -58,8 +59,8 @@ class JournalIssueModifyState {
     String title,
     List<File> imageList,
     List<Asset> assetList,
-    List existingImageList,
-    List deletedFromExistingImageList,
+    List<ImagePicture> existingImageList,
+    List<ImagePicture> deletedFromExistingImageList,
     bool isComplete,
     bool isUploaded,
   }) {

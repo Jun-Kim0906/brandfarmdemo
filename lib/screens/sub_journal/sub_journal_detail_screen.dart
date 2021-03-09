@@ -1,9 +1,11 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
+import 'package:BrandFarm/screens/sub_journal/sub_journal_edit_screen.dart';
 import 'package:BrandFarm/screens/sub_journal/tableWidget/tableWidgets.dart';
 import 'package:BrandFarm/utils/column_builder.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -39,6 +41,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   CommentBloc _commentBloc;
   Journal journal;
   JournalBloc _journalBloc;
+  JournalCreateBloc _journalCreateBloc;
 
   //////////////////////////////////////////////////////////////////////////////
   double height;
@@ -61,6 +64,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     journal = widget.journal;
     _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
+    _journalCreateBloc = BlocProvider.of<JournalCreateBloc>(context);
     _commentBloc.add(LoadComment());
     _commentBloc.add(GetComment(id: journal.jid, from: 'jid'));
     Future.delayed(Duration.zero, () {
@@ -185,7 +189,47 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       ),
       actions: [
         FlatButton(
-          onPressed: () {},
+          onPressed: () {
+            _journalCreateBloc
+                .add(WidgetListLoaded(widgets: journal.widgets));
+            _journalCreateBloc.add(CheckNewWriteChange());
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        MultiBlocProvider(
+                          providers: [
+                            BlocProvider<JournalCreateBloc>.value(
+                              value: _journalCreateBloc,
+                            ),
+                          ],
+                          child: SubJournalEditScreen(
+                              journal: Journal(
+                                fid: journal.fid,
+                                jid: journal.jid,
+                                date: journal.date,
+                                title: journal.title,
+                                content: journal.content,
+                                widgets: journal.widgets,
+                                widgetList: journal.widgetList,
+                                shipment: journal.shipment,
+                                fertilize: journal.fertilize,
+                                pesticide: journal.pesticide,
+                                pest: journal.pest,
+                                planting: journal.planting,
+                                seeding: journal.seeding,
+                                weeding: journal.weeding,
+                                watering: journal.watering,
+                                workforce: journal.workforce,
+                                farming: journal.farming,
+                                comments: journal.comments,
+                                uid: journal.uid,
+                              ),
+                              selectedImage: _pic,
+                              date: journal.date.toDate()),
+                        ))).then((item) {
+            });
+          },
           child: Text(
             '편집',
             style: TextStyle(
@@ -641,7 +685,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget commentTile({BuildContext context, CommentState state, int index}) {
+  Widget commentTile({BuildContext context, CommentState state, int index}){
     List<SubComment> subComments = state.subComments
         .where((cmt) => cmt.cmtid == state.comments[index].cmtid)
         .toList();
@@ -661,9 +705,11 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
             children: [
               CircleAvatar(
                   radius: 18.0,
-                  backgroundImage: (state.commentsUser.isEmpty ||
+                  backgroundImage:
+                  (state.commentsUser.isEmpty ||
                           state.commentsUser[index].imgUrl == '')
-                      ? AssetImage('assets/profile.png')
+                      ?
+                  AssetImage('assets/profile.png')
                       : NetworkImage(state.commentsUser[index].imgUrl)),
               SizedBox(
                 width: 10,
@@ -832,7 +878,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       {BuildContext context,
       List<SubComment> scmts,
       int index,
-      List<User> subCommentsUser}) {
+      List<User> subCommentsUser}){
     String time = getTime(date: scmts[index].date);
     return Container(
       child: Row(
@@ -1016,12 +1062,10 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                                   id: journal.jid,
                                   comment: comment,
                                 ));
-                                setState(() {
-                                  numOfComments += 1;
-                                });
+                                // setState(() {
+                                //   numOfComments += 1;
+                                // });
                                 _journalBloc.add(AddJournalComment(
-                                  journalListOptions: widget.issueListOptions,
-                                    journalOrder: widget.issueOrder,
                                     id: journal.jid));
                               }
                               setState(() {

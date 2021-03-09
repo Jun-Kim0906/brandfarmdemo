@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/farming_model.dart';
 import 'package:BrandFarm/models/journal/fertilize_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/journal/pest_model.dart';
 import 'package:BrandFarm/models/journal/pesticide_model.dart';
 import 'package:BrandFarm/models/journal/planting_model.dart';
@@ -105,6 +107,24 @@ class AssetImageList extends JournalCreateEvent {
   @override
   String toString() =>
       'AssetImageList { AssetImageList :AssetImageListChanged }';
+}
+
+///Update Journal
+
+
+class DeleteExistingImage extends JournalCreateEvent {
+  final int index;
+
+  const DeleteExistingImage({
+    @required this.index,
+  });
+
+  @override
+  String toString() {
+    return '''DeleteExistingImage {
+      index, ${index},
+    }''';
+  }
 }
 
 ///출하정보
@@ -1072,12 +1092,12 @@ class FarmingDelete extends JournalCreateEvent {
 }
 
 ///completbtn
-class WriteCompleteChanged extends JournalCreateEvent {
-  WriteCompleteChanged() : super();
+class UpdateJournal extends JournalCreateEvent {
+  UpdateJournal() : super();
 
   @override
   String toString() =>
-      'WriteCompleteChanged { WriteCompleteChanged :WriteCompleteChanged }';
+      'UpdateJournal { WriteCompleteChanged :WriteCompleteChanged }';
 }
 
 class NewWriteCompleteChanged extends JournalCreateEvent {
@@ -1115,6 +1135,8 @@ class JournalInitialized extends JournalCreateEvent {
   final List<Workforce> workforceList;
   final List<Farming> farmingList;
   final List<String> widgetsList;
+  final Journal existJournal;
+  final List<ImagePicture> existImage;
 
   JournalInitialized(
       {this.shipmentList,
@@ -1127,7 +1149,9 @@ class JournalInitialized extends JournalCreateEvent {
       this.wateringList,
       this.workforceList,
       this.farmingList,
-      this.widgetsList});
+      this.widgetsList,
+      this.existJournal,
+      this.existImage});
 
   @override
   String toString() => 'JournalInitialized';

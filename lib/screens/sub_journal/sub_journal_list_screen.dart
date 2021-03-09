@@ -1448,6 +1448,9 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           create: (BuildContext context) => CommentBloc(),
                           // create: (BuildContext context) => CommentBloc()..add(LoadComment()),
                         ),
+                        BlocProvider<JournalCreateBloc>(
+                          create: (BuildContext context) => JournalCreateBloc(),
+                        )
                       ],
                       child: SubJournalDetailScreen(
                         journal: list[index],

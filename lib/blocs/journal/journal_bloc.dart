@@ -37,14 +37,10 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapWaitForLoadMoreToState();
     } else if (event is AddIssueComment) {
       yield* _mapAddIssueCommentToState(
-        issueListOptions: event.issueListOptions,
-        issueOrder: event.issueOrder,
         issid: event.id,
       );
     } else if (event is AddJournalComment) {
       yield* _mapAddJournalCommentToState(
-        journalListOptions: event.journalListOptions,
-        journalOrder: event.journalOrder,
         jid: event.id,
       );
     }
@@ -241,8 +237,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     yield state.update(isLoadingToGetMore: true);
   }
 
-  Stream<JournalState> _mapAddIssueCommentToState(
-      {String issueListOptions, int issueOrder, String issid}) async* {
+  Stream<JournalState> _mapAddIssueCommentToState({String issid}) async* {
     List<SubJournalIssue> issue = state.issueList;
     List<SubJournalIssue> cat = state.issueListByCategorySelection;
     List<SubJournalIssue> rev = state.reverseIssueList;
@@ -288,7 +283,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
   }
 
   Stream<JournalState> _mapAddJournalCommentToState(
-      {String journalListOptions, int journalOrder, String jid}) async* {
+      {String jid}) async* {
     List<Journal> journal = state.orderByRecent;
     List<Journal> cat = state.listBySelection;
     List<Journal> rev = state.orderByOldest;
