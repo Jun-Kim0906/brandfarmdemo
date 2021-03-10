@@ -1,4 +1,3 @@
-
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
@@ -44,8 +43,7 @@ class FMIssueRepository {
   Future<void> updateIssue({
     SubJournalIssue obj,
   }) async {
-    DocumentReference reference =
-    _firestore.collection('Issue').doc(obj.issid);
+    DocumentReference reference = _firestore.collection('Issue').doc(obj.issid);
     await reference.update(obj.toMap());
   }
 
@@ -63,11 +61,11 @@ class FMIssueRepository {
     return image;
   }
 
-  Future<List<Comment>> getComment(String fid) async {
+  Future<List<Comment>> getComment(String issid) async {
     List<Comment> cmt = [];
     QuerySnapshot _cmt = await _firestore
         .collection('Comment')
-        .where('fid', isEqualTo: fid)
+        .where('issid', isEqualTo: issid)
         .get();
 
     _cmt.docs.forEach((ds) {
@@ -77,11 +75,11 @@ class FMIssueRepository {
     return cmt;
   }
 
-  Future<List<SubComment>> getSubComment(String fid) async {
+  Future<List<SubComment>> getSubComment(String issid) async {
     List<SubComment> scmt = [];
     QuerySnapshot _scmt = await _firestore
         .collection('SubComment')
-        .where('fid', isEqualTo: fid)
+        .where('issid', isEqualTo: issid)
         .get();
 
     _scmt.docs.forEach((ds) {
@@ -99,9 +97,8 @@ class FMIssueRepository {
 //   await reference.set(subJournalIssue.toMap());
 // }
 
-
-// Future<void> updateIssueComment({String issid, int cmts}) async {
-//   DocumentReference reference = _firestore.collection('Issue').doc(issid);
-//   await reference.update({"comments": cmts});
-// }
+  Future<void> updateIssueComment({String issid, int cmts}) async {
+    DocumentReference reference = _firestore.collection('Issue').doc(issid);
+    await reference.update({"comments": cmts});
+  }
 }

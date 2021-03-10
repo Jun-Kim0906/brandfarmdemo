@@ -37,7 +37,9 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
   FMJournalBloc _fmJournalBloc;
   FMIssueBloc _fmIssueBloc;
   TextEditingController _textEditingController;
+  TextEditingController _subTextEditingController;
   FocusNode _focusNode;
+  FocusNode _subFocusNode;
 
   //  for testing //
   List pic = [1, 2, 3];
@@ -64,7 +66,9 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
       ));
     }
     _textEditingController = TextEditingController();
+    _subTextEditingController = TextEditingController();
     _focusNode = FocusNode();
+    _subFocusNode = FocusNode();
     date = getDate(date: widget.obj.date);
     wroteComments = false;
   }
@@ -89,7 +93,9 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
             return GestureDetector(
               onTap: () {
                 _focusNode.unfocus();
+                _subFocusNode.unfocus();
                 _textEditingController.clear();
+                _subTextEditingController.clear();
               },
               child: Container(
                 padding: EdgeInsets.only(top: 39),
@@ -477,8 +483,10 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(state.commentList.length, (index) =>
-              _commentTile(state: state, index: index),),
+          children: List.generate(
+            state.commentList.length,
+            (index) => _commentTile(state: state, index: index),
+          ),
         )
       ],
     );
@@ -534,7 +542,8 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                 width: 46,
                 child: CircleAvatar(
                   backgroundImage: (state.commentList[index].imgUrl.isNotEmpty)
-                      ? CachedNetworkImageProvider(state.commentList[index].imgUrl)
+                      ? CachedNetworkImageProvider(
+                          state.commentList[index].imgUrl)
                       : AssetImage('assets/profile.png'),
                   radius: 46,
                 ),
@@ -583,15 +592,37 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                       ),
                       InkWell(
                         onTap: () {
-                          setState(() {});
+                          if(state.commentList[index].isWriteSubCommentClicked) {
+                            _subFocusNode.unfocus();
+                            _subTextEditingController.clear();
+                          }
+                          setState(() {
+                            _fmIssueBloc
+                                .add(ChangeWriteReplyState(index: index));
+                          });
                         },
-                        child: Text(
-                          '답글 달기',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                        ),
+                        child:
+                            (!state.commentList[index].isWriteSubCommentClicked)
+                                ? Text(
+                                    '답글 달기',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        .copyWith(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                  )
+                                : Text(
+                                    '취소',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        .copyWith(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                  ),
                       ),
                     ],
                   ),
@@ -599,6 +630,21 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
               ),
             ],
           ),
+          (state.commentList[index].isWriteSubCommentClicked)
+              ? SizedBox(
+                  height: 10,
+                )
+              : Container(),
+          (state.commentList[index].isWriteSubCommentClicked)
+              ? Row(
+                  children: [
+                    SizedBox(
+                      width: 56,
+                    ),
+                    _writeReply(index: index),
+                  ],
+                )
+              : Container(),
           (subComments.isNotEmpty)
               ? SizedBox(
                   height: 10,
@@ -629,11 +675,13 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
               : Container(),
           (state.commentList[index].isExpanded)
               ? Column(
-                children: [
-                  SizedBox(height: 10,),
-                  showSubComments(scmts: subComments),
-                ],
-              )
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    showSubComments(scmts: subComments),
+                  ],
+                )
               : Container(),
         ],
       ),
@@ -646,11 +694,11 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
         children: List.generate(scmts.length, (index) {
           return Column(
             children: [
-              subComment(
-                  scmts: scmts,
-                  index: index),
+              subComment(scmts: scmts, index: index),
               (index != scmts.length - 1)
-                  ? SizedBox(height: 20,)
+                  ? SizedBox(
+                      height: 20,
+                    )
                   : Container(),
             ],
           );
@@ -659,7 +707,10 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
     );
   }
 
-  Widget subComment({List<SubComment> scmts, int index,}) {
+  Widget subComment({
+    List<SubComment> scmts,
+    int index,
+  }) {
     String time = getTime(date: scmts[index].date);
     return Container(
       child: Row(
@@ -671,10 +722,10 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
             height: 42,
             width: 42,
             child: CircleAvatar(
-                radius: 42.0,
-                backgroundImage: (scmts[index].imgUrl.isNotEmpty)
-                    ? CachedNetworkImageProvider(scmts[index].imgUrl)
-                    : AssetImage('assets/profile.png'),
+              radius: 42.0,
+              backgroundImage: (scmts[index].imgUrl.isNotEmpty)
+                  ? CachedNetworkImageProvider(scmts[index].imgUrl)
+                  : AssetImage('assets/profile.png'),
             ),
           ),
           SizedBox(
@@ -688,8 +739,8 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                   Text(
                     '${scmts[index].name}',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   SizedBox(
                     width: 10,
@@ -697,9 +748,9 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                   Text(
                     '${time}',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                   ),
                 ],
               ),
@@ -709,8 +760,8 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
               Text(
                 '${scmts[index].scomment}',
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontSize: 12,
-                ),
+                      fontSize: 12,
+                    ),
               ),
             ],
           ),
@@ -754,7 +805,11 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                   comment = text;
                 });
               },
-              onSubmitted: (text) {},
+              onSubmitted: (text) {
+                _fmIssueBloc.add(WriteComment(cmt: text, obj: widget.obj));
+                _focusNode.unfocus();
+                _textEditingController.clear();
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
@@ -765,6 +820,65 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                         color: Color(0x4D000000),
                       )),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _writeReply({int index}) {
+    return Container(
+      child: Row(
+        children: [
+          Container(
+            height: 42,
+            width: 42,
+            child: CircleAvatar(
+              backgroundImage: (UserUtil.getUser().imgUrl.isNotEmpty)
+                  ? CachedNetworkImageProvider(UserUtil.getUser().imgUrl)
+                  : AssetImage('assets/profile.png'),
+              radius: 42,
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 42,
+                width: 589,
+                child: TextField(
+                  focusNode: _subFocusNode,
+                  controller: _subTextEditingController,
+                  keyboardType: TextInputType.text,
+                  onTap: () {
+                    _subFocusNode.requestFocus();
+                  },
+                  onChanged: (text) {
+                    setState(() {
+                      comment = text;
+                    });
+                  },
+                  onSubmitted: (text) {
+                    _fmIssueBloc
+                        .add(WriteReply(cmt: text, obj: widget.obj, index: index));
+                    _subFocusNode.unfocus();
+                    _subTextEditingController.clear();
+                  },
+                  decoration: InputDecoration(
+                      // border: InputBorder.none,
+                      // contentPadding: EdgeInsets.zero,
+                      // isDense: true,
+                      hintText: '답글을 남겨주세요',
+                      hintStyle: Theme.of(context).textTheme.bodyText1.copyWith(
+                            fontWeight: FontWeight.w300,
+                            color: Color(0x4D000000),
+                          )),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -108,7 +108,7 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
         child: BlocBuilder<JournalCreateBloc, JournalCreateState>(
           builder: (context, state) {
             return Scaffold(
-              resizeToAvoidBottomPadding: true,
+              resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back_ios_rounded),
