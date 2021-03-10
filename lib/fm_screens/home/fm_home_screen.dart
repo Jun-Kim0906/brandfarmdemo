@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
+import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/fm_home/home_body.dart';
@@ -554,19 +555,19 @@ class GetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     switch(index) {
       case 1 : {
-        return Container();
+        return EmptyScreen();
       }
       break;
       case 2 : {
-        return Container();
+        return EmptyScreen();
       }
       break;
       case 3 : {
-        return Container();
+        return EmptyScreen();
       }
       break;
       case 4 : {
-        return Container();
+        return EmptyScreen();
       }
       break;
       case 5 : {
@@ -583,14 +584,14 @@ class GetPage extends StatelessWidget {
             child: FMJournalScreen(),
           );
         } else if(subIndex == 2) {
-          return Container();
+          return EmptyScreen();
         } else {
-          return Container();
+          return EmptyScreen();
         }
       }
       break;
       case 6 : {
-        return Container();
+        return EmptyScreen();
       }
       break;
       default : {

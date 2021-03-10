@@ -43,6 +43,7 @@ dependencies:
   cached_network_image: ^2.5.0
   flutter_cache_manager: ^2.1.1
   dropdown_below: ^0.0.6
+  shimmer: ^1.1.2
 
 
 dependency_overrides:
