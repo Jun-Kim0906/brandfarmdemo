@@ -1,3 +1,4 @@
+import 'package:BrandFarm/fm_screens/notification/write_notice_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,9 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                 ),
                 SizedBox(width: 13,),
                 InkResponse(
-                  onTap: (){},
+                  onTap: () async {
+                    await _showMyDialog();
+                  },
                   child: Container(
                     height: 29,
                     width: 600,
@@ -65,6 +68,16 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return WriteNoticeScreen();
+        }
     );
   }
 }
