@@ -5,7 +5,10 @@ import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
+import 'package:BrandFarm/repository/comment/comment_repository.dart';
 import 'package:BrandFarm/repository/fm_issue/fm_issue_repository.dart';
+import 'package:BrandFarm/utils/field_util.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,6 +33,12 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
       yield* _mapGetCommentListToState(event.obj);
     } else if (event is ChangeExpandState) {
       yield* _mapChangeExpandStateToState(event.index);
+    } else if (event is WriteComment) {
+      yield* _mapWriteCommentToState(event.cmt, event.obj);
+    } else if (event is ChangeWriteReplyState) {
+      yield* _mapChangeWriteReplyStateToState(event.index);
+    } else if (event is WriteReply) {
+      yield* _mapWriteReplyToState(event.cmt, event.obj, event.index);
     }
   }
 
@@ -113,8 +122,8 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
 
   Stream<FMIssueState> _mapGetCommentListToState(SubJournalIssue obj) async* {
     // get comment / sub comment
-    List<Comment> cmt = await FMIssueRepository().getComment(obj.fid);
-    List<SubComment> scmt = await FMIssueRepository().getSubComment(obj.fid);
+    List<Comment> cmt = await FMIssueRepository().getComment(obj.issid);
+    List<SubComment> scmt = await FMIssueRepository().getSubComment(obj.issid);
 
     yield state.update(
       commentList: cmt,
@@ -138,11 +147,150 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
       isExpanded: !obj.isExpanded,
       fid: obj.fid,
       imgUrl: obj.imgUrl,
+      isWriteSubCommentClicked: obj.isWriteSubCommentClicked,
     );
 
     cmt.removeAt(index);
     cmt.insert(index, _cmt);
 
     yield state.update(commentList: cmt);
+  }
+
+  Stream<FMIssueState> _mapWriteCommentToState(String cmt, SubJournalIssue obj) async* {
+    // write comment
+    List<Comment> cmtList = state.commentList;
+    String cmtid = '';
+    cmtid = FirebaseFirestore.instance.collection('Comment').doc().id;
+    Comment _cmt = Comment(
+      date: Timestamp.now(),
+      jid: '--',
+      uid: UserUtil.getUser().uid,
+      issid: obj.issid,
+      cmtid: cmtid,
+      name: UserUtil.getUser().name,
+      comment: cmt,
+      isThereSubComment: false,
+      isExpanded: false,
+      fid: obj.fid,
+      imgUrl: UserUtil.getUser().imgUrl,
+      isWriteSubCommentClicked: false,
+    );
+
+    cmtList.add(_cmt);
+
+    // CommentRepository().uploadComment(comment: _cmt);
+
+    // update issuelist
+    List<SubJournalIssue> issueList = state.issueList;
+    List<SubJournalIssue> reverseList = state.reverseList;
+    SubJournalIssue _issue = SubJournalIssue(
+      date: obj.date,
+      fid: obj.fid,
+      sfmid: obj.sfmid,
+      issid: obj.issid,
+      uid: obj.uid,
+      title: obj.title,
+      category: obj.category,
+      issueState: obj.issueState,
+      contents: obj.contents,
+      comments: obj.comments + 1,
+      isReadByFM: obj.isReadByFM,
+      isReadByOffice: obj.isReadByOffice,
+    );
+
+    int index1 = issueList.indexWhere((data) => data.issid == obj.issid) ?? -1;
+    int index2 = reverseList.indexWhere((data) => data.issid == obj.issid) ?? -1;
+
+    if (index1 != -1) {
+      issueList.removeAt(index1);
+      issueList.insert(index1, _issue);
+    }
+    if (index2 != -1) {
+      reverseList.removeAt(index2);
+      reverseList.insert(index2, _issue);
+    }
+
+    CommentRepository().uploadComment(comment: _cmt);
+    FMIssueRepository().updateIssueComment(issid: obj.issid, cmts: obj.comments + 1);
+
+    yield state.update(
+        commentList: cmtList,
+      issueList: issueList,
+      reverseList: reverseList,
+    );
+  }
+
+  Stream<FMIssueState> _mapChangeWriteReplyStateToState(int index) async* {
+    // change write reply state
+    Comment obj = state.commentList[index];
+    List<Comment> cmt = state.commentList;
+    Comment _cmt = Comment(
+      date: obj.date,
+      name: obj.name,
+      uid: obj.uid,
+      issid: obj.issid,
+      jid: obj.jid,
+      cmtid: obj.cmtid,
+      comment: obj.comment,
+      isThereSubComment: obj.isThereSubComment,
+      isExpanded: obj.isExpanded,
+      fid: obj.fid,
+      imgUrl: obj.imgUrl,
+      isWriteSubCommentClicked: !obj.isWriteSubCommentClicked,
+    );
+
+    cmt.removeAt(index);
+    cmt.insert(index, _cmt);
+
+    yield state.update(commentList: cmt);
+  }
+
+  Stream<FMIssueState> _mapWriteReplyToState(String cmt, SubJournalIssue obj, int index) async* {
+    // change reply state
+    Comment cmtObj = state.commentList[index];
+    List<Comment> cmtList = state.commentList;
+    Comment _cmt = Comment(
+      date: cmtObj.date,
+      name: cmtObj.name,
+      uid: cmtObj.uid,
+      issid: cmtObj.issid,
+      jid: cmtObj.jid,
+      cmtid: cmtObj.cmtid,
+      comment: cmtObj.comment,
+      isThereSubComment: cmtObj.isThereSubComment,
+      isExpanded: cmtObj.isExpanded,
+      fid: cmtObj.fid,
+      imgUrl: cmtObj.imgUrl,
+      isWriteSubCommentClicked: !cmtObj.isWriteSubCommentClicked,
+    );
+
+    cmtList.removeAt(index);
+    cmtList.insert(index, _cmt);
+
+    // write reply
+    List<SubComment> scmtList = state.subCommentList;
+    String scmtid = '';
+    scmtid = FirebaseFirestore.instance.collection('SubComment').doc().id;
+    SubComment _scmt = SubComment(
+      date: Timestamp.now(),
+      name: UserUtil.getUser().name,
+      uid: UserUtil.getUser().uid,
+      issid: obj.issid,
+      jid: '--',
+      scmtid: scmtid,
+      cmtid: cmtObj.cmtid,
+      scomment: cmt,
+      imgUrl: UserUtil.getUser().imgUrl,
+      fid: obj.fid,
+    );
+
+    scmtList.add(_scmt);
+
+    CommentRepository().uploadSubComment(scomment: _scmt);
+
+    yield state.update(
+        commentList: cmtList,
+      subCommentList: scmtList,
+    );
   }
 }

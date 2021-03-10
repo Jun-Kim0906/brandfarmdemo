@@ -119,3 +119,58 @@ class ChangeExpandState extends FMIssueEvent {
   @override
   String toString() => 'ChangeExpandState { index : $index}';
 }
+
+class WriteComment extends FMIssueEvent {
+  final String cmt;
+  final SubJournalIssue obj;
+
+  const WriteComment({
+    @required this.cmt,
+    @required this.obj,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''WriteComment { 
+    cmt : $cmt,
+    obj : $obj,
+  }''';
+}
+
+class ChangeWriteReplyState extends FMIssueEvent {
+  final int index;
+
+  const ChangeWriteReplyState({
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => 'ChangeWriteReplyState { index : $index}';
+}
+
+class WriteReply extends FMIssueEvent {
+  final String cmt;
+  final SubJournalIssue obj;
+  final int index;
+
+  const WriteReply({
+    @required this.cmt,
+    @required this.obj,
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''WriteReply { 
+    cmt : $cmt,
+    obj : $obj,
+    index : $index,
+  }''';
+}

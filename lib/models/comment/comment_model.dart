@@ -16,6 +16,7 @@ class Comment {
   final bool isExpanded;
   final String fid;
   final String imgUrl;
+  final bool isWriteSubCommentClicked;
 
   Comment({
     @required this.date,
@@ -29,6 +30,7 @@ class Comment {
     @required this.isExpanded,
     @required this.fid,
     @required this.imgUrl,
+    @required this.isWriteSubCommentClicked,
   });
 
   factory Comment.fromSnapshot(DocumentSnapshot ds) {
@@ -44,6 +46,7 @@ class Comment {
       isExpanded: ds['isExpanded'],
       fid: ds['fid'],
       imgUrl: ds['imgUrl'],
+      isWriteSubCommentClicked: ds['isWriteSubCommentClicked'],
     );
   }
 
@@ -60,6 +63,7 @@ class Comment {
       'isExpanded': isExpanded,
       'fid': fid,
       'imgUrl': imgUrl,
+      'isWriteSubCommentClicked': isWriteSubCommentClicked,
     };
   }
 }
