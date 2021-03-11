@@ -1,6 +1,8 @@
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
 import 'package:BrandFarm/fm_screens/notification/write_notice_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateAnnouncement extends StatefulWidget {
   @override
@@ -76,7 +78,10 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return WriteNoticeScreen();
+          return BlocProvider(
+            create: (BuildContext context) => FMNotificationBloc(),
+            child: WriteNoticeScreen(),
+          );
         }
     );
   }
