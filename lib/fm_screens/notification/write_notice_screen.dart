@@ -365,6 +365,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
               isReadBySFM: false,
               notid: '',
               type: noticeType,
+              department: 'farm',
             )));
             Navigator.pop(context);
           }

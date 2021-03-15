@@ -3,7 +3,7 @@ import 'package:BrandFarm/blocs/fm_notification/fm_notification_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
-import 'package:BrandFarm/repository/notification/notification_repository.dart';
+import 'package:BrandFarm/repository/fm_notification/fm_notification_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,7 +30,7 @@ class FMNotificationBloc
   }
 
   Stream<FMNotificationState> _mapGetFieldListToState() async* {
-    Farm farm = await NotificationRepository().getFarmInfo();
+    Farm farm = await FMNotificationRepository().getFarmInfo();
     List<Field> currFieldList = [
       Field(
           fieldCategory: farm.fieldCategory,
@@ -43,7 +43,7 @@ class FMNotificationBloc
           name: '모든 필드')
     ];
     List<Field> newFieldList =
-        await NotificationRepository().getFieldList(farm.fieldCategory);
+        await FMNotificationRepository().getFieldList(farm.fieldCategory);
     List<Field> totalFieldList = [
       ...currFieldList,
       ...newFieldList,
@@ -80,9 +80,10 @@ class FMNotificationBloc
       isReadBySFM: obj.isReadBySFM,
       notid: _notid,
       type: obj.type,
+      department: obj.department,
     );
 
-    NotificationRepository().postNotification(_notice);
+    FMNotificationRepository().postNotification(_notice);
 
     yield state.update(isLoading: false);
   }

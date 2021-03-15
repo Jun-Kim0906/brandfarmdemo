@@ -17,6 +17,10 @@ class _DepartmentBadgeState extends State<DepartmentBadge> {
   @override
   Widget build(BuildContext context) {
     switch (widget.department) {
+      case 'farm':
+        _badgeColor = Theme.of(context).primaryColor;
+        _department = 'FM';
+        break;
       case 'field':
         _badgeColor = Theme.of(context).primaryColor;
         _department = '필드';
@@ -53,7 +57,8 @@ class _DepartmentBadgeState extends State<DepartmentBadge> {
             _department,
             style: (widget.department == 'field' ||
                     widget.department == 'office' ||
-                    widget.department == 'shed')
+                    widget.department == 'shed' ||
+                    widget.department == 'farm')
                 ? Theme.of(context)
                     .textTheme
                     .caption

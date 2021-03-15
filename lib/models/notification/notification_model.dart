@@ -16,6 +16,7 @@ class NotificationNotice {
   final bool isReadBySFM; // sub field manager or field manager
   final String notid;
   final String type;
+  final String department;
 
   NotificationNotice({
     @required this.uid,
@@ -32,6 +33,7 @@ class NotificationNotice {
     @required this.isReadBySFM,
     @required this.notid,
     @required this.type,
+    @required this.department,
   });
 
   factory NotificationNotice.fromSnapshot(DocumentSnapshot ds) {
@@ -50,6 +52,7 @@ class NotificationNotice {
       isReadBySFM: ds['isReadBySFM'],
       notid: ds['notid'],
       type: ds['type'],
+      department: ds['department'],
     );
   }
 
@@ -69,6 +72,7 @@ class NotificationNotice {
       'isReadBySFM': isReadBySFM,
       'notid': notid,
       'type': type,
+      'department': department,
     };
   }
 }

@@ -44,6 +44,7 @@ dependencies:
   flutter_cache_manager: ^2.1.1
   dropdown_below: ^0.0.6
   shimmer: ^1.1.2
+  flutter_local_notifications: ^4.0.1+2
 
 
 dependency_overrides:
