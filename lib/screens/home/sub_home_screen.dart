@@ -1,5 +1,7 @@
 //blocs
 import 'package:BrandFarm/blocs/home/bloc.dart';
+import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
+import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
@@ -34,6 +36,7 @@ class SubHomeScreen extends StatefulWidget {
 class _SubHomeScreenState extends State<SubHomeScreen> {
   WeatherBloc _weatherBloc;
   HomeBloc _homeBloc;
+  NotificationBloc _notificationBloc;
   String name;
   int initialIndex;
 
@@ -41,6 +44,8 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   void initState() {
     super.initState();
     _homeBloc = BlocProvider.of<HomeBloc>(context);
+    _notificationBloc = BlocProvider.of<NotificationBloc>(context);
+    _notificationBloc.add(GetNotificationList());
     _weatherBloc = BlocProvider.of<WeatherBloc>(context);
     _weatherBloc.add(GetWeatherInfo());
   }
@@ -57,20 +62,46 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
             initialIndex = state.selectedDate - 4;
           }
           return Scaffold(
-              appBar: SubHomeAppBar(
-                notificationPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NotificationListScreen(),
-                    ),
-                  );
-                },
-                settingPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SettingScreen()));
-                },
+              // appBar: SubHomeAppBar(
+              //   notificationPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => BlocProvider.value(
+              //             value: _notificationBloc,
+              //           child: NotificationListScreen(),
+              //         ),
+              //       ),
+              //     );
+              //   },
+              //   settingPressed: () {
+              //     Navigator.push(context,
+              //         MaterialPageRoute(builder: (context) => SettingScreen()));
+              //   },
+              // ),
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(80.0),
+              child: BlocProvider.value(
+                  value: _notificationBloc,
+                child: SubHomeAppbarWithState(
+                  notificationPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider.value(
+                          value: _notificationBloc,
+                          child: NotificationListScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                  settingPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SettingScreen()));
+                  },
+                ),
               ),
+            ),
               body: SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
                 child: Column(

@@ -1,8 +1,14 @@
+import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
+import 'package:BrandFarm/blocs/notification/notification_event.dart';
+import 'package:BrandFarm/blocs/notification/notification_state.dart';
 import 'package:BrandFarm/screens/notification/notification_dialog_screen.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:badges/badges.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class NotificationListScreen extends StatefulWidget {
   @override
@@ -10,53 +16,86 @@ class NotificationListScreen extends StatefulWidget {
 }
 
 class _NotificationListScreenState extends State<NotificationListScreen> {
+  NotificationBloc _notificationBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationBloc = BlocProvider.of<NotificationBloc>(context);
+    // _notificationBloc.add(GetNotificationList());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          padding: EdgeInsets.fromLTRB(10, 0.0, 0.0, 0.0),
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Color(0xFF37949B),
-            size: 29,
+    return BlocConsumer<NotificationBloc, NotificationState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            leading: IconButton(
+              padding: EdgeInsets.fromLTRB(10, 0.0, 0.0, 0.0),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                // color: Color(0xFF37949B),
+                color: Colors.black,
+                size: 29,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            centerTitle: true,
+            title: Text(
+              '알림',
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+            ),
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        centerTitle: true,
-        title: Text('알림',
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+          body: ListView(
+            shrinkWrap: true,
+            children: [
+              (state.importantList.isNotEmpty)
+                  ? Column(
+                      children:
+                          List.generate(state.importantList.length, (index) {
+                        return Column(
+                          children: [
+                            _fixedCustomListTile(state: state, index: index),
+                            SizedBox(
+                              height: 3,
+                            ),
+                          ],
+                        );
+                      }),
+                    )
+                  : Container(),
+              (state.generalList.isNotEmpty)
+                  ? Column(
+                      children:
+                          List.generate(state.generalList.length, (index) {
+                        return Column(
+                          children: [
+                            _customListTile(state: state, index: index),
+                            SizedBox(
+                              height: 3,
+                            ),
+                          ],
+                        );
+                      }),
+                    )
+                  : Container(),
+            ],
           ),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return (index == 0)
-              ? Column(
-                children: [
-                  _fixedCustomListTile(),
-                  SizedBox(height: 3,),
-                ],
-              )
-              : Column(
-                children: [
-                  _customListTile(index: index),
-                  SizedBox(height: 3,),
-                ],
-              );
-        },
-      ),
+        );
+      },
     );
   }
 
-  Widget _fixedCustomListTile() {
+  Widget _fixedCustomListTile({NotificationState state, int index}) {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xFFFFF8DB),
@@ -66,12 +105,17 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
         ),
       ),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.of(context).push(
             PageRouteBuilder(
-                pageBuilder: (context, a1, a2) =>
-                    NotificationDialogScreen(),
-                transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                pageBuilder: (context, a1, a2) => BlocProvider.value(
+                      value: _notificationBloc,
+                      child: NotificationDialogScreen(
+                        obj: state.importantList[index],
+                      ),
+                    ),
+                transitionsBuilder: (c, anim, a2, child) =>
+                    FadeTransition(opacity: anim, child: child),
                 transitionDuration: Duration(milliseconds: 300),
                 opaque: false),
           );
@@ -80,7 +124,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
           children: [
             Container(
               margin: EdgeInsets.all(0.0),
-              padding: EdgeInsets.fromLTRB(18, 13, 13, 0),
+              padding: EdgeInsets.fromLTRB(12, 13, 13, 0),
               height: 93,
               child: Row(
                 children: [
@@ -88,16 +132,18 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        padding: EdgeInsets.zero,
-                        margin: EdgeInsets.zero,
+                          padding: EdgeInsets.zero,
+                          margin: EdgeInsets.zero,
                           child: Icon(
                             Icons.error_outline_rounded,
-                            size: 40,
+                            size: 46,
                             color: Color(0xFFFDD015),
                           )),
                     ],
                   ),
-                  SizedBox(width: 18,),
+                  SizedBox(
+                    width: 15,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -106,37 +152,50 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                         child: Row(
                           children: [
                             Container(
-                              height: 13,
+                                height: 13,
                                 width: 21,
                                 child: FittedBox(
-                                    child: DepartmentBadge(department: 'office'))),
-                            SizedBox(width: 2,),
+                                    child: DepartmentBadge(
+                                        department: state
+                                            .importantList[index].department))),
+                            SizedBox(
+                              width: 2,
+                            ),
                             Center(
                                 child: Text(
-                                  '안전에 유의하시길 당부드립니다',
-                                  // style: Theme.of(context).textTheme.overline.copyWith(fontSize: 15),
-                                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              '${state.importantList[index].title}',
+                              // style: Theme.of(context).textTheme.overline.copyWith(fontSize: 15),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                     color: Colors.black,
                                   ),
-                                )),
+                            )),
                           ],
                         ),
                       ),
-                      SizedBox(height: 9,),
+                      SizedBox(
+                        height: 9,
+                      ),
                       Container(
-                        width: 256,
+                        width: 240,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '날씨가 여전히 추운 관계로 농작물 관리에 조금 더 신경써 주시고 빙판길로 인해 미끄러울 수 있으니 집에 가세요',
+                              '${state.importantList[index].content}',
                               // style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 13,
-                                color: Colors.black,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -145,22 +204,29 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(width: 14,),
+                  SizedBox(
+                    width: 9,
+                  ),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
                           width: 55,
                           child: Align(
                             alignment: Alignment.centerRight,
-                            child: Text('상시',
+                            child: Text(
+                              '${getTime(date: state.importantList[index].scheduledDate)}',
                               // style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                fontSize: 13,
-                                color: Color(0xFF737373),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 13,
+                                    color: Color(0xFF737373),
+                                  ),
                             ),
                           ),
                         ),
@@ -176,22 +242,29 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
     );
   }
 
-  Widget _customListTile({int index}) {
+  Widget _customListTile({NotificationState state, int index}) {
     return Container(
       decoration: BoxDecoration(
-        color: (index > 4) ? Color(0xFFEBEBEB) : Colors.white,
+        color: (state.generalList[index].isReadBySFM)
+            ? Color(0xFFEBEBEB)
+            : Colors.white,
         border: Border(
           top: BorderSide(width: 1, color: Color(0xFFEBEBEB)),
           bottom: BorderSide(width: 1, color: Color(0xFFEBEBEB)),
         ),
       ),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.of(context).push(
             PageRouteBuilder(
-                pageBuilder: (context, a1, a2) =>
-                    NotificationDialogScreen(),
-                transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                pageBuilder: (context, a1, a2) => BlocProvider.value(
+                      value: _notificationBloc,
+                      child: NotificationDialogScreen(
+                        obj: state.generalList[index],
+                      ),
+                    ),
+                transitionsBuilder: (c, anim, a2, child) =>
+                    FadeTransition(opacity: anim, child: child),
                 transitionDuration: Duration(milliseconds: 300),
                 opaque: false),
           );
@@ -206,19 +279,36 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Badge(
-                        position: BadgePosition.topStart(top: 0, start: 0),
-                        shape: BadgeShape.circle,
-                        child: Container(
-                            width: 48,
-                            height: 48,
-                            child: Center(
-                                child: Image.asset('assets/megaphone.png', width: 38, height: 38,))),
-                        padding: EdgeInsets.all(4.5),
-                      ),
+                      (!state.generalList[index].isReadBySFM)
+                          ? Badge(
+                              position:
+                                  BadgePosition.topStart(top: 0, start: 0),
+                              shape: BadgeShape.circle,
+                              child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  child: Center(
+                                      child: Image.asset(
+                                    'assets/megaphone.png',
+                                    width: 38,
+                                    height: 38,
+                                  ))),
+                              padding: EdgeInsets.all(4.5),
+                            )
+                          : Container(
+                              width: 48,
+                              height: 48,
+                              child: Center(
+                                  child: Image.asset(
+                                'assets/megaphone.png',
+                                width: 38,
+                                height: 38,
+                              ))),
                     ],
                   ),
-                  SizedBox(width: 15,),
+                  SizedBox(
+                    width: 15,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -227,36 +317,50 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                         child: Row(
                           children: [
                             Container(
-                              height: 13,
+                                height: 13,
                                 width: 21,
-                                child: FittedBox(child: DepartmentBadge(department: 'office'))),
-                            SizedBox(width: 2,),
+                                child: FittedBox(
+                                    child: DepartmentBadge(
+                                        department: state
+                                            .generalList[index].department))),
+                            SizedBox(
+                              width: 2,
+                            ),
                             Text(
-                              '딸기수확 완료여부 파악 요망',
+                              '${state.generalList[index].title}',
                               // style: Theme.of(context).textTheme.overline.copyWith(fontSize: 15,),
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 9,),
+                      SizedBox(
+                        height: 9,
+                      ),
                       Container(
                         // height: 36,
                         width: 240,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '2/22 까지 한동이네 딸기농장에서의 목표치 만큼의 딸기수확이 완료되면 일지에서 세부내용을 작성해주시면 됩니다. 감사합니다',
+                              '${state.generalList[index].content}',
                               // style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 13,
-                                color: Colors.black,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -265,7 +369,9 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(width: 9,),
+                  SizedBox(
+                    width: 9,
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -273,14 +379,19 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                       children: [
                         Container(
                           width: 55,
-                          child: Center(
-                            child: Text('2시간 전',
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              '${getTime(date: state.generalList[index].scheduledDate)}',
                               // style: Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.normal),
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                fontSize: 13,
-                                color: Color(0xFF737373),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 13,
+                                    color: Color(0xFF737373),
+                                  ),
                             ),
                           ),
                         ),
@@ -294,5 +405,40 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
         ),
       ),
     );
+  }
+
+  String getTime({Timestamp date}) {
+    DateTime now = DateTime.now();
+    DateTime _date =
+        DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
+    int diffDays = now.difference(_date).inDays;
+    if (diffDays < 1) {
+      int diffHours = now.difference(_date).inHours;
+      if (diffHours < 1) {
+        int diffMinutes = now.difference(_date).inMinutes;
+        if (diffMinutes < 1) {
+          int diffSeconds = now.difference(_date).inSeconds;
+          return '${diffSeconds}초 전';
+        } else {
+          return '${diffMinutes}분 전';
+        }
+      } else {
+        return '${diffHours}시간 전';
+      }
+    } else if (diffDays >= 1 && diffDays <= 365) {
+      int monthNow = int.parse(DateFormat('MM').format(now));
+      int monthBefore = int.parse(DateFormat('MM').format(
+          DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch)));
+      int diffMonths = monthNow - monthBefore;
+      if (diffMonths == 0) {
+        return '${diffDays}일 전';
+      } else {
+        return '${diffMonths}달 전';
+      }
+    } else {
+      double tmp = diffDays / 365;
+      int diffYears = tmp.toInt();
+      return '${diffYears}년 전';
+    }
   }
 }

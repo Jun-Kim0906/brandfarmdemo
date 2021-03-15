@@ -1,6 +1,7 @@
 //screens
 import 'dart:io';
 
+import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/home/fm_home_screen.dart';
@@ -116,7 +117,10 @@ class _AppState extends State<App> {
                   ),
                   BlocProvider<WeatherBloc>(
                     create: (BuildContext context) => WeatherBloc(),
-                  )
+                  ),
+                  BlocProvider<NotificationBloc>(
+                    create: (BuildContext context) => NotificationBloc(),
+                  ),
                 ], child: SubHomeScreen());
               } else if(UserUtil.getUser().position == 2) {
                 return FMHomeScreen();
