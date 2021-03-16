@@ -1,6 +1,7 @@
 //screens
 import 'dart:io';
 
+import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/empty_screen.dart';
@@ -123,7 +124,14 @@ class _AppState extends State<App> {
                   ),
                 ], child: SubHomeScreen());
               } else if(UserUtil.getUser().position == 2) {
-                return FMHomeScreen();
+                return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<FMPurchaseBloc>(
+                        create: (BuildContext context) => FMPurchaseBloc(),
+                      )
+                    ],
+                    child: FMHomeScreen(),
+                );
               } else {
                 return EmptyScreen();
               }
